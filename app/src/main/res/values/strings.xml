@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Teckenspråkslexikon</string>
+    <string name="menu_logout">Logga ut</string>
+    <string name="menu_share">Dela</string>
+    <string name="menu_search">Sök</string>
+    <string name="search_hint">Sök i lexikonet</string>
+    <string name="loading">Laddar…</string>
+    <string name="empty"></string>
+    <string name="tryagain">Försök igen</string>
+    <string name="error_offline">Ingen anslutning.</string>
+    <string name="error_results">Hämtningen misslyckades.</string>
+    <string name="error_word">Hämtningen misslyckades.</string>
+    <string name="error_audio">Ljuduppspelningen misslyckades.</string>
+    <string name="no_results">Inga resultat hittades.</string>
+    <string name="history">Historik</string>
+    <string name="bookmarks">Bokmärken</string>
+    <string name="sign">Tecken</string>
+    <string name="examples">Exempel</string>
+    <string name="other_signs">Andra tecken</string>
+    <string name="other_meanings">Andra betydelser</string>
+    <string name="add_bookmark">Lägg till bokmärke</string>
+    <string name="remove_bookmark">Radera bokmärke</string>
+    <string name="delete">Ta bort</string>
+    <string name="delete_all">Ta bort alla</string>
+    <string name="drawer_open">Öppna menyn</string>
+    <string name="drawer_close">Stänga menyn</string>
+    <string name="description">Beskrivning</string>
+    <string name="topic">Ämne</string>
+
+    <string name="title_activity_home">Teckenspråkslexikon</string>
+    <string name="title_history">Historik</string>
+    <string name="title_favorites">Favoriter</string>
+    <string name="title_topics">Ämnen</string>
+
+    <string name="action_settings">Settings</string>
+
+</resources>

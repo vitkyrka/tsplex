@@ -1,0 +1,16 @@
+local.properties
+bin/
+gen/
+build/
+*.swp
+*.swo
+.cache
+*.class
+*.apk
+*.iml
+.idea
+signs.jet
+app/release/
+.settings
+test/
+.gradle

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_history"
+            android:icon="@drawable/ic_history_black_24dp"
+            android:title="@string/title_history" />
+
+        <item
+            android:id="@+id/navigation_favorites"
+            android:icon="@drawable/ic_favorite_black_24dp"
+            android:title="@string/title_favorites" />
+
+        <item
+            android:id="@+id/navigation_topics"
+            android:icon="@drawable/ic_tags_black_24dp"
+            android:title="@string/title_topics" />
+    </group>
+
+</menu>

@@ -1,0 +1,77 @@
+package `in`.rab.tsplex
+
+import android.app.SearchManager
+import android.content.ContentProvider
+import android.content.ContentValues
+import android.content.UriMatcher
+import android.database.Cursor
+import android.net.Uri
+import android.provider.BaseColumns
+import android.util.Log
+
+class SignProvider : ContentProvider() {
+
+    private var mDatabase: SignDatabase? = null
+
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
+        return 0
+    }
+
+    override fun getType(uri: Uri): String? {
+        return null
+    }
+
+    override fun insert(uri: Uri, values: ContentValues?): Uri? {
+        return null
+    }
+
+    override fun onCreate(): Boolean {
+        mDatabase = SignDatabase(context!!)
+        return true
+    }
+
+    override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?,
+                       sortOrder: String?): Cursor? {
+        val columns = arrayOf(BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1,
+                SearchManager.SUGGEST_COLUMN_TEXT_2,
+                SearchManager.SUGGEST_COLUMN_INTENT_DATA,
+                SearchManager.SUGGEST_COLUMN_QUERY)
+
+        Log.w("Lexikonet", uri.toString())
+        when (sUriMatcher.match(uri)) {
+            MATCH_ALL -> return mDatabase!!.getAll(columns)
+
+            MATCH_ID -> {
+                val columns2 = arrayOf(BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1, "video", "desc")
+                return null
+            }
+        //return mDatabase.getWord(uri.getLastPathSegment(), columns2);
+
+            MATCH_SUGGEST -> return mDatabase!!.search(uri.lastPathSegment, columns)
+        }
+
+        return null
+    }
+
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
+        return 0
+    }
+
+    companion object {
+        private val sUriMatcher = buildUriMatcher()
+
+        private val MATCH_ALL = 1
+        private val MATCH_ID = 2
+        private val MATCH_SUGGEST = 3
+
+        private fun buildUriMatcher(): UriMatcher {
+            val matcher = UriMatcher(UriMatcher.NO_MATCH)
+
+            matcher.addURI("in.rab.tsplex.SignProvider", SearchManager.SUGGEST_URI_PATH_QUERY + "/*",
+                    MATCH_SUGGEST)
+
+            return matcher
+        }
+    }
+
+}
