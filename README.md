@@ -20,3 +20,6 @@ license](http://creativecommons.org/licenses/by-nc-sa/2.5/se/).
 the [Noto Emoji font](https://github.com/googlei18n/noto-emoji) [and is
 licensed under the Apache license, version
 2.0](https://github.com/googlei18n/noto-emoji#license).
+
+The [material design icons](https://github.com/google/material-design-icons)
+are also licensed under the Apache License, version 2.0.
