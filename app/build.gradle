@@ -51,7 +51,17 @@ task cleanDatabase(type:Exec) {
 }
 
 afterEvaluate {
-    assembleDebug.dependsOn genDatabase
-    assembleRelease.dependsOn genDatabase
     clean.dependsOn cleanDatabase
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleDebug') {
+        task.dependsOn genDatabase
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleRelease') {
+        task.dependsOn genDatabase
+    }
 }
