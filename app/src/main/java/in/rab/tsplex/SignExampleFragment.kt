@@ -30,7 +30,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     private var mExamples: ArrayList<Example>? = null
     private var mSimpleExoPlayerView: SimpleExoPlayerView? = null
     private var mSimpleExoPlayer: SimpleExoPlayer? = null
-    private var mPosition = 0
+    private var mPosition = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,13 +128,19 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
         })
 
-        val dataSourceFactory = DefaultDataSourceFactory(context,
-                Util.getUserAgent(context, "in.rab.tsplex"), null)
-        val extractorsFactory = DefaultExtractorsFactory()
-        val example = listView.adapter?.getItem(mPosition) as Example
-        val videoSource = ExtractorMediaSource(Uri.parse(example.video),
-                dataSourceFactory, extractorsFactory, null, null)
-        mSimpleExoPlayer!!.prepare(videoSource)
+        if (mPosition < 0 && mExamples!!.size == 1) {
+            mPosition = 0
+        }
+
+        if (mPosition >= 0) {
+            val dataSourceFactory = DefaultDataSourceFactory(context,
+                    Util.getUserAgent(context, "in.rab.tsplex"), null)
+            val extractorsFactory = DefaultExtractorsFactory()
+            val example = listView.adapter?.getItem(mPosition) as Example
+            val videoSource = ExtractorMediaSource(Uri.parse(example.video),
+                    dataSourceFactory, extractorsFactory, null, null)
+            mSimpleExoPlayer?.prepare(videoSource)
+        }
 
         mSimpleExoPlayerView!!.player = mSimpleExoPlayer
         mSimpleExoPlayer!!.repeatMode = Player.REPEAT_MODE_ALL
