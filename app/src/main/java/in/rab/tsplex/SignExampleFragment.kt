@@ -3,8 +3,11 @@ package `in`.rab.tsplex
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ListFragment
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -19,6 +22,7 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import kotlinx.android.synthetic.main.fragment_signexample.*
 import java.util.*
 
 class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
@@ -43,9 +47,24 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (mExamples?.size!! <= 10) {
+            filterText.visibility = GONE
+        }
+
         val adapter = ArrayAdapter(activity,
                 android.R.layout.simple_list_item_1, mExamples!!)
         listView.adapter = adapter
+
+        filterText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                adapter.filter.filter(s)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                    Unit
+
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
 
         mSimpleExoPlayerView = view!!.findViewById<SimpleExoPlayerView>(R.id.exoPlayerView)
         mSimpleExoPlayerView!!.setOnTouchListener { v, event ->

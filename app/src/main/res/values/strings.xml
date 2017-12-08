@@ -28,6 +28,7 @@
     <string name="drawer_close">Stänga menyn</string>
     <string name="description">Beskrivning</string>
     <string name="topic">Ämne</string>
+    <string name="filter_list">Filtrera listan...</string>
 
     <string name="title_activity_home">Teckenspråkslexikon</string>
     <string name="title_history">Historik</string>
