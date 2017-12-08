@@ -22,8 +22,7 @@ import com.google.android.exoplayer2.util.Util
 import java.util.*
 
 class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
-    private var mVideos: ArrayList<String>? = null
-    private var mDescs: ArrayList<String>? = null
+    private var mExamples: ArrayList<Example>? = null
     private var mSimpleExoPlayerView: SimpleExoPlayerView? = null
     private var mSimpleExoPlayer: SimpleExoPlayer? = null
     private var mPosition = 0
@@ -32,8 +31,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         super.onCreate(savedInstanceState)
 
         if (arguments != null) {
-            mVideos = arguments.getStringArrayList(ARG_VIDEOS)
-            mDescs = arguments.getStringArrayList(ARG_DESCS)
+            mExamples = arguments.getParcelableArrayList(ARG_EXAMPLES)
         }
     }
 
@@ -46,7 +44,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = ArrayAdapter(activity,
-                android.R.layout.simple_list_item_1, mDescs!!)
+                android.R.layout.simple_list_item_1, mExamples!!)
         listView.adapter = adapter
 
         mSimpleExoPlayerView = view!!.findViewById<SimpleExoPlayerView>(R.id.exoPlayerView)
@@ -107,7 +105,8 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         val dataSourceFactory = DefaultDataSourceFactory(context,
                 Util.getUserAgent(context, "in.rab.tsplex"), null)
         val extractorsFactory = DefaultExtractorsFactory()
-        val videoSource = ExtractorMediaSource(Uri.parse(mVideos!![mPosition]),
+        val example = listView.adapter?.getItem(mPosition) as Example
+        val videoSource = ExtractorMediaSource(Uri.parse(example.video),
                 dataSourceFactory, extractorsFactory, null, null)
         mSimpleExoPlayer!!.prepare(videoSource)
 
@@ -129,7 +128,8 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         val dataSourceFactory = DefaultDataSourceFactory(context,
                 Util.getUserAgent(activity, "yourApplicationName"), null)
         val extractorsFactory = DefaultExtractorsFactory()
-        val videoSource = ExtractorMediaSource(Uri.parse(mVideos!![position]),
+        val example = l?.adapter?.getItem(position) as Example
+        val videoSource = ExtractorMediaSource(Uri.parse(example.video),
                 dataSourceFactory, extractorsFactory, null, null)
 
         mPosition = position
@@ -137,15 +137,12 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     }
 
     companion object {
-        private val ARG_VIDEOS = "videos"
-        private val ARG_DESCS = "descs"
+        private val ARG_EXAMPLES = "examples"
 
-        fun newInstance(videos: ArrayList<String>,
-                        descs: ArrayList<String>): SignExampleFragment {
+        fun newInstance(examples: ArrayList<Example>): SignExampleFragment {
             val fragment = SignExampleFragment()
             val args = Bundle()
-            args.putStringArrayList(ARG_VIDEOS, videos)
-            args.putStringArrayList(ARG_DESCS, descs)
+            args.putParcelableArrayList(ARG_EXAMPLES, examples)
             fragment.arguments = args
             return fragment
         }

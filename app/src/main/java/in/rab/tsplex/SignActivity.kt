@@ -90,7 +90,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
             var adjpos = position;
 
             if (adjpos > 0) {
-                if (mSign!!.exampleVideos.size == 0) {
+                if (mSign!!.examples.size == 0) {
                     adjpos += 1
                 }
             }
@@ -114,7 +114,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
             var adjpos = pos;
 
             if (adjpos > 0) {
-                if (mSign!!.exampleVideos.size == 0) {
+                if (mSign!!.examples.size == 0) {
                     adjpos += 1
                 }
             }
@@ -127,7 +127,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
 
             return when (adjpos) {
                 0 -> SignDescriptionFragment.newInstance(mSign!!)
-                1 -> SignExampleFragment.newInstance(mSign!!.exampleVideos, mSign!!.exampleDescriptions)
+                1 -> SignExampleFragment.newInstance(mSign!!.examples)
                 2 -> SignFragment.newInstance(mSynonyms!!)
                 3 -> SignFragment.newInstance(mHomonyms!!)
                 else -> null
@@ -137,7 +137,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
         override fun getCount(): Int {
             var count = 1
 
-            if (mSign!!.exampleVideos.size > 0) {
+            if (mSign!!.examples.size > 0) {
                 count += 1
             }
 

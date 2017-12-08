@@ -50,7 +50,7 @@ class SignDatabase(context: Context) {
         }
 
         while (cursor.moveToNext()) {
-            sign.addExample(cursor.getString(0), cursor.getString(1))
+            sign.examples.add(Example(cursor.getString(0), cursor.getString(1)))
         }
 
         return sign
@@ -66,7 +66,7 @@ class SignDatabase(context: Context) {
                 "video", null, "desc") ?: return sign
 
         while (cursor.moveToNext()) {
-            sign.addExample(cursor.getString(0), cursor.getString(1))
+            sign.examples.add(Example(cursor.getString(0), cursor.getString(1)))
         }
 
         cursor.close()

@@ -12,8 +12,7 @@ class Sign internal constructor(internal val id: Int,
                                 internal val images: Int,
                                 internal val topic1: Int,
                                 internal val topic2: Int) : Parcelable {
-    internal val exampleVideos: ArrayList<String> = ArrayList()
-    internal val exampleDescriptions: ArrayList<String> = ArrayList()
+    internal val examples: ArrayList<Example> = ArrayList()
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
@@ -24,13 +23,7 @@ class Sign internal constructor(internal val id: Int,
             parcel.readInt(),
             parcel.readInt(),
             parcel.readInt()) {
-        parcel.readList(exampleVideos, String::class.java.classLoader)
-        parcel.readList(exampleDescriptions, String::class.java.classLoader)
-    }
-
-    internal fun addExample(video: String, description: String) {
-        exampleVideos.add(video)
-        exampleDescriptions.add(description)
+        parcel.readList(examples, Example::class.java.classLoader)
     }
 
     internal fun getImageUrls(): Array<String> {
@@ -49,8 +42,7 @@ class Sign internal constructor(internal val id: Int,
         parcel.writeString(slug)
         parcel.writeInt(topic1)
         parcel.writeInt(topic2)
-        parcel.writeList(exampleVideos)
-        parcel.writeList(exampleDescriptions)
+        parcel.writeList(examples)
     }
 
     override fun describeContents(): Int {

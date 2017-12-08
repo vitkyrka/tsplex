@@ -73,7 +73,7 @@ class HomeActivity : AppCompatActivity(), SignListFragment.OnListFragmentInterac
                 R.id.navigation_examples -> {
                     val database = SignDatabase(this)
                     val sign = database.getExamples()
-                    val fragment: Fragment? = SignExampleFragment.newInstance(sign.exampleVideos, sign.exampleDescriptions)
+                    val fragment: Fragment? = SignExampleFragment.newInstance(sign.examples)
                     supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
                     actionBar.setTitle(R.string.title_examples)
                     return@setNavigationItemSelectedListener true
