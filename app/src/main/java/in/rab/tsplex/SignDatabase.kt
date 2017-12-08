@@ -56,6 +56,23 @@ class SignDatabase(context: Context) {
         return sign
     }
 
+    fun getExamples(): Sign {
+        val sign = Sign(0,  "", "", "", "", 0, 0, 0)
+
+        val builder = SQLiteQueryBuilder()
+        builder.tables = "examples"
+        val columns = arrayOf("video", "desc")
+        val cursor = builder.query(mOpenHelper.database, columns, null, null,
+                "video", null, "desc") ?: return sign
+
+        while (cursor.moveToNext()) {
+            sign.addExample(cursor.getString(0), cursor.getString(1))
+        }
+
+        cursor.close()
+        return sign
+    }
+
     internal fun getSynonyms(id: Int): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = mOpenHelper.database!!.rawQuery(
