@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -57,6 +58,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
         filterText.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                mSimpleExoPlayerView?.visibility = GONE
                 adapter.filter.filter(s)
             }
 
@@ -65,6 +67,11 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
             override fun afterTextChanged(s: Editable?) = Unit
         })
+
+        filterText.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus)
+                mSimpleExoPlayerView?.visibility = GONE
+        }
 
         mSimpleExoPlayerView = view!!.findViewById<SimpleExoPlayerView>(R.id.exoPlayerView)
         mSimpleExoPlayerView!!.setOnTouchListener { v, event ->
