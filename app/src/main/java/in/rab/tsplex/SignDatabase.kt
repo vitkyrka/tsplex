@@ -40,6 +40,8 @@ class SignDatabase(context: Context) {
                 cursor.getString(2), cursor.getString(3),
                 cursor.getInt(4), cursor.getInt(5), cursor.getInt(6))
 
+        return sign
+
         builder = SQLiteQueryBuilder()
         builder.tables = "examples"
         columns = arrayOf("video", "desc")

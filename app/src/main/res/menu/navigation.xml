@@ -20,7 +20,8 @@
         <item
             android:id="@+id/navigation_examples"
             android:icon="@drawable/ic_examples_black_24dp"
-            android:title="@string/title_examples" />
+            android:title="@string/title_examples"
+            android:visible="false" />
     </group>
 
 </menu>
