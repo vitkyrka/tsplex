@@ -3,6 +3,7 @@ package `in`.rab.tsplex
 import Topics
 import android.content.Context
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Html
@@ -12,6 +13,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -23,6 +25,10 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.IOException
+import java.util.regex.Pattern
 
 
 class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
@@ -33,11 +39,12 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mSimpleExoPlayer: SimpleExoPlayer? = null
     private var mTopic1: Int = 0
     private var mTopic2: Int = 0
+    private var mId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            mVideo = arguments.getString(ARG_VIDEO)
+            mId = arguments.getInt(ARG_ID)
             mDescription = arguments.getString(ARG_DESC)
             mTopic1 = arguments.getInt(ARG_TOPIC1)
             mTopic2 = arguments.getInt(ARG_TOPIC2)
@@ -98,6 +105,55 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         mSimpleExoPlayer = null
     }
 
+    fun playVideo() {
+        val dataSourceFactory = DefaultDataSourceFactory(context,
+                Util.getUserAgent(context, "in.rab.tsplex"), null)
+        val extractorsFactory = DefaultExtractorsFactory()
+        val videoSource = ExtractorMediaSource(Uri.parse(mVideo),
+                dataSourceFactory, extractorsFactory, null, null)
+
+        mSimpleExoPlayer?.prepare(videoSource)
+        mSimpleExoPlayerView?.player = mSimpleExoPlayer
+        mSimpleExoPlayer?.repeatMode = Player.REPEAT_MODE_ALL
+        mSimpleExoPlayer?.playbackParameters = PlaybackParameters(0.7.toFloat(), 0f)
+        mSimpleExoPlayer?.playWhenReady = true
+    }
+
+    private inner class GetVideoUrlTask : AsyncTask<Void, Void, String?>() {
+        override fun doInBackground(vararg params: Void): String? {
+            val client = OkHttpClient()
+            val number = "%05d".format(mId)
+            val request = Request.Builder()
+                    .url("http://teckensprakslexikon.su.se/ord/" + number)
+                    .build()
+
+            val page = try {
+                val response = client.newCall(request).execute();
+                response.body().string()
+            } catch (e: IOException) {
+                return null
+            }
+
+            val pattern = Pattern.compile("file: \"(.*mp4)")
+            val matcher = pattern.matcher(page)
+            if (!matcher.find()) {
+                return null
+            }
+
+            return "http://teckensprakslexikon.su.se/" + matcher.group(1)
+        }
+
+        override fun onPostExecute(video: String?) {
+            if (video == null) {
+                Toast.makeText(activity, getString(R.string.fail_video_play), Toast.LENGTH_LONG).show()
+                return
+            }
+
+            mVideo = video
+            playVideo()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -136,17 +192,11 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         })
 
-        val dataSourceFactory = DefaultDataSourceFactory(context,
-                Util.getUserAgent(context, "in.rab.tsplex"), null)
-        val extractorsFactory = DefaultExtractorsFactory()
-        val videoSource = ExtractorMediaSource(Uri.parse(mVideo),
-                dataSourceFactory, extractorsFactory, null, null)
-        mSimpleExoPlayer!!.prepare(videoSource)
-
-        mSimpleExoPlayerView!!.player = mSimpleExoPlayer
-        mSimpleExoPlayer!!.repeatMode = Player.REPEAT_MODE_ALL
-        mSimpleExoPlayer!!.playbackParameters = PlaybackParameters(0.7.toFloat(), 0f)
-        mSimpleExoPlayer!!.playWhenReady = true
+        if (mVideo == null) {
+            GetVideoUrlTask().execute()
+        } else {
+            playVideo()
+        }
     }
 
     override fun onShow() {
@@ -174,7 +224,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     }
 
     companion object {
-        private val ARG_VIDEO = "video"
+        private val ARG_ID = "id"
         private val ARG_DESC = "desc"
         private val ARG_TOPIC1 = "topic1"
         private val ARG_TOPIC2 = "topic2"
@@ -184,7 +234,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             val args = Bundle()
             val desc = StringBuilder(sign.description)
 
-            args.putString(ARG_VIDEO, sign.video)
+            args.putInt(ARG_ID, sign.id)
             args.putString(ARG_DESC, desc.toString())
             args.putInt(ARG_TOPIC1, sign.topic1)
             args.putInt(ARG_TOPIC2, sign.topic2)
