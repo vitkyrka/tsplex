@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
@@ -25,6 +26,7 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import kotlinx.android.synthetic.main.fragment_sign_description.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
@@ -145,6 +147,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         override fun onPostExecute(video: String?) {
             if (video == null) {
+                loadingProgress.visibility = GONE
                 Toast.makeText(activity, getString(R.string.fail_video_play), Toast.LENGTH_LONG).show()
                 return
             }
@@ -187,12 +190,14 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 if (playbackState == Player.STATE_READY) {
                     mSimpleExoPlayerView?.visibility = VISIBLE
+                    loadingProgress.visibility = GONE
                 }
             }
 
         })
 
         if (mVideo == null) {
+            loadingProgress.visibility = VISIBLE
             GetVideoUrlTask().execute()
         } else {
             playVideo()
