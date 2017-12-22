@@ -14,9 +14,16 @@ class SignNote(genanki.Note):
         return genanki.guid_for(self.fields[0])
 
 
+def parse_topics(f):
+    items = [line.strip().split(' to ') for line in f.readlines() if ' to ' in line]
+    items = [(int(id, 16), topic.strip('",')) for id, topic in items]
+    return dict(items)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--db', default='signs.jet')
+    parser.add_argument('--topics', default='app/src/main/java/in/rab/tsplex/Topics.kt')
     args = parser.parse_args()
 
     model = genanki.Model(
@@ -70,9 +77,8 @@ window.onload = function() {
         1847283225,
         'Svenskt teckenspråkslexikon: Bokstavering')
 
-    with open('topictoid.pickle', 'rb') as f:
-        topictoid = pickle.load(f)
-        idtotopic = dict((y, x) for x, y in topictoid.items())
+    with open(args.topics, 'r') as f:
+        idtotopic = parse_topics(f)
         idtotopic[0] = ''
 
     conn = sqlite3.connect(args.db)
