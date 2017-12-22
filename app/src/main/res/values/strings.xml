@@ -30,6 +30,7 @@
     <string name="topic">Ämne</string>
     <string name="filter_list">Filtrera listan...</string>
     <string name="fail_video_play">Videouppspelning misslyckades.</string>
+    <string name="fail_offline">Ingen anslutning.</string>
 
     <string name="title_activity_home">Teckenspråkslexikon</string>
     <string name="title_history">Historik</string>

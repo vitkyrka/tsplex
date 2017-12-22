@@ -2,6 +2,7 @@ package `in`.rab.tsplex
 
 import Topics
 import android.content.Context
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -121,6 +122,12 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         mSimpleExoPlayer?.playWhenReady = true
     }
 
+    fun isOnline(): Boolean {
+        val conman = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = conman.getActiveNetworkInfo()
+        return networkInfo != null && networkInfo.isConnected
+    }
+
     private inner class GetVideoUrlTask : AsyncTask<Void, Void, String?>() {
         override fun doInBackground(vararg params: Void): String? {
             val client = OkHttpClient()
@@ -147,8 +154,16 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         override fun onPostExecute(video: String?) {
             if (video == null) {
+                val msg: String
+
+                if (isOnline()) {
+                    msg = getString(R.string.fail_video_play)
+                } else {
+                    msg = getString(R.string.fail_offline)
+                }
+
                 loadingProgress.visibility = GONE
-                Toast.makeText(activity, getString(R.string.fail_video_play), Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
                 return
             }
 
