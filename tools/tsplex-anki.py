@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 import argparse
-import pickle
 import sqlite3
+import hashlib
 
 import genanki
 
@@ -24,6 +24,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--db', default='signs.jet')
     parser.add_argument('--topics', default='app/src/main/java/in/rab/tsplex/Topics.kt')
+    parser.add_argument('--length', type=int)
     args = parser.parse_args()
 
     model = genanki.Model(
@@ -73,9 +74,12 @@ window.onload = function() {
             },
         ])
 
-    deck = genanki.Deck(
-        1847283225,
-        'Svenskt teckenspråkslexikon: Bokstavering')
+    name = 'TSPLex: Bokstavering'
+    if args.length:
+      name += ' (%d)' % args.length
+
+    deckid = int(hashlib.sha256(name.encode('utf-8')).hexdigest(), 16) % 10**8
+    deck = genanki.Deck(deckid, name)
 
     with open(args.topics, 'r') as f:
         idtotopic = parse_topics(f)
@@ -99,6 +103,14 @@ window.onload = function() {
             category = ', '.join([topic1, topic2])
 
         if 'Delstater i USA' in category:
+            continue
+
+        if args.length:
+          try:
+            chars = desc.split('Bokstaveras: ')[1].split('-')
+          except IndexError:
+            continue
+          if len(chars) != args.length:
             continue
 
         print(word, desc, category)
