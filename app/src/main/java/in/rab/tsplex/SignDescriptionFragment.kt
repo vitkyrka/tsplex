@@ -109,6 +109,10 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     }
 
     fun playVideo() {
+        if (context == null) {
+            return
+        }
+
         val dataSourceFactory = DefaultDataSourceFactory(context,
                 Util.getUserAgent(context, "in.rab.tsplex"), null)
         val extractorsFactory = DefaultExtractorsFactory()
@@ -123,8 +127,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     }
 
     fun isOnline(): Boolean {
-        val conman = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = conman.getActiveNetworkInfo()
+        val conman = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        val networkInfo = conman?.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnected
     }
 
@@ -154,16 +158,18 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         override fun onPostExecute(video: String?) {
             if (video == null) {
-                val msg: String
+                loadingProgress.visibility = GONE
 
-                if (isOnline()) {
-                    msg = getString(R.string.fail_video_play)
-                } else {
-                    msg = getString(R.string.fail_offline)
+                if (activity != null) {
+                    val msg: String = if (isOnline()) {
+                        getString(R.string.fail_video_play)
+                    } else {
+                        getString(R.string.fail_offline)
+                    }
+
+                    Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
                 }
 
-                loadingProgress.visibility = GONE
-                Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
                 return
             }
 
