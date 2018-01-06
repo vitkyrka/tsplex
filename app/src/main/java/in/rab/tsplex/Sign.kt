@@ -40,6 +40,7 @@ class Sign internal constructor(internal val id: Int,
         parcel.writeString(video)
         parcel.writeString(description)
         parcel.writeString(slug)
+        parcel.writeInt(images)
         parcel.writeInt(topic1)
         parcel.writeInt(topic2)
         parcel.writeList(examples)
