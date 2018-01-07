@@ -31,6 +31,7 @@ def main():
         1907193319,
         'Sign',
         fields=[
+            {'name': 'id'},
             {'name': 'video'},
             {'name': 'word'},
             {'name': 'category'},
@@ -86,8 +87,8 @@ window.onload = function() {
         idtotopic[0] = ''
 
     conn = sqlite3.connect(args.db)
-    for row in conn.execute('SELECT video, sv, topic1, topic2, desc FROM signs WHERE desc LIKE "Bokstaveras%" AND desc NOT LIKE "%//%"'):
-        video, word, topic1, topic2, desc = row
+    for row in conn.execute('SELECT id, video, sv, topic1, topic2, desc FROM signs WHERE desc LIKE "Bokstaveras%" AND desc NOT LIKE "%//%"'):
+        id, video, word, topic1, topic2, desc = row
 
         topic1 = idtotopic[topic1]
         topic2 = idtotopic[topic2]
@@ -115,7 +116,7 @@ window.onload = function() {
 
         print(word, desc, category)
 
-        note = SignNote(model=model, fields=[video, word, category, desc])
+        note = SignNote(model=model, fields=[str(id), video, word, category, desc])
         deck.add_note(note)
 
     genanki.Package(deck).write_to_file('tsplex.apkg')
