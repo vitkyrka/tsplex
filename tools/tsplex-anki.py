@@ -3,8 +3,14 @@
 import argparse
 import sqlite3
 import hashlib
+import re
+import binascii
 
 import genanki
+import requests
+import requests_cache
+
+requests_cache.install_cache('tsplex-anki.cache')
 
 
 class SignNote(genanki.Note):
@@ -12,6 +18,18 @@ class SignNote(genanki.Note):
     @property
     def guid(self):
         return genanki.guid_for(self.fields[0])
+
+
+def get_video_url(id):
+    url = 'http://teckensprakslexikon.su.se/ord/%05d' % id
+    page = requests.get(url).content.decode('utf-8')
+    match = re.search(r'file: "(.*mp4)', page)
+    return 'http://teckensprakslexikon.su.se/' + match.groups()[0]
+
+
+def get_video_data(url):
+    data = requests.get(url).content
+    return 'data:video/mp4;base64,' + binascii.b2a_base64(data).decode('utf-8').rstrip()
 
 
 def parse_topics(f):
@@ -43,7 +61,7 @@ def main():
                 'qfmt': '''
 
 <video id="video" src="{{video}}" width="100%" autoplay loop>
-    <a href="{{video}}">Din Anki-version verkar inte stödja videouppspelning.  Klicka här för att spela upp videon i en extern videospelare.</a>
+      Din Anki-version verkar inte stödja videouppspelning.
 </video>
 
 <p><em>{{category}}</em></p>
@@ -113,6 +131,9 @@ window.onload = function() {
             continue
           if len(chars) != args.length:
             continue
+
+        video = get_video_url(id)
+        # video = get_video_data(video)
 
         print(word, desc, category)
 
