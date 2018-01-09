@@ -17,6 +17,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
     private var mListener: OnListFragmentInteractionListener? = null
     private var recylerView: RecyclerView? = null
     private var mState: Parcelable? = null
+    private var mTask: AsyncTask<Void, Void, ArrayList<Sign>>? = null
 
     protected abstract fun getSigns(): ArrayList<Sign>
 
@@ -41,7 +42,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
     override fun onResume() {
         super.onResume()
 
-        DatabaseTask().execute()
+        mTask = DatabaseTask().execute()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -63,6 +64,8 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
     override fun onPause() {
         super.onPause()
 
+        mTask?.cancel(true)
+        mTask = null
         mState = recylerView?.layoutManager?.onSaveInstanceState()
     }
 
