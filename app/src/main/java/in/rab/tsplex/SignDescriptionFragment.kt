@@ -43,6 +43,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mTopic1: Int = 0
     private var mTopic2: Int = 0
     private var mId: Int = 0
+    private var mVideoTask: AsyncTask<Void, Void, String?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +104,9 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
     override fun onPause() {
         super.onPause()
+
+        mVideoTask?.cancel(true)
+        mVideoTask = null
 
         mSimpleExoPlayer?.release()
         mSimpleExoPlayer = null
@@ -219,7 +223,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         if (mVideo == null) {
             loadingProgress.visibility = VISIBLE
-            GetVideoUrlTask().execute()
+            mVideoTask = GetVideoUrlTask().execute()
         } else {
             playVideo()
         }
