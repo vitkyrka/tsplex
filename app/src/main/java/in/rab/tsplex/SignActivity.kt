@@ -127,7 +127,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
 
             return when (adjpos) {
                 0 -> SignDescriptionFragment.newInstance(mSign!!)
-                1 -> SignExampleFragment.newInstance(mSign!!.examples)
+                1 -> SignExampleFragment.newInstance(mSign!!)
                 2 -> SignFragment.newInstance(mSynonyms!!)
                 3 -> SignFragment.newInstance(mHomonyms!!)
                 else -> null
