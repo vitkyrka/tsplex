@@ -40,6 +40,8 @@ class SignDatabase(context: Context) {
                 cursor.getString(2), cursor.getString(3),
                 cursor.getInt(4), cursor.getInt(5), cursor.getInt(6))
 
+        cursor.close()
+
         builder = SQLiteQueryBuilder()
         builder.tables = "examples"
         columns = arrayOf("video", "desc")
@@ -53,6 +55,7 @@ class SignDatabase(context: Context) {
             sign.examples.add(Example(cursor.getString(0), cursor.getString(1)))
         }
 
+        cursor.close()
         return sign
     }
 
@@ -86,6 +89,7 @@ class SignDatabase(context: Context) {
                     cursor.getInt(6), cursor.getInt(7)))
         }
 
+        cursor.close()
         return signs
     }
 
@@ -101,6 +105,7 @@ class SignDatabase(context: Context) {
                     cursor.getInt(6), cursor.getInt(7)))
         }
 
+        cursor.close()
         return signs
     }
 
@@ -117,7 +122,6 @@ class SignDatabase(context: Context) {
         }
 
         cursor.close()
-
         return signs
     }
 
@@ -139,6 +143,7 @@ class SignDatabase(context: Context) {
                     cursor.getInt(6), cursor.getInt(7)))
         }
 
+        cursor.close()
         return signs
     }
 
@@ -176,6 +181,7 @@ class SignDatabase(context: Context) {
                     cursor.getInt(6), cursor.getInt(7)))
         }
 
+        cursor.close()
         return signs
     }
 
