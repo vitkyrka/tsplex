@@ -1,5 +1,7 @@
 package `in`.rab.tsplex
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -11,6 +13,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Toast
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -134,6 +137,24 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         mSimpleExoPlayer = null
     }
 
+    private fun isOnline(): Boolean {
+        val conman = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        val networkInfo = conman?.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
+    }
+
+    fun showError() {
+        mSimpleExoPlayerView?.visibility = GONE
+
+        val msg: String = if (isOnline()) {
+            getString(R.string.fail_video_play)
+        } else {
+            getString(R.string.fail_offline)
+        }
+
+        Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -156,6 +177,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
             }
 
             override fun onPlayerError(error: ExoPlaybackException?) {
+                showError()
             }
 
             override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {

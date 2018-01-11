@@ -131,10 +131,22 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         mSimpleExoPlayer?.playWhenReady = true
     }
 
-    fun isOnline(): Boolean {
+    private fun isOnline(): Boolean {
         val conman = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
         val networkInfo = conman?.activeNetworkInfo
         return networkInfo != null && networkInfo.isConnected
+    }
+
+    fun showError() {
+        loadingProgress.visibility = GONE
+
+        val msg: String = if (isOnline()) {
+            getString(R.string.fail_video_play)
+        } else {
+            getString(R.string.fail_offline)
+        }
+
+        Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
     }
 
     private inner class GetVideoUrlTask : AsyncTask<OkHttpClient, Void, String?>() {
@@ -166,18 +178,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         override fun onPostExecute(video: String?) {
             if (video == null) {
-                loadingProgress.visibility = GONE
-
-                if (activity != null) {
-                    val msg: String = if (isOnline()) {
-                        getString(R.string.fail_video_play)
-                    } else {
-                        getString(R.string.fail_offline)
-                    }
-
-                    Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
-                }
-
+                showError()
                 return
             }
 
@@ -208,6 +209,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             }
 
             override fun onPlayerError(error: ExoPlaybackException?) {
+                showError()
             }
 
             override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
