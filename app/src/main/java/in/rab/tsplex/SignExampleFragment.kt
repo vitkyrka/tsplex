@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.fragment_signexample.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.io.IOException
 import java.util.*
 import java.util.regex.Pattern
@@ -72,11 +73,14 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
                     .url("http://teckensprakslexikon.su.se/ord/" + number)
                     .build()
 
+            var response: Response? = null
             val page = try {
-                val response = client.newCall(request).execute();
+                response = client.newCall(request).execute();
                 response.body()?.string()
             } catch (e: IOException) {
                 return examples
+            } finally {
+                response?.body()?.close()
             } ?: return examples
 
             val videos: ArrayList<String> = ArrayList()

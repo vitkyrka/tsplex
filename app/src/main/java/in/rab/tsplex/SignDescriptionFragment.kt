@@ -30,6 +30,7 @@ import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.fragment_sign_description.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.io.IOException
 import java.util.regex.Pattern
 
@@ -144,11 +145,14 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                     .url("http://teckensprakslexikon.su.se/ord/" + number)
                     .build()
 
+            var response: Response? = null
             val page = try {
-                val response = client.newCall(request).execute();
+                response = client.newCall(request).execute();
                 response.body()?.string()
             } catch (e: IOException) {
                 return null
+            } finally {
+                response?.body()?.close()
             } ?: return null
 
             val pattern = Pattern.compile("file: \"(.*mp4)")
