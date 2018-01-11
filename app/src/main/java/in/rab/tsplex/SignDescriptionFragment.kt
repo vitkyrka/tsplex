@@ -43,7 +43,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mTopic1: Int = 0
     private var mTopic2: Int = 0
     private var mId: Int = 0
-    private var mVideoTask: AsyncTask<Void, Void, String?>? = null
+    private var mVideoTask: AsyncTask<OkHttpClient, Void, String?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,10 +136,10 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         return networkInfo != null && networkInfo.isConnected
     }
 
-    private inner class GetVideoUrlTask : AsyncTask<Void, Void, String?>() {
-        override fun doInBackground(vararg params: Void): String? {
-            val client = OkHttpClient()
+    private inner class GetVideoUrlTask : AsyncTask<OkHttpClient, Void, String?>() {
+        override fun doInBackground(vararg params: OkHttpClient): String? {
             val number = "%05d".format(mId)
+            val client = params[0]
             val request = Request.Builder()
                     .url("http://teckensprakslexikon.su.se/ord/" + number)
                     .build()
@@ -223,7 +223,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         if (mVideo == null) {
             loadingProgress.visibility = VISIBLE
-            mVideoTask = GetVideoUrlTask().execute()
+            mVideoTask = GetVideoUrlTask().execute(LexikonClient.getInstance(activity))
         } else {
             playVideo()
         }

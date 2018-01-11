@@ -35,7 +35,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     private var mSimpleExoPlayer: SimpleExoPlayer? = null
     private var mPosition = -1
     private var mId: Int = 0
-    private var mTask: AsyncTask<Void, Void, ArrayList<Example>>? = null
+    private var mTask: AsyncTask<OkHttpClient, Void, ArrayList<Example>>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,11 +63,11 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         }
     }
 
-    private inner class GetExamplesTask : AsyncTask<Void, Void, ArrayList<Example>>() {
-        override fun doInBackground(vararg params: Void): ArrayList<Example>? {
+    private inner class GetExamplesTask : AsyncTask<OkHttpClient, Void, ArrayList<Example>>() {
+        override fun doInBackground(vararg params: OkHttpClient): ArrayList<Example>? {
             val examples: ArrayList<Example> = ArrayList()
-            val client = OkHttpClient()
             val number = "%05d".format(mId)
+            val client = params[0]
             val request = Request.Builder()
                     .url("http://teckensprakslexikon.su.se/ord/" + number)
                     .build()
@@ -174,7 +174,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         mSimpleExoPlayer!!.playWhenReady = true
 
         if (mExamples == null) {
-            mTask = GetExamplesTask().execute()
+            mTask = GetExamplesTask().execute(LexikonClient.getInstance(activity))
         } else {
             playVideo()
         }
