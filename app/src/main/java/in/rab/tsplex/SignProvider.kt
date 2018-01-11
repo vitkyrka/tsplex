@@ -7,7 +7,6 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
 import android.provider.BaseColumns
-import android.util.Log
 
 class SignProvider : ContentProvider() {
 
@@ -37,7 +36,6 @@ class SignProvider : ContentProvider() {
                 SearchManager.SUGGEST_COLUMN_INTENT_DATA,
                 SearchManager.SUGGEST_COLUMN_QUERY)
 
-        Log.w("Lexikonet", uri.toString())
         when (sUriMatcher.match(uri)) {
             MATCH_ALL -> return mDatabase!!.getAll(columns)
 
@@ -45,7 +43,6 @@ class SignProvider : ContentProvider() {
                 val columns2 = arrayOf(BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1, "video", "desc")
                 return null
             }
-        //return mDatabase.getWord(uri.getLastPathSegment(), columns2);
 
             MATCH_SUGGEST -> return mDatabase!!.search(uri.lastPathSegment, columns)
         }
