@@ -27,7 +27,7 @@ abstract class LexikonClient() {
                                 // since the video URLs can change.
                                 chain.proceed(request)
                                         .newBuilder()
-                                        .header("Cache-Control", "max-age=600")
+                                        .header("Cache-Control", "max-age=3600")
                                         .build()
                             }
                         }
