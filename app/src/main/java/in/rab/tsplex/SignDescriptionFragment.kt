@@ -17,6 +17,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
@@ -25,7 +26,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.fragment_sign_description.*
 import okhttp3.OkHttpClient
@@ -117,7 +117,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             return
         }
 
-        val dataSourceFactory = DefaultDataSourceFactory(context,
+        val dataSourceFactory = OkHttpDataSourceFactory(LexikonClient.getInstance(context),
                 Util.getUserAgent(context, "in.rab.tsplex"), null)
         val extractorsFactory = DefaultExtractorsFactory()
         val videoSource = ExtractorMediaSource(Uri.parse(mVideo),
@@ -146,10 +146,10 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
             val page = try {
                 val response = client.newCall(request).execute();
-                response.body().string()
+                response.body()?.string()
             } catch (e: IOException) {
                 return null
-            }
+            } ?: return null
 
             val pattern = Pattern.compile("file: \"(.*mp4)")
             val matcher = pattern.matcher(page)

@@ -17,12 +17,19 @@ abstract class LexikonClient() {
         private fun buildClient(context: Context) =
                 OkHttpClient.Builder()
                         .addNetworkInterceptor { chain ->
-                            // The server sets Cache-Control: no-cache so we need to override it.
-                            // But we can't use a large age since the video URLs can change.
-                            chain.proceed(chain.request())
-                                    .newBuilder()
-                                    .header("Cache-Control", "max-age=600")
-                                    .build()
+                            val request = chain.request()
+
+                            if (request.url().toString().endsWith("mp4")) {
+                                chain.proceed(request)
+                            } else {
+                                // The server sets Cache-Control: no-cache on pages, so we need to
+                                // override it to get some caching.  But we can't use a large age
+                                // since the video URLs can change.
+                                chain.proceed(request)
+                                        .newBuilder()
+                                        .header("Cache-Control", "max-age=600")
+                                        .build()
+                            }
                         }
                         .cache(Cache(File(context.cacheDir, "okhttp"), 100 * 1024 * 1024))
                         .build()

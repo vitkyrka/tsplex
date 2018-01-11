@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
@@ -20,7 +21,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.fragment_signexample.*
 import okhttp3.OkHttpClient
@@ -74,10 +74,10 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
             val page = try {
                 val response = client.newCall(request).execute();
-                response.body().string()
+                response.body()?.string()
             } catch (e: IOException) {
                 return examples
-            }
+            } ?: return examples
 
             val videos: ArrayList<String> = ArrayList()
 
@@ -195,7 +195,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         }
 
         if (mPosition >= 0) {
-            val dataSourceFactory = DefaultDataSourceFactory(context,
+            val dataSourceFactory = OkHttpDataSourceFactory(LexikonClient.getInstance(context),
                     Util.getUserAgent(context, "in.rab.tsplex"), null)
             val extractorsFactory = DefaultExtractorsFactory()
             val example = listView.adapter?.getItem(mPosition) as Example
@@ -214,8 +214,8 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     }
 
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
-        val dataSourceFactory = DefaultDataSourceFactory(context,
-                Util.getUserAgent(activity, "yourApplicationName"), null)
+        val dataSourceFactory = OkHttpDataSourceFactory(LexikonClient.getInstance(context),
+                Util.getUserAgent(context, "in.rab.tsplex"), null)
         val extractorsFactory = DefaultExtractorsFactory()
         val example = l?.adapter?.getItem(position) as Example
         val videoSource = ExtractorMediaSource(Uri.parse(example.video),
