@@ -12,10 +12,7 @@ import com.google.android.exoplayer2.upstream.cache.CacheUtil
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.google.android.exoplayer2.util.Util
-import okhttp3.Cache
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
 import java.io.File
 import java.io.IOException
 
@@ -30,11 +27,11 @@ class Lexikon {
         client = OkHttpClient.Builder()
                 .addNetworkInterceptor { chain ->
                     // The server sets Cache-Control: no-cache on pages, so we need to
-                    // override it to get some caching.  But we can't use a large age
-                    // since the video URLs can change.
+                    // override it.  We force a refetch from network if any of the linked
+                    // videos is broken, since they have moved at least once in the past.
                     chain.proceed(chain.request())
                             .newBuilder()
-                            .header("Cache-Control", "max-age=3600")
+                            .header("Cache-Control", "max-age=31536000")
                             .build()
                 }
                 .cache(Cache(File(context.cacheDir, "okhttp"), 100 * 1024 * 1024))
@@ -48,18 +45,23 @@ class Lexikon {
         extractorsFactory = DefaultExtractorsFactory()
     }
 
-    fun getSignPage(id: Int): String {
+    fun getSignPage(id: Int, forceNetwork: Boolean): String? {
         val number = "%05d".format(id)
-        val request = Request.Builder()
+        var builder = Request.Builder()
                 .url("http://teckensprakslexikon.su.se/ord/" + number)
-                .build()
+
+        if (forceNetwork) {
+            builder = builder.cacheControl(CacheControl.FORCE_NETWORK)
+        }
+
+        val request = builder.build()
         var response: Response? = null
 
         return try {
             response = client.newCall(request).execute()
-            response.body()?.string() ?: ""
+            response.body()?.string()
         } catch (e: IOException) {
-            return ""
+            null
         } finally {
             response?.body()?.close()
         }
@@ -77,6 +79,20 @@ class Lexikon {
         }
 
         return counters.totalCachedBytes() == counters.contentLength
+    }
+
+    fun isDeadLink(videoUrl: String): Boolean {
+        val request = Request.Builder()
+                .url(videoUrl)
+                .head()
+                .cacheControl(CacheControl.FORCE_NETWORK)
+                .build()
+
+        return try {
+            client.newCall(request).execute().code() == 404
+        } catch (e: IOException) {
+            false
+        }
     }
 
     companion object {

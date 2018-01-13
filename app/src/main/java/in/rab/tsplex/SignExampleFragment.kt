@@ -23,7 +23,6 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.fragment_signexample.*
-import java.util.*
 import java.util.regex.Pattern
 
 class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
@@ -62,45 +61,59 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
     private inner class GetExamplesTask : AsyncTask<Lexikon, Void, ArrayList<Example>>() {
         override fun doInBackground(vararg params: Lexikon): ArrayList<Example>? {
-            val examples: ArrayList<Example> = ArrayList()
+            var examples: ArrayList<Example> = ArrayList()
             val lexikon = params[0]
-            val page = lexikon.getSignPage(mId)
-            val videos: ArrayList<String> = ArrayList()
 
-            var pattern = Pattern.compile("file: \"(.*mp4)")
-            var matcher = pattern.matcher(page)
+            retryloop@ for (trial in 0..1) {
+                examples = ArrayList()
+                val page = lexikon.getSignPage(mId, trial == 1) ?: return examples
+                val videos: ArrayList<String> = ArrayList()
 
-            // The first video is not an example
-            matcher.find()
+                var pattern = Pattern.compile("file: \"(.*mp4)")
+                var matcher = pattern.matcher(page)
 
-            while (matcher.find()) {
-                val video = matcher.group(1)
+                // The first video is not an example
+                matcher.find()
 
-                if (!video.contains("-slow")) {
-                    videos.add(video)
+                while (matcher.find()) {
+                    val video = matcher.group(1)
+
+                    if (!video.contains("-slow")) {
+                        videos.add(video)
+                    }
                 }
-            }
 
-            pattern = Pattern.compile(">Exempel .*?\"text\">(.*?)</span>", Pattern.DOTALL)
-            matcher = pattern.matcher(page)
-            val descs: ArrayList<String> = ArrayList()
+                pattern = Pattern.compile(">Exempel .*?\"text\">(.*?)</span>", Pattern.DOTALL)
+                matcher = pattern.matcher(page)
+                val descs: ArrayList<String> = ArrayList()
 
-            while (matcher.find()) {
-                descs.add(matcher.group(1))
-            }
+                while (matcher.find()) {
+                    descs.add(matcher.group(1))
+                }
 
-            if (videos.size == 0 || videos.size != descs.size) {
-                return examples
-            }
+                if (videos.size == 0 || videos.size != descs.size) {
+                    if (trial == 0) {
+                        continue
+                    }
 
-            // Pre-cache first example, mostly just to know if the urls are valid
-            val url = "http://teckensprakslexikon.su.se/" + videos[0]
-            if (!lexikon.cacheVideo(url)) {
-                return examples
-            }
+                    break
+                }
 
-            (0 until videos.size).mapTo(examples) {
-                Example("http://teckensprakslexikon.su.se/" + videos[it], descs[it])
+                for (i in 0 until videos.size) {
+                    var url = "http://teckensprakslexikon.su.se/" + videos[i]
+
+                    if (!lexikon.cacheVideo(url)) {
+                        if (trial == 0 && lexikon.isDeadLink(url)) {
+                            continue@retryloop
+                        }
+
+                        continue
+                    }
+
+                    examples.add(Example(url, descs[i]))
+                }
+
+                break
             }
 
             return examples

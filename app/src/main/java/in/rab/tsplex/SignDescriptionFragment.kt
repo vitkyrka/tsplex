@@ -144,20 +144,33 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private inner class GetVideoUrlTask : AsyncTask<Lexikon, Void, String?>() {
         override fun doInBackground(vararg params: Lexikon): String? {
             val lexikon = params[0]
-            val page = lexikon.getSignPage(mId)
 
-            val pattern = Pattern.compile("file: \"(.*mp4)")
-            val matcher = pattern.matcher(page)
-            if (!matcher.find()) {
-                return null
+            for (trial in 0..1) {
+                val page = lexikon.getSignPage(mId, trial == 1) ?: return null
+
+                val pattern = Pattern.compile("file: \"(.*mp4)")
+                val matcher = pattern.matcher(page)
+                if (!matcher.find()) {
+                    if (trial == 0) {
+                        continue
+                    }
+
+                    return null
+                }
+
+                val url = "http://teckensprakslexikon.su.se/" + matcher.group(1)
+                if (!lexikon.cacheVideo(url)) {
+                    if (trial == 0 && lexikon.isDeadLink(url)) {
+                        continue
+                    }
+
+                    return null
+                }
+
+                return url
             }
 
-            val url = "http://teckensprakslexikon.su.se/" + matcher.group(1)
-            if (!lexikon.cacheVideo(url)) {
-                return null
-            }
-
-            return url
+            return null
         }
 
         override fun onPostExecute(video: String?) {
