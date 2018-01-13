@@ -1,11 +1,14 @@
 package `in`.rab.tsplex
 
 import android.content.Context
+import android.net.Uri
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.extractor.ExtractorsFactory
 import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
+import com.google.android.exoplayer2.upstream.cache.CacheUtil
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.google.android.exoplayer2.util.Util
@@ -18,6 +21,8 @@ import java.io.IOException
 
 class Lexikon {
     private val client: OkHttpClient
+    private val cache: com.google.android.exoplayer2.upstream.cache.Cache
+    private val httpDataSourceFactory: DataSource.Factory
     val dataSourceFactory: DataSource.Factory
     val extractorsFactory: ExtractorsFactory
 
@@ -35,15 +40,15 @@ class Lexikon {
                 .cache(Cache(File(context.cacheDir, "okhttp"), 100 * 1024 * 1024))
                 .build()
 
-        val cache = SimpleCache(File(context.cacheDir, "exoplayer"),
+        cache = SimpleCache(File(context.cacheDir, "exoplayer"),
                 LeastRecentlyUsedCacheEvictor(100 * 1024 * 1024))
-        val httpDataSourceFactory = DefaultHttpDataSourceFactory(
+        httpDataSourceFactory = DefaultHttpDataSourceFactory(
                 Util.getUserAgent(context, "in.rab.tsplex"))
         dataSourceFactory = CacheDataSourceFactory(cache, httpDataSourceFactory)
         extractorsFactory = DefaultExtractorsFactory()
     }
 
-    fun getSignPage(id: Int) : String {
+    fun getSignPage(id: Int): String {
         val number = "%05d".format(id)
         val request = Request.Builder()
                 .url("http://teckensprakslexikon.su.se/ord/" + number)
@@ -58,6 +63,20 @@ class Lexikon {
         } finally {
             response?.body()?.close()
         }
+    }
+
+    fun cacheVideo(url: String): Boolean {
+        val upstream = httpDataSourceFactory.createDataSource()
+        val dataSpec = DataSpec(Uri.parse(url))
+        val counters = CacheUtil.CachingCounters()
+
+        try {
+            CacheUtil.cache(dataSpec, cache, upstream, counters)
+        } catch (e: Exception) {
+            return false
+        }
+
+        return counters.totalCachedBytes() == counters.contentLength
     }
 
     companion object {

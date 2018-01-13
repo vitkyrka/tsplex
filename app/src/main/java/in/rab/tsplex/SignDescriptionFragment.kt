@@ -25,9 +25,6 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.fragment_sign_description.*
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
 import java.util.regex.Pattern
 
 
@@ -155,7 +152,12 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 return null
             }
 
-            return "http://teckensprakslexikon.su.se/" + matcher.group(1)
+            val url = "http://teckensprakslexikon.su.se/" + matcher.group(1)
+            if (!lexikon.cacheVideo(url)) {
+                return null
+            }
+
+            return url
         }
 
         override fun onPostExecute(video: String?) {

@@ -15,8 +15,6 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
@@ -24,11 +22,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.fragment_signexample.*
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
 import java.util.*
 import java.util.regex.Pattern
 
@@ -95,7 +89,13 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
                 descs.add(matcher.group(1))
             }
 
-            if (videos.size != descs.size) {
+            if (videos.size == 0 || videos.size != descs.size) {
+                return examples
+            }
+
+            // Pre-cache first example, mostly just to know if the urls are valid
+            val url = "http://teckensprakslexikon.su.se/" + videos[0]
+            if (!lexikon.cacheVideo(url)) {
                 return examples
             }
 
