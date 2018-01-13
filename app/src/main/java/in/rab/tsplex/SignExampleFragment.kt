@@ -220,12 +220,11 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         }
 
         if (mPosition >= 0) {
-            val dataSourceFactory = OkHttpDataSourceFactory(Lexikon.getInstance(context).client,
-                    Util.getUserAgent(context, "in.rab.tsplex"), null)
-            val extractorsFactory = DefaultExtractorsFactory()
             val example = listView.adapter?.getItem(mPosition) as Example
+            val lexikon = Lexikon.getInstance(context)
             val videoSource = ExtractorMediaSource(Uri.parse(example.video),
-                    dataSourceFactory, extractorsFactory, null, null)
+                    lexikon.dataSourceFactory, lexikon.extractorsFactory,
+                    null, null)
             mSimpleExoPlayer?.prepare(videoSource)
         }
     }
@@ -239,12 +238,11 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     }
 
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
-        val dataSourceFactory = OkHttpDataSourceFactory(Lexikon.getInstance(context).client,
-                Util.getUserAgent(context, "in.rab.tsplex"), null)
-        val extractorsFactory = DefaultExtractorsFactory()
         val example = l?.adapter?.getItem(position) as Example
+        val lexikon = Lexikon.getInstance(context)
         val videoSource = ExtractorMediaSource(Uri.parse(example.video),
-                dataSourceFactory, extractorsFactory, null, null)
+                lexikon.dataSourceFactory, lexikon.extractorsFactory,
+                null, null)
 
         mPosition = position
         mSimpleExoPlayer?.prepare(videoSource)

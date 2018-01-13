@@ -17,8 +17,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
@@ -26,7 +24,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.fragment_sign_description.*
 import okhttp3.Request
 import okhttp3.Response
@@ -117,11 +114,10 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             return
         }
 
-        val dataSourceFactory = OkHttpDataSourceFactory(Lexikon.getInstance(context).client,
-                Util.getUserAgent(context, "in.rab.tsplex"), null)
-        val extractorsFactory = DefaultExtractorsFactory()
+        val lexikon = Lexikon.getInstance(context)
         val videoSource = ExtractorMediaSource(Uri.parse(mVideo),
-                dataSourceFactory, extractorsFactory, null, null)
+                lexikon.dataSourceFactory, lexikon.extractorsFactory,
+                null, null)
 
         mSimpleExoPlayer?.prepare(videoSource)
         mSimpleExoPlayerView?.player = mSimpleExoPlayer
