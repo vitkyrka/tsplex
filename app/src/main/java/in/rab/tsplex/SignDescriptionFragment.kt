@@ -44,7 +44,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mTopic1: Int = 0
     private var mTopic2: Int = 0
     private var mId: Int = 0
-    private var mVideoTask: AsyncTask<OkHttpClient, Void, String?>? = null
+    private var mVideoTask: AsyncTask<LexikonClient, Void, String?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,7 +118,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             return
         }
 
-        val dataSourceFactory = OkHttpDataSourceFactory(LexikonClient.getInstance(context),
+        val dataSourceFactory = OkHttpDataSourceFactory(LexikonClient.getInstance(context).client,
                 Util.getUserAgent(context, "in.rab.tsplex"), null)
         val extractorsFactory = DefaultExtractorsFactory()
         val videoSource = ExtractorMediaSource(Uri.parse(mVideo),
@@ -149,8 +149,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
     }
 
-    private inner class GetVideoUrlTask : AsyncTask<OkHttpClient, Void, String?>() {
-        override fun doInBackground(vararg params: OkHttpClient): String? {
+    private inner class GetVideoUrlTask : AsyncTask<LexikonClient, Void, String?>() {
+        override fun doInBackground(vararg params: LexikonClient): String? {
             val number = "%05d".format(mId)
             val client = params[0]
             val request = Request.Builder()
@@ -159,7 +159,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
             var response: Response? = null
             val page = try {
-                response = client.newCall(request).execute();
+                response = client.client.newCall(request).execute();
                 response.body()?.string()
             } catch (e: IOException) {
                 return null

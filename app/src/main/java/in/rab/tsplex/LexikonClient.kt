@@ -5,33 +5,36 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import java.io.File
 
-abstract class LexikonClient() {
-    companion object {
-        @Volatile private var INSTANCE: OkHttpClient? = null
+class LexikonClient {
+    var client: OkHttpClient
 
-        fun getInstance(context: Context): OkHttpClient =
-                INSTANCE ?: synchronized(this) {
-                    INSTANCE ?: buildClient(context).also { INSTANCE = it }
+    constructor(context: Context) {
+        client = OkHttpClient.Builder()
+                .addNetworkInterceptor { chain ->
+                    val request = chain.request()
+
+                    if (request.url().toString().endsWith("mp4")) {
+                        chain.proceed(request)
+                    } else {
+                        // The server sets Cache-Control: no-cache on pages, so we need to
+                        // override it to get some caching.  But we can't use a large age
+                        // since the video URLs can change.
+                        chain.proceed(request)
+                                .newBuilder()
+                                .header("Cache-Control", "max-age=3600")
+                                .build()
+                    }
                 }
+                .cache(Cache(File(context.cacheDir, "okhttp"), 100 * 1024 * 1024))
+                .build()
+    }
 
-        private fun buildClient(context: Context) =
-                OkHttpClient.Builder()
-                        .addNetworkInterceptor { chain ->
-                            val request = chain.request()
+    companion object {
+        @Volatile private var INSTANCE: LexikonClient? = null
 
-                            if (request.url().toString().endsWith("mp4")) {
-                                chain.proceed(request)
-                            } else {
-                                // The server sets Cache-Control: no-cache on pages, so we need to
-                                // override it to get some caching.  But we can't use a large age
-                                // since the video URLs can change.
-                                chain.proceed(request)
-                                        .newBuilder()
-                                        .header("Cache-Control", "max-age=3600")
-                                        .build()
-                            }
-                        }
-                        .cache(Cache(File(context.cacheDir, "okhttp"), 100 * 1024 * 1024))
-                        .build()
+        fun getInstance(context: Context): LexikonClient =
+                INSTANCE ?: synchronized(this) {
+                    INSTANCE ?: LexikonClient(context).also { INSTANCE = it }
+                }
     }
 }
