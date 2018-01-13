@@ -28,7 +28,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.fragment_sign_description.*
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
@@ -44,7 +43,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mTopic1: Int = 0
     private var mTopic2: Int = 0
     private var mId: Int = 0
-    private var mVideoTask: AsyncTask<LexikonClient, Void, String?>? = null
+    private var mVideoTask: AsyncTask<Lexikon, Void, String?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,7 +117,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             return
         }
 
-        val dataSourceFactory = OkHttpDataSourceFactory(LexikonClient.getInstance(context).client,
+        val dataSourceFactory = OkHttpDataSourceFactory(Lexikon.getInstance(context).client,
                 Util.getUserAgent(context, "in.rab.tsplex"), null)
         val extractorsFactory = DefaultExtractorsFactory()
         val videoSource = ExtractorMediaSource(Uri.parse(mVideo),
@@ -149,8 +148,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
     }
 
-    private inner class GetVideoUrlTask : AsyncTask<LexikonClient, Void, String?>() {
-        override fun doInBackground(vararg params: LexikonClient): String? {
+    private inner class GetVideoUrlTask : AsyncTask<Lexikon, Void, String?>() {
+        override fun doInBackground(vararg params: Lexikon): String? {
             val number = "%05d".format(mId)
             val client = params[0]
             val request = Request.Builder()
@@ -229,7 +228,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         if (mVideo == null) {
             loadingProgress.visibility = VISIBLE
-            mVideoTask = GetVideoUrlTask().execute(LexikonClient.getInstance(activity))
+            mVideoTask = GetVideoUrlTask().execute(Lexikon.getInstance(activity))
         } else {
             playVideo()
         }

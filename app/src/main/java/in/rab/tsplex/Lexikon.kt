@@ -5,7 +5,7 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import java.io.File
 
-class LexikonClient {
+class Lexikon {
     var client: OkHttpClient
 
     constructor(context: Context) {
@@ -30,11 +30,11 @@ class LexikonClient {
     }
 
     companion object {
-        @Volatile private var INSTANCE: LexikonClient? = null
+        @Volatile private var INSTANCE: Lexikon? = null
 
-        fun getInstance(context: Context): LexikonClient =
+        fun getInstance(context: Context): Lexikon =
                 INSTANCE ?: synchronized(this) {
-                    INSTANCE ?: LexikonClient(context).also { INSTANCE = it }
+                    INSTANCE ?: Lexikon(context).also { INSTANCE = it }
                 }
     }
 }

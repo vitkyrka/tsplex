@@ -26,7 +26,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.util.Util
 import kotlinx.android.synthetic.main.fragment_signexample.*
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
@@ -39,7 +38,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     private var mSimpleExoPlayer: SimpleExoPlayer? = null
     private var mPosition = -1
     private var mId: Int = 0
-    private var mTask: AsyncTask<LexikonClient, Void, ArrayList<Example>>? = null
+    private var mTask: AsyncTask<Lexikon, Void, ArrayList<Example>>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,8 +66,8 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         }
     }
 
-    private inner class GetExamplesTask : AsyncTask<LexikonClient, Void, ArrayList<Example>>() {
-        override fun doInBackground(vararg params: LexikonClient): ArrayList<Example>? {
+    private inner class GetExamplesTask : AsyncTask<Lexikon, Void, ArrayList<Example>>() {
+        override fun doInBackground(vararg params: Lexikon): ArrayList<Example>? {
             val examples: ArrayList<Example> = ArrayList()
             val number = "%05d".format(mId)
             val client = params[0]
@@ -200,7 +199,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         mSimpleExoPlayer!!.playWhenReady = true
 
         if (mExamples == null) {
-            mTask = GetExamplesTask().execute(LexikonClient.getInstance(activity))
+            mTask = GetExamplesTask().execute(Lexikon.getInstance(activity))
         } else {
             playVideo()
         }
@@ -221,7 +220,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         }
 
         if (mPosition >= 0) {
-            val dataSourceFactory = OkHttpDataSourceFactory(LexikonClient.getInstance(context).client,
+            val dataSourceFactory = OkHttpDataSourceFactory(Lexikon.getInstance(context).client,
                     Util.getUserAgent(context, "in.rab.tsplex"), null)
             val extractorsFactory = DefaultExtractorsFactory()
             val example = listView.adapter?.getItem(mPosition) as Example
@@ -240,7 +239,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     }
 
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
-        val dataSourceFactory = OkHttpDataSourceFactory(LexikonClient.getInstance(context).client,
+        val dataSourceFactory = OkHttpDataSourceFactory(Lexikon.getInstance(context).client,
                 Util.getUserAgent(context, "in.rab.tsplex"), null)
         val extractorsFactory = DefaultExtractorsFactory()
         val example = l?.adapter?.getItem(position) as Example
