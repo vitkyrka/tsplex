@@ -11,10 +11,13 @@ import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.google.android.exoplayer2.util.Util
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import java.io.File
+import java.io.IOException
 
 class Lexikon {
-    val client: OkHttpClient
+    private val client: OkHttpClient
     val dataSourceFactory: DataSource.Factory
     val extractorsFactory: ExtractorsFactory
 
@@ -38,6 +41,23 @@ class Lexikon {
                 Util.getUserAgent(context, "in.rab.tsplex"))
         dataSourceFactory = CacheDataSourceFactory(cache, httpDataSourceFactory)
         extractorsFactory = DefaultExtractorsFactory()
+    }
+
+    fun getSignPage(id: Int) : String {
+        val number = "%05d".format(id)
+        val request = Request.Builder()
+                .url("http://teckensprakslexikon.su.se/ord/" + number)
+                .build()
+        var response: Response? = null
+
+        return try {
+            response = client.newCall(request).execute()
+            response.body()?.string() ?: ""
+        } catch (e: IOException) {
+            return ""
+        } finally {
+            response?.body()?.close()
+        }
     }
 
     companion object {

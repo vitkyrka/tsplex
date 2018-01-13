@@ -69,22 +69,8 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     private inner class GetExamplesTask : AsyncTask<Lexikon, Void, ArrayList<Example>>() {
         override fun doInBackground(vararg params: Lexikon): ArrayList<Example>? {
             val examples: ArrayList<Example> = ArrayList()
-            val number = "%05d".format(mId)
-            val client = params[0]
-            val request = Request.Builder()
-                    .url("http://teckensprakslexikon.su.se/ord/" + number)
-                    .build()
-
-            var response: Response? = null
-            val page = try {
-                response = client.client.newCall(request).execute();
-                response.body()?.string()
-            } catch (e: IOException) {
-                return examples
-            } finally {
-                response?.body()?.close()
-            } ?: return examples
-
+            val lexikon = params[0]
+            val page = lexikon.getSignPage(mId)
             val videos: ArrayList<String> = ArrayList()
 
             var pattern = Pattern.compile("file: \"(.*mp4)")

@@ -146,21 +146,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
     private inner class GetVideoUrlTask : AsyncTask<Lexikon, Void, String?>() {
         override fun doInBackground(vararg params: Lexikon): String? {
-            val number = "%05d".format(mId)
-            val client = params[0]
-            val request = Request.Builder()
-                    .url("http://teckensprakslexikon.su.se/ord/" + number)
-                    .build()
-
-            var response: Response? = null
-            val page = try {
-                response = client.client.newCall(request).execute();
-                response.body()?.string()
-            } catch (e: IOException) {
-                return null
-            } finally {
-                response?.body()?.close()
-            } ?: return null
+            val lexikon = params[0]
+            val page = lexikon.getSignPage(mId)
 
             val pattern = Pattern.compile("file: \"(.*mp4)")
             val matcher = pattern.matcher(page)
