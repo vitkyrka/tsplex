@@ -25,20 +25,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="4dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <ImageButton android:id="@id/exo_prev"
-            style="@style/ExoMediaButton.Previous"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="4dp"
+            android:orientation="horizontal">
 
-        <ImageButton android:id="@id/exo_repeat_toggle"
-            style="@style/ExoMediaButton"/>
+            <ImageButton android:id="@id/exo_prev"
+                style="@style/ExoMediaButton.Previous"/>
 
-        <ImageButton android:id="@id/exo_play"
-            style="@style/ExoMediaButton.Play"/>
+            <ImageButton android:id="@id/exo_repeat_toggle"
+                style="@style/ExoMediaButton"/>
 
-        <ImageButton android:id="@id/exo_pause"
-            style="@style/ExoMediaButton.Pause"/>
+            <ImageButton android:id="@id/exo_play"
+                style="@style/ExoMediaButton.Play"/>
+
+            <ImageButton android:id="@id/exo_pause"
+                style="@style/ExoMediaButton.Pause"/>
+
+        </LinearLayout>
 
         <RadioGroup
             android:layout_width="wrap_content"
