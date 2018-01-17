@@ -1,12 +1,16 @@
 package `in`.rab.tsplex
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.ListFragment
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_DOWN
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -15,13 +19,16 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.PlaybackParameters.DEFAULT
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.ui.PlaybackControlView
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
+import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import kotlinx.android.synthetic.main.fragment_signexample.*
 import java.util.regex.Pattern
 
@@ -32,6 +39,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     private var mPosition = -1
     private var mId: Int = 0
     private var mTask: AsyncTask<Lexikon, Void, ArrayList<Example>>? = null
+    private var mControllerVisible: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,15 +54,37 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         return inflater!!.inflate(R.layout.fragment_signexample, container, false)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mSimpleExoPlayerView = view!!.findViewById<SimpleExoPlayerView>(R.id.exoPlayerView)
-        mSimpleExoPlayerView!!.setOnTouchListener { v, event ->
-            if (mSimpleExoPlayer != null) {
-                mSimpleExoPlayer!!.playWhenReady = !mSimpleExoPlayer!!.playWhenReady
+        mSimpleExoPlayerView = exoPlayerView
+
+        val listener = View.OnClickListener {
+            val speed = when (it.id) {
+                R.id.exo_050x -> 0.50
+                R.id.exo_075x -> 0.75
+                else -> 1.0
             }
 
+            mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed.toFloat(), 1f)
+        }
+
+        exo_050x.setOnClickListener(listener)
+        exo_075x.setOnClickListener(listener)
+        exo_075x.isChecked = true
+        exo_100x.setOnClickListener(listener)
+
+        exoPlayerView.setControllerVisibilityListener { it -> mControllerVisible = it == VISIBLE }
+        exoPlayerView.setOnTouchListener { v, event ->
+            val exoView = v as SimpleExoPlayerView
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                if (mControllerVisible) {
+                    exoView.hideController()
+                } else {
+                    exoView.showController()
+                }
+            }
             true
         }
     }
@@ -200,7 +230,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
         mSimpleExoPlayerView!!.player = mSimpleExoPlayer
         mSimpleExoPlayer!!.repeatMode = Player.REPEAT_MODE_ALL
-        mSimpleExoPlayer!!.playbackParameters = PlaybackParameters(0.7.toFloat(), 0f)
+        mSimpleExoPlayer!!.playbackParameters = PlaybackParameters(0.75.toFloat(), 1f)
         mSimpleExoPlayer!!.playWhenReady = true
 
         if (mExamples == null) {

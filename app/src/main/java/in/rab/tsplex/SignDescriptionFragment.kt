@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Html
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -24,6 +25,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
+import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import kotlinx.android.synthetic.main.fragment_sign_description.*
 import java.util.regex.Pattern
 
@@ -38,6 +40,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mTopic2: Int = 0
     private var mId: Int = 0
     private var mVideoTask: AsyncTask<Lexikon, Void, String?>? = null
+    private var mControllerVisible: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,16 +63,36 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         }
 
         mSimpleExoPlayerView = view.findViewById<SimpleExoPlayerView>(R.id.exoPlayerView)
-        mSimpleExoPlayerView!!.setOnTouchListener { _, _ ->
-            if (mSimpleExoPlayer != null) {
-                mSimpleExoPlayer!!.playWhenReady = !mSimpleExoPlayer!!.playWhenReady
+
+        val listener = View.OnClickListener {
+            val speed = when (it.id) {
+                R.id.exo_050x -> 0.50
+                R.id.exo_075x -> 0.75
+                else -> 1.0
             }
 
+            mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed.toFloat(), 1f)
+        }
+
+        exo_050x.setOnClickListener(listener)
+        exo_075x.setOnClickListener(listener)
+        exo_075x.isChecked = true
+        exo_100x.setOnClickListener(listener)
+
+        exoPlayerView.setControllerVisibilityListener { it -> mControllerVisible = it == VISIBLE }
+        exoPlayerView.setOnTouchListener { v, event ->
+            val exoView = v as SimpleExoPlayerView
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                if (mControllerVisible) {
+                    exoView.hideController()
+                } else {
+                    exoView.showController()
+                }
+            }
             true
         }
 
         view.findViewById<TextView>(R.id.textView).text = Html.fromHtml(mDescription)
-
 
         if (mTopic1 != 0) {
             view.findViewById<TextView>(R.id.topics).visibility = VISIBLE
@@ -119,7 +142,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         mSimpleExoPlayer?.prepare(videoSource)
         mSimpleExoPlayerView?.player = mSimpleExoPlayer
         mSimpleExoPlayer?.repeatMode = Player.REPEAT_MODE_ALL
-        mSimpleExoPlayer?.playbackParameters = PlaybackParameters(0.7.toFloat(), 0f)
+        mSimpleExoPlayer?.playbackParameters = PlaybackParameters(0.75.toFloat(), 1f)
         mSimpleExoPlayer?.playWhenReady = true
     }
 
