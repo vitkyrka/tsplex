@@ -59,6 +59,20 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         }
     }
 
+    private inner class UncachePage : AsyncTask<Lexikon, Void, Void>() {
+        override fun doInBackground(vararg params: Lexikon): Void? {
+            val example = mExamples?.get(mPosition) ?: return null
+            val lexikon = params[0]
+
+            if (lexikon.isDeadLink(example.video)) {
+                // The parsing will only happen when this sign is opened the next time
+                lexikon.getSignPage(mId, true)
+            }
+
+            return null
+        }
+    }
+
     private inner class GetExamplesTask : AsyncTask<Lexikon, Void, ArrayList<Example>>() {
         override fun doInBackground(vararg params: Lexikon): ArrayList<Example>? {
             var examples: ArrayList<Example> = ArrayList()
@@ -101,15 +115,6 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
                 for (i in 0 until videos.size) {
                     var url = "http://teckensprakslexikon.su.se/" + videos[i]
-
-                    if (!lexikon.cacheVideo(url)) {
-                        if (trial == 0 && lexikon.isDeadLink(url)) {
-                            continue@retryloop
-                        }
-
-                        continue
-                    }
-
                     examples.add(Example(url, descs[i]))
                 }
 
@@ -145,6 +150,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         mSimpleExoPlayerView?.visibility = GONE
 
         val msg: String = if (isOnline()) {
+            UncachePage().execute(Lexikon.getInstance(activity))
             getString(R.string.fail_video_play)
         } else {
             getString(R.string.fail_offline)
