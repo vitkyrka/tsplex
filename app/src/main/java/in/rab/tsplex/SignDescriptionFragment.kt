@@ -66,17 +66,16 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         val listener = View.OnClickListener {
             val speed = when (it.id) {
-                R.id.exo_050x -> 0.50
-                R.id.exo_075x -> 0.75
-                else -> 1.0
+                R.id.exo_050x -> 0.50f
+                R.id.exo_075x -> 0.75f
+                else -> 1.0f
             }
 
-            mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed.toFloat(), 1f)
+            mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed, 1f)
         }
 
         exo_050x.setOnClickListener(listener)
         exo_075x.setOnClickListener(listener)
-        exo_075x.isChecked = true
         exo_100x.setOnClickListener(listener)
 
         exoPlayerView.setControllerVisibilityListener { it -> mControllerVisible = it == VISIBLE }
@@ -125,7 +124,18 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         mVideoTask?.cancel(true)
         mVideoTask = null
 
-        mSimpleExoPlayer?.release()
+        val exo = mSimpleExoPlayer ?: return
+        val settings = activity.getSharedPreferences("in.rab.tsplex", 0).edit()
+        val speed = exo.playbackParameters?.speed
+
+        if (speed != null) {
+            settings.putFloat("signPlaybackSpeed", speed)
+        }
+
+        settings.putInt("signRepeatMode", exo.repeatMode)
+        settings.apply()
+
+        exo.release()
         mSimpleExoPlayer = null
     }
 
@@ -139,10 +149,23 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 lexikon.dataSourceFactory, lexikon.extractorsFactory,
                 null, null)
 
+        val settings = activity.getSharedPreferences("in.rab.tsplex", 0)
+        val speed = settings.getFloat("signPlaybackSpeed", 0.75f)
+
+        exo_050x.isChecked = false
+        exo_075x.isChecked = false
+        exo_100x.isChecked = false
+
+        when (speed) {
+            0.50f -> exo_050x.isChecked = true
+            0.75f -> exo_075x.isChecked = true
+            else -> exo_100x.isChecked = true
+        }
+
         mSimpleExoPlayer?.prepare(videoSource)
         mSimpleExoPlayerView?.player = mSimpleExoPlayer
-        mSimpleExoPlayer?.repeatMode = Player.REPEAT_MODE_ALL
-        mSimpleExoPlayer?.playbackParameters = PlaybackParameters(0.75.toFloat(), 1f)
+        mSimpleExoPlayer?.repeatMode = settings.getInt("signRepeatMode", Player.REPEAT_MODE_ALL)
+        mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed, 1f)
         mSimpleExoPlayer?.playWhenReady = true
     }
 

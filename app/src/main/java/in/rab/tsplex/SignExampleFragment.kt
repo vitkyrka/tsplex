@@ -7,10 +7,8 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.ListFragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.MotionEvent.ACTION_DOWN
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -19,13 +17,12 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.PlaybackParameters.DEFAULT
+import com.google.android.exoplayer2.Player.REPEAT_MODE_ALL
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.ui.PlaybackControlView
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.exo_playback_control_view.*
@@ -62,17 +59,16 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
         val listener = View.OnClickListener {
             val speed = when (it.id) {
-                R.id.exo_050x -> 0.50
-                R.id.exo_075x -> 0.75
-                else -> 1.0
+                R.id.exo_050x -> 0.50f
+                R.id.exo_075x -> 0.75f
+                else -> 1.0f
             }
 
-            mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed.toFloat(), 1f)
+            mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed, 1f)
         }
 
         exo_050x.setOnClickListener(listener)
         exo_075x.setOnClickListener(listener)
-        exo_075x.isChecked = true
         exo_100x.setOnClickListener(listener)
 
         exoPlayerView.setControllerVisibilityListener { it -> mControllerVisible = it == VISIBLE }
@@ -166,7 +162,18 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         mTask?.cancel(true)
         mTask = null
 
-        mSimpleExoPlayer?.release()
+        val exo = mSimpleExoPlayer ?: return
+        val settings = activity.getSharedPreferences("in.rab.tsplex", 0).edit()
+        val speed = exo.playbackParameters?.speed
+
+        if (speed != null) {
+            settings.putFloat("examplePlaybackSpeed", speed)
+        }
+
+        settings.putInt("exampleRepeatMode", exo.repeatMode)
+        settings.apply()
+
+        exo.release()
         mSimpleExoPlayer = null
     }
 
@@ -228,9 +235,22 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
         })
 
+        val settings = activity.getSharedPreferences("in.rab.tsplex", 0)
+        val speed = settings.getFloat("examplePlaybackSpeed", 0.75f)
+
+        exo_050x.isChecked = false
+        exo_075x.isChecked = false
+        exo_100x.isChecked = false
+
+        when (speed) {
+            0.50f -> exo_050x.isChecked = true
+            0.75f -> exo_075x.isChecked = true
+            else -> exo_100x.isChecked = true
+        }
+
         mSimpleExoPlayerView!!.player = mSimpleExoPlayer
-        mSimpleExoPlayer!!.repeatMode = Player.REPEAT_MODE_ALL
-        mSimpleExoPlayer!!.playbackParameters = PlaybackParameters(0.75.toFloat(), 1f)
+        mSimpleExoPlayer!!.repeatMode = settings.getInt("exampleRepeatMode", REPEAT_MODE_ALL)
+        mSimpleExoPlayer!!.playbackParameters = PlaybackParameters(speed, 1f)
         mSimpleExoPlayer!!.playWhenReady = true
 
         if (mExamples == null) {
