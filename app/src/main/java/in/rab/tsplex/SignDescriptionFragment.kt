@@ -158,7 +158,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                     return null
                 }
 
-                val url = "http://teckensprakslexikon.su.se/" + matcher.group(1)
+                val url = "http://teckensprakslexikon.su.se" + matcher.group(1)
                 if (!lexikon.cacheVideo(url)) {
                     if (trial == 0 && lexikon.isDeadLink(url)) {
                         continue

@@ -114,7 +114,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
                 }
 
                 for (i in 0 until videos.size) {
-                    var url = "http://teckensprakslexikon.su.se/" + videos[i]
+                    var url = "http://teckensprakslexikon.su.se" + videos[i]
                     examples.add(Example(url, descs[i]))
                 }
 
