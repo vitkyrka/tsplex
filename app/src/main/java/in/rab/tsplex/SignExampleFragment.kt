@@ -239,9 +239,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         val settings = activity.getSharedPreferences("in.rab.tsplex", 0)
         val speed = settings.getFloat("examplePlaybackSpeed", 0.75f)
 
-        exo_050x.isChecked = false
-        exo_075x.isChecked = false
-        exo_100x.isChecked = false
+        exo_speed.clearCheck()
 
         when (speed) {
             0.50f -> exo_050x.isChecked = true
