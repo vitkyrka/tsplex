@@ -135,6 +135,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         settings.putInt("signRepeatMode", exo.repeatMode)
         settings.apply()
 
+        mSimpleExoPlayerView?.player = null
         exo.release()
         mSimpleExoPlayer = null
     }

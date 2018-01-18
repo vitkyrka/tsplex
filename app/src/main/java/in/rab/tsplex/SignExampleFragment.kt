@@ -173,6 +173,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         settings.putInt("exampleRepeatMode", exo.repeatMode)
         settings.apply()
 
+        mSimpleExoPlayerView?.player = null
         exo.release()
         mSimpleExoPlayer = null
     }
