@@ -269,10 +269,6 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         loadingProgress.visibility = GONE
         listView.visibility = VISIBLE
 
-        if (mPosition < 0 && mExamples!!.size == 1) {
-            mPosition = 0
-        }
-
         if (mPosition >= 0) {
             val example = listView.adapter?.getItem(mPosition) as Example
             val lexikon = Lexikon.getInstance(context)
