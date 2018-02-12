@@ -2,6 +2,7 @@ package `in`.rab.tsplex
 
 import Topics
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.AsyncTask
@@ -92,6 +93,15 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         }
 
         view.findViewById<TextView>(R.id.textView).text = Html.fromHtml(mDescription)
+        val idButton = view.findViewById<Button>(R.id.id)
+        idButton.text = "%05d".format(mId)
+        idButton.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val b: Button = v as Button
+                val url = "http://teckensprakslexikon.su.se/ord/" + b.text
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            }
+        })
 
         if (mTopic1 != 0) {
             view.findViewById<TextView>(R.id.topics).visibility = VISIBLE
