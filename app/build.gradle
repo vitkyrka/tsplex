@@ -45,7 +45,7 @@ apply plugin: 'kotlin-android-extensions'
 task genDatabase(type:Exec) {
     inputs.file('data/signs.sql')
     outputs.file('src/main/assets/signs.jet')
-    commandLine 'sh', '-c', 'mkdir -p src/main/assets/ && cat data/signs.sql | sqlite3 src/main/assets/signs.jet'
+    commandLine 'sh', '-c', 'mkdir -p src/main/assets/ && rm -f src/main/assets/signs.jet && cat data/signs.sql | sqlite3 src/main/assets/signs.jet'
 }
 
 task cleanDatabase(type:Exec) {
@@ -57,13 +57,7 @@ afterEvaluate {
 }
 
 tasks.whenTaskAdded { task ->
-    if (task.name == 'assembleDebug') {
-        task.dependsOn genDatabase
-    }
-}
-
-tasks.whenTaskAdded { task ->
-    if (task.name == 'assembleRelease') {
+    if (task.name == 'generateDebugAssets' || task.name == 'generateReleaseAssets') {
         task.dependsOn genDatabase
     }
 }
