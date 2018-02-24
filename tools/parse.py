@@ -56,7 +56,13 @@ def parse_one(f):
     sign['examples'] = list(zip(examplevids, exampledescs))
 
     word = root.xpath('//div[@class="su-infohead"]/h2/text()')[0].strip()
-    sign['ord'] = word.lower()
+    sign['ord'] = [word.lower()]
+
+    try:
+        also = root.xpath('//div[@class="su-infohead"]/h2/span[@class="also_means"]/text()')[0].strip()
+        sign['ord'] += [w.strip() for w in also.split(',')]
+    except IndexError:
+        pass
 
     # <div class="leftcolumn">Beskrivning</div>
     # <div class="rightcolumn">Bokstaveras: A-F-R-O</div>
@@ -184,7 +190,7 @@ def main():
         thisid = int(sign['id-nummer'])
 
         conn.execute("insert into signs values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                     (thisid, sign['ord'],
+                     (thisid, ', '.join(sign['ord']),
                       sign['video'],
                       sign['slug'],
                       len(sign['images']),
