@@ -168,7 +168,7 @@ def main():
     except:
         pass
 
-    version = 18
+    version = 21
 
     conn = sqlite3.connect(args.db)
 
@@ -177,6 +177,9 @@ def main():
     conn.execute("CREATE TABLE examples (id INTEGER, video TEXT, desc TEXT)")
     conn.execute("CREATE TABLE synonyms (id INTEGER, otherid INTEGER)")
     conn.execute("CREATE TABLE homonyms (id INTEGER, otherid INTEGER)")
+
+    conn.execute("CREATE TABLE words_signs (signid INTEGER, len INTEGER)")
+    conn.execute("CREATE VIRTUAL TABLE words USING fts4()")
 
     conn.execute("CREATE TABLE history (id INTEGER, date INTEGER, UNIQUE (id) ON CONFLICT REPLACE)")
     conn.execute("CREATE TABLE favorites (id INTEGER UNIQUE, date INTEGER)")
@@ -199,6 +202,10 @@ def main():
                       topictoid[sign['ämne'][1]] if len(sign['ämne']) > 1 else 0,
                       sign['kommentar']))
 
+        for word in sign['ord']:
+            conn.execute("insert into words values (?)", (word,))
+            conn.execute("insert into words_signs values (?, ?)", (thisid, len(word)))
+
         conn.executemany("insert into examples values (?, ?, ?)",
                          ((thisid, vid, desc) for vid, desc in sign['examples']))
 
@@ -217,6 +224,9 @@ def main():
     conn.execute("CREATE INDEX examples_index ON examples(id)")
     conn.execute("CREATE INDEX synonyms_index ON synonyms(id)")
     conn.execute("CREATE INDEX homonyms_index ON homonyms(id)")
+
+    conn.execute("INSERT INTO words(words) VALUES (?)", ('optimize',))
+    conn.execute("ANALYZE")
 
     conn.commit()
     conn.close()
