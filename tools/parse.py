@@ -180,13 +180,12 @@ def main():
 
     conn.execute("BEGIN")
 
-    base = 'http://teckensprakslexikon.su.se'
     for sign in signs:
         thisid = int(sign['id-nummer'])
 
         conn.execute("insert into signs values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                      (thisid, sign['ord'],
-                      base + sign['video'],
+                      sign['video'],
                       sign['slug'],
                       len(sign['images']),
                       sign['beskrivning'],
@@ -195,7 +194,7 @@ def main():
                       sign['kommentar']))
 
         conn.executemany("insert into examples values (?, ?, ?)",
-                         ((thisid, base + vid, desc) for vid, desc in sign['examples']))
+                         ((thisid, vid, desc) for vid, desc in sign['examples']))
 
         conn.executemany("insert into synonyms values (?, ?)",
                          ((thisid, otherid) for otherid in sign['samma-betydelse']))
