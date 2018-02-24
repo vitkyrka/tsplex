@@ -114,12 +114,27 @@ def get_topic_ids(signs):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--cache', action='store_true')
     parser.add_argument('--dump', action='store_true')
     parser.add_argument('files', nargs='+')
     args = parser.parse_args()
 
-    with Pool(10) as p:
-        signs = p.map(parse_one, args.files)
+    signs = []
+
+    if args.cache:
+        try:
+            with open('signs.pickle', 'rb') as f:
+                signs = pickle.load(f)
+        except:
+            pass
+
+    if not signs:
+        with Pool(10) as p:
+            signs = p.map(parse_one, args.files)
+
+        if args.cache:
+            with open('signs.pickle', 'wb') as f:
+                pickle.dump(signs, f)
 
     if args.dump:
         import pprint
