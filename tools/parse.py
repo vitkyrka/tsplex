@@ -213,7 +213,7 @@ def main():
         conn.executemany("insert into homonyms values (?, ?)",
                          ((thisid, otherid) for otherid in sign['kan-aven-betyda']))
 
-    conn.execute("CREATE INDEX signs_index ON signs(sv)")
+    conn.execute("CREATE INDEX signs_index ON signs(id)")
     conn.execute("CREATE INDEX examples_index ON examples(id)")
     conn.execute("CREATE INDEX synonyms_index ON synonyms(id)")
     conn.execute("CREATE INDEX homonyms_index ON homonyms(id)")
