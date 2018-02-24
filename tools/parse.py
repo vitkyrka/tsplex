@@ -5,6 +5,7 @@ import os
 import re
 import pickle
 import sqlite3
+import subprocess
 
 import lxml.html
 
@@ -116,6 +117,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cache', action='store_true')
     parser.add_argument('--dump', action='store_true')
+    parser.add_argument('--db', default='signs.db')
     parser.add_argument('files', nargs='+')
     args = parser.parse_args()
 
@@ -155,9 +157,14 @@ def main():
     with open('topictoid.pickle', 'wb') as f:
         pickle.dump(topictoid, f)
 
+    try:
+        os.remove(args.db)
+    except:
+        pass
+
     version = 18
 
-    conn = sqlite3.connect(":memory:")
+    conn = sqlite3.connect(args.db)
 
     conn.execute("PRAGMA user_version = %d" % version)
     conn.execute("CREATE TABLE signs (id INTEGER, sv TEXT, video TEXT, slug TEXT, images INT, desc TEXT, topic1 INT, topic2 INT, comment TEXT)")
@@ -207,12 +214,10 @@ def main():
     conn.execute("CREATE INDEX homonyms_index ON homonyms(id)")
 
     conn.commit()
+    conn.close()
 
     print("PRAGMA user_version = %d;" % version)
-    for line in conn.iterdump():
-        print(line),
-
-    conn.close()
+    print(subprocess.check_output(['sqlite3', args.db, '.dump']).decode('utf-8'))
 
 if __name__ == '__main__':
     main()
