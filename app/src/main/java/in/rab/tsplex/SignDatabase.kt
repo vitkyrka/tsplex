@@ -35,10 +35,13 @@ class SignDatabase(context: Context) {
         var builder = SQLiteQueryBuilder()
         builder.tables = "signs"
 
-        var cursor: Cursor? = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
+        var cursor: Cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 null, null, null) ?: return null
 
-        cursor!!.moveToNext()
+        if (!cursor.moveToNext()) {
+            return null
+        }
+
         val sign = makeSign(cursor)
 
         cursor.close()
@@ -102,19 +105,28 @@ class SignDatabase(context: Context) {
         return signs
     }
 
+    private fun getSigns(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {
+        val selection = "words_signs.rowid IN (SELECT docid FROM words WHERE words.content MATCH ?) OR signs.id == ?";
+        val selectionArgs = arrayOf(query + "*", query);
+        val groupBy = "signs.id"
+        val sortOrder = "words_signs.len"
+
+        builder.tables = "signs JOIN words_signs ON words_signs.signid == signs.id"
+
+        return builder.query(mOpenHelper.database, columns, selection, selectionArgs,
+                groupBy, null, sortOrder)
+    }
+
+    fun search(query: String, columns: Array<String>): Cursor {
+        val builder = SQLiteQueryBuilder()
+        builder.setProjectionMap(buildColumnMap());
+        return getSigns(query, columns, builder)
+    }
+
     fun getSigns(query: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val columns = arrayOf("signs.id", "sv", "video", "desc", "comment", "slug", "images", "topic1", "topic2")
-        val selection = "words_signs.rowid IN (SELECT docid FROM words WHERE words.content MATCH ?)";
-        val selectionArgs = arrayOf(query + "*");
-        val groupBy = "signs.id"
-        val sortOrder = "words_signs.len";
-
-        val builder = SQLiteQueryBuilder()
-        builder.tables = "signs JOIN words_signs ON words_signs.signid == signs.id"
-
-        val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
-                groupBy, null, sortOrder)
+        val cursor = getSigns(query, columns, SQLiteQueryBuilder())
 
         while (cursor.moveToNext()) {
             signs.add(makeSign(cursor))
@@ -167,20 +179,6 @@ class SignDatabase(context: Context) {
 
         return builder.query(mOpenHelper.database, columns, null, null,
                 null, null, "sv")
-    }
-
-    fun search(query: String, columns: Array<String>): Cursor {
-        val selection = "words_signs.rowid IN (SELECT docid FROM words WHERE words.content MATCH ?)";
-        val selectionArgs = arrayOf(query + "*");
-        val groupBy = "signs.id"
-        val sortOrder = "words_signs.len"
-
-        val builder = SQLiteQueryBuilder()
-        builder.setProjectionMap(buildColumnMap());
-        builder.tables = "signs JOIN words_signs ON words_signs.signid == signs.id"
-
-        return builder.query(mOpenHelper.database, columns, selection, selectionArgs,
-                groupBy, null, sortOrder)
     }
 
     fun getDatabase() = mOpenHelper.database

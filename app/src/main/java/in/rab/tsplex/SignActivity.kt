@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
+import android.widget.Toast
 import java.util.*
 
 class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickListener, SignListFragment.OnListFragmentInteractionListener {
@@ -153,8 +154,8 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
         }
     }
 
-    private inner class SignLoadTask : AsyncTask<Int, Void, Void>() {
-        override fun doInBackground(vararg params: Int?): Void? {
+    private inner class SignLoadTask : AsyncTask<Int, Void, Sign?>() {
+        override fun doInBackground(vararg params: Int?): Sign? {
             val database = SignDatabase(this@SignActivity)
             val sign = database.getSign(params[0]!!) ?: return null
 
@@ -162,11 +163,15 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
             mSynonyms = database.getSynonyms(sign.id)
             mHomonyms = database.getHomonyms(sign.id)
 
-            return null
+            return sign
         }
 
-        override fun onPostExecute(result: Void?) {
+        override fun onPostExecute(result: Sign?) {
             super.onPostExecute(result)
+
+            if (result == null) {
+                return
+            }
 
             supportActionBar?.title = mSign?.word
 
