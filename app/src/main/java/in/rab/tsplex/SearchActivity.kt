@@ -10,6 +10,7 @@ import android.view.Menu
 
 class SearchActivity : AppCompatActivity(), SignListFragment.OnListFragmentInteractionListener {
     private var mOrdboken: Ordboken? = null
+    private var mQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +43,7 @@ class SearchActivity : AppCompatActivity(), SignListFragment.OnListFragmentInter
             val title = intent.getStringExtra(Intent.EXTRA_TITLE) ?: query
             supportActionBar?.title = title
 
+            mQuery = query
             supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
         } else if (Intent.ACTION_VIEW == intent.action) {
             val url = intent.dataString
@@ -52,7 +54,7 @@ class SearchActivity : AppCompatActivity(), SignListFragment.OnListFragmentInter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        mOrdboken!!.initSearchView(this, menu, null, false)
+        mOrdboken!!.initSearchView(this, menu, mQuery, false)
         return true
     }
 

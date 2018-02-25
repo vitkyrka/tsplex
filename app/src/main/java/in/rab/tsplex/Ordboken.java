@@ -44,6 +44,11 @@ public class Ordboken {
 
         searchView.setQueryRefinementEnabled(true);
 
+        if (query != null) {
+            searchView.onActionViewExpanded();
+            searchView.setQuery(query, false);
+        }
+
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(activity,
                 SearchActivity.class)));
 
