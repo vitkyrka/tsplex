@@ -191,13 +191,20 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
 
     private inner class HistorySaveTask : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void): Void? {
-            val db = SignDatabase(this@SignActivity).getDatabase()
+            val db = SignDatabase(this@SignActivity).getDatabase() ?: return null
             val values = ContentValues()
 
             values.put(HistoryEntry.COLUMN_NAME_ID, mSign!!.id)
             values.put(HistoryEntry.COLUMN_NAME_DATE, Date().time)
 
-            db!!.insert(HistoryEntry.TABLE_NAME, "null", values)
+            db.insert(HistoryEntry.TABLE_NAME, "null", values)
+
+            db.delete(HistoryEntry.TABLE_NAME,
+                    String.format("%s IN (SELECT %s FROM %s ORDER BY %s DESC LIMIT -1 OFFSET 50)",
+                            HistoryEntry.COLUMN_NAME_ID,
+                            HistoryEntry.COLUMN_NAME_ID,
+                            HistoryEntry.TABLE_NAME,
+                            HistoryEntry.COLUMN_NAME_DATE), null)
 
             return null
         }
