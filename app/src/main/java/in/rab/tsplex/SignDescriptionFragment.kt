@@ -34,6 +34,7 @@ import java.util.regex.Pattern
 class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mListener: OnTopicClickListener? = null
     private var mVideo: String? = null
+    private var mWord: String? = null
     private var mDescription: String? = null
     private var mSimpleExoPlayerView: SimpleExoPlayerView? = null
     private var mSimpleExoPlayer: SimpleExoPlayer? = null
@@ -47,6 +48,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             mId = arguments.getInt(ARG_ID)
+            mWord = arguments.getString(ARG_WORD)
             mDescription = arguments.getString(ARG_DESC)
             mTopic1 = arguments.getInt(ARG_TOPIC1)
             mTopic2 = arguments.getInt(ARG_TOPIC2)
@@ -102,6 +104,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
             }
         })
+
+        wordText.text = mWord;
 
         if (mTopic1 != 0) {
             view.findViewById<TextView>(R.id.topics).visibility = VISIBLE
@@ -313,6 +317,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
     companion object {
         private val ARG_ID = "id"
+        private val ARG_WORD = "word"
         private val ARG_DESC = "desc"
         private val ARG_TOPIC1 = "topic1"
         private val ARG_TOPIC2 = "topic2"
@@ -324,6 +329,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
             args.putInt(ARG_ID, sign.id)
             args.putString(ARG_DESC, desc.toString())
+            args.putString(ARG_WORD, sign.word)
             args.putInt(ARG_TOPIC1, sign.topic1)
             args.putInt(ARG_TOPIC2, sign.topic2)
 

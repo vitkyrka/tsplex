@@ -27,6 +27,7 @@
     <string name="drawer_open">Öppna menyn</string>
     <string name="drawer_close">Stänga menyn</string>
     <string name="description">Beskrivning</string>
+    <string name="word">Ord</string>
     <string name="topic">Ämne</string>
     <string name="id">ID-nummer</string>
     <string name="filter_list">Filtrera listan...</string>
