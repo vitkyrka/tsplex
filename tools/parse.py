@@ -181,7 +181,7 @@ def main():
     except:
         pass
 
-    version = 25
+    version = 26
 
     conn = sqlite3.connect(args.db)
 
@@ -219,13 +219,13 @@ def main():
                       sign['kommentar']))
 
         for word in sign['ord']:
-            conn.execute("insert into words values (?)", (word,))
+            conn.execute("insert into words values (?)", (word.lower(),))
             conn.execute("insert into words_signs values (?, ?)", (thisid, len(word)))
 
         for pos, segment in enumerate(sign['beskrivning'].split('//')):
             segment = segment.strip()
 
-            conn.execute("insert into descsegs values (?)", (segment,))
+            conn.execute("insert into descsegs values (?)", (segment.lower(),))
             conn.execute("insert into descsegs_signs values (?, ?, ?)", (thisid, pos, len(segment)))
 
         conn.executemany("insert into examples values (?, ?, ?)",
