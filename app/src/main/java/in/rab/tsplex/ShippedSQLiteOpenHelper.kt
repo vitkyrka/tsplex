@@ -106,7 +106,7 @@ abstract class ShippedSQLiteOpenHelper @JvmOverloads constructor(private val mCo
             val values = ContentValues()
 
             values.put("id", cursor.getInt(0))
-            values.put("date", cursor.getInt(1))
+            values.put("date", cursor.getLong(1))
 
             new.insertOrThrow(table, null, values)
         }
