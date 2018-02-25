@@ -27,7 +27,7 @@ abstract class ShippedSQLiteOpenHelper @JvmOverloads constructor(private val mCo
             }
 
             if (db != null) {
-                if (mVersion >= mWantedVersion) {
+                if (mVersion == mWantedVersion) {
                     return db
                 }
             }
