@@ -107,7 +107,7 @@ class SignDatabase(context: Context) {
 
     private fun getSignsByDescription(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {
         val selection = "descsegs_signs.rowid IN (SELECT docid FROM descsegs WHERE descsegs.content MATCH ?)";
-        val terms = query.trim().split(" ").map { v -> v + "*" }
+        val terms = query.split(" ").map { v -> v + "*" }
         val selectionArgs = arrayOf(terms.joinToString(" "))
         val sortOrder = "descsegs_signs.pos, descsegs_signs.len, sv"
 
@@ -118,8 +118,9 @@ class SignDatabase(context: Context) {
     }
 
     private fun getSigns(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {
+        val fixedQuery = query.trim().toLowerCase();
         val selection = "words_signs.rowid IN (SELECT docid FROM words WHERE words.content MATCH ?) OR signs.id == ?";
-        val selectionArgs = arrayOf(query.trim() + "*", query);
+        val selectionArgs = arrayOf(fixedQuery.trim() + "*", fixedQuery);
         val groupBy = "signs.id"
         val sortOrder = "words_signs.len"
 
@@ -131,7 +132,7 @@ class SignDatabase(context: Context) {
             return cursor;
         }
 
-        return getSignsByDescription(query, columns, builder)
+        return getSignsByDescription(fixedQuery, columns, builder)
     }
 
     fun search(query: String, columns: Array<String>): Cursor {
