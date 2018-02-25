@@ -168,7 +168,7 @@ def main():
     except:
         pass
 
-    version = 21
+    version = 24
 
     conn = sqlite3.connect(args.db)
 
@@ -180,6 +180,9 @@ def main():
 
     conn.execute("CREATE TABLE words_signs (signid INTEGER, len INTEGER)")
     conn.execute("CREATE VIRTUAL TABLE words USING fts4()")
+
+    conn.execute("CREATE TABLE descsegs_signs (signid INTEGER, pos INTEGER, len INTEGER)")
+    conn.execute("CREATE VIRTUAL TABLE descsegs USING fts4()")
 
     conn.execute("CREATE TABLE history (id INTEGER, date INTEGER, UNIQUE (id) ON CONFLICT REPLACE)")
     conn.execute("CREATE TABLE favorites (id INTEGER UNIQUE, date INTEGER)")
@@ -205,6 +208,12 @@ def main():
         for word in sign['ord']:
             conn.execute("insert into words values (?)", (word,))
             conn.execute("insert into words_signs values (?, ?)", (thisid, len(word)))
+
+        for pos, segment in enumerate(sign['beskrivning'].split('//')):
+            segment = segment.strip()
+
+            conn.execute("insert into descsegs values (?)", (segment,))
+            conn.execute("insert into descsegs_signs values (?, ?, ?)", (thisid, pos, len(segment)))
 
         conn.executemany("insert into examples values (?, ?, ?)",
                          ((thisid, vid, desc) for vid, desc in sign['examples']))
