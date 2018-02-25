@@ -8,6 +8,7 @@ class Sign internal constructor(internal val id: Int,
                                 internal val word: String,
                                 internal val video: String,
                                 internal val description: String,
+                                internal val comment: String,
                                 internal val slug: String,
                                 internal val images: Int,
                                 internal val topic1: Int,
@@ -16,6 +17,7 @@ class Sign internal constructor(internal val id: Int,
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -39,6 +41,7 @@ class Sign internal constructor(internal val id: Int,
         parcel.writeString(word)
         parcel.writeString(video)
         parcel.writeString(description)
+        parcel.writeString(comment)
         parcel.writeString(slug)
         parcel.writeInt(images)
         parcel.writeInt(topic1)

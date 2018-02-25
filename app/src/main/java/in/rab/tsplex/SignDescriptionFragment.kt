@@ -36,6 +36,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mVideo: String? = null
     private var mWord: String? = null
     private var mDescription: String? = null
+    private var mComment: String? = null
     private var mSimpleExoPlayerView: SimpleExoPlayerView? = null
     private var mSimpleExoPlayer: SimpleExoPlayer? = null
     private var mTopic1: Int = 0
@@ -50,6 +51,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             mId = arguments.getInt(ARG_ID)
             mWord = arguments.getString(ARG_WORD)
             mDescription = arguments.getString(ARG_DESC)
+            mComment = arguments.getString(ARG_COMMENT)
             mTopic1 = arguments.getInt(ARG_TOPIC1)
             mTopic2 = arguments.getInt(ARG_TOPIC2)
         }
@@ -106,6 +108,11 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         })
 
         wordText.text = mWord;
+        if (mComment!!.isNotEmpty()) {
+            commentText.text = mComment;
+            commentTitle.visibility = VISIBLE
+            commentText.visibility = VISIBLE
+        }
 
         if (mTopic1 != 0) {
             view.findViewById<TextView>(R.id.topics).visibility = VISIBLE
@@ -319,6 +326,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         private val ARG_ID = "id"
         private val ARG_WORD = "word"
         private val ARG_DESC = "desc"
+        private val ARG_COMMENT = "comment"
         private val ARG_TOPIC1 = "topic1"
         private val ARG_TOPIC2 = "topic2"
 
@@ -330,6 +338,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             args.putInt(ARG_ID, sign.id)
             args.putString(ARG_DESC, desc.toString())
             args.putString(ARG_WORD, sign.word)
+            args.putString(ARG_COMMENT, sign.comment)
             args.putInt(ARG_TOPIC1, sign.topic1)
             args.putInt(ARG_TOPIC2, sign.topic2)
 

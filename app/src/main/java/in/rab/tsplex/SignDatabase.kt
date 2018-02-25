@@ -15,10 +15,22 @@ class SignDatabase(context: Context) {
         mOpenHelper = SignDatabaseOpenHelper(context)
     }
 
+    private fun makeSign(cursor: Cursor): Sign {
+        return Sign(cursor.getInt(0),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getString(3),
+                cursor.getString(4),
+                cursor.getString(5),
+                cursor.getInt(6),
+                cursor.getInt(7),
+                cursor.getInt(8))
+    }
+
     fun getSign(id: Int): Sign? {
         val selection = "id = ?"
         val selectionArgs = arrayOf(id.toString())
-        var columns = arrayOf("sv", "video", "desc", "slug", "images", "topic1", "topic2")
+        var columns = arrayOf("id", "sv", "video", "desc", "comment", "slug", "images", "topic1", "topic2")
 
         var builder = SQLiteQueryBuilder()
         builder.tables = "signs"
@@ -27,9 +39,7 @@ class SignDatabase(context: Context) {
                 null, null, null) ?: return null
 
         cursor!!.moveToNext()
-        val sign = Sign(id, cursor.getString(0), cursor.getString(1),
-                cursor.getString(2), cursor.getString(3),
-                cursor.getInt(4), cursor.getInt(5), cursor.getInt(6))
+        val sign = makeSign(cursor)
 
         cursor.close()
 
@@ -50,34 +60,14 @@ class SignDatabase(context: Context) {
         return sign
     }
 
-    fun getExamples(): Sign {
-        val sign = Sign(0,  "", "", "", "", 0, 0, 0)
-
-        val builder = SQLiteQueryBuilder()
-        builder.tables = "examples"
-        val columns = arrayOf("video", "desc")
-        val cursor = builder.query(mOpenHelper.database, columns, null, null,
-                "video", null, "desc") ?: return sign
-
-        while (cursor.moveToNext()) {
-            sign.examples.add(Example(cursor.getString(0), cursor.getString(1)))
-        }
-
-        cursor.close()
-        return sign
-    }
-
     internal fun getSynonyms(id: Int): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = mOpenHelper.database!!.rawQuery(
-                "SELECT id, sv, video, desc, slug, images, topic1, topic2 FROM signs WHERE id in (SELECT otherid FROM synonyms WHERE id = ?)",
+                "SELECT id, sv, video, desc, comment, slug, images, topic1, topic2 FROM signs WHERE id in (SELECT otherid FROM synonyms WHERE id = ?)",
                 arrayOf(id.toString())) ?: return signs
 
         while (cursor.moveToNext()) {
-            signs.add(Sign(cursor.getInt(0), cursor.getString(1),
-                    cursor.getString(2), cursor.getString(3),
-                    cursor.getString(4), cursor.getInt(5),
-                    cursor.getInt(6), cursor.getInt(7)))
+            signs.add(makeSign(cursor))
         }
 
         cursor.close()
@@ -87,13 +77,11 @@ class SignDatabase(context: Context) {
     internal fun getHomonyms(id: Int): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = mOpenHelper.database!!.rawQuery(
-                "SELECT id, sv, video, desc, slug, images, topic1, topic2 FROM signs WHERE id in (SELECT otherid FROM homonyms WHERE id = ?)",
+                "SELECT id, sv, video, desc, comment, slug, images, topic1, topic2 FROM signs WHERE id in (SELECT otherid FROM homonyms WHERE id = ?)",
                 arrayOf(id.toString())) ?: return signs
 
         while (cursor.moveToNext()) {
-            signs.add(Sign(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
-                    cursor.getString(3), cursor.getString(4), cursor.getInt(5),
-                    cursor.getInt(6), cursor.getInt(7)))
+            signs.add(makeSign(cursor))
         }
 
         cursor.close()
@@ -103,13 +91,11 @@ class SignDatabase(context: Context) {
     fun getSignsByIds(idTable: String, orderBy: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = mOpenHelper.database!!.rawQuery(
-                "SELECT signs.id, sv, video, desc, slug, images, topic1, topic2 FROM signs INNER JOIN " + idTable +
+                "SELECT signs.id, sv, video, desc, comment, slug, images, topic1, topic2 FROM signs INNER JOIN " + idTable +
                         " ON signs.id = " + idTable + ".id ORDER BY " + orderBy, null) ?: return signs
 
         while (cursor.moveToNext()) {
-            signs.add(Sign(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
-                    cursor.getString(3), cursor.getString(4), cursor.getInt(5),
-                    cursor.getInt(6), cursor.getInt(7)))
+            signs.add(makeSign(cursor))
         }
 
         cursor.close()
@@ -118,7 +104,7 @@ class SignDatabase(context: Context) {
 
     fun getSigns(query: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
-        val columns = arrayOf("signs.id", "sv", "video", "desc", "slug", "images", "topic1", "topic2")
+        val columns = arrayOf("signs.id", "sv", "video", "desc", "comment", "slug", "images", "topic1", "topic2")
         val selection = "words_signs.rowid IN (SELECT docid FROM words WHERE words.content MATCH ?)";
         val selectionArgs = arrayOf(query + "*");
         val groupBy = "signs.id"
@@ -131,9 +117,7 @@ class SignDatabase(context: Context) {
                 groupBy, null, sortOrder)
 
         while (cursor.moveToNext()) {
-            signs.add(Sign(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
-                    cursor.getString(3), cursor.getString(4), cursor.getInt(5),
-                    cursor.getInt(6), cursor.getInt(7)))
+            signs.add(makeSign(cursor))
         }
 
         cursor.close()
@@ -155,7 +139,7 @@ class SignDatabase(context: Context) {
     fun getTopicSigns(topic: Int): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val mask = getMask(topic)
-        val columns = arrayOf("id", "sv", "video", "desc", "slug", "images", "topic1", "topic2")
+        val columns = arrayOf("id", "sv", "video", "desc", "comment", "slug", "images", "topic1", "topic2")
 
         val selection = StringBuilder()
                 .append("(topic1 & ").append(mask).append(") = ").append(topic).append(" OR")
@@ -169,9 +153,7 @@ class SignDatabase(context: Context) {
                 null, null, "sv") ?: return signs
 
         while (cursor.moveToNext()) {
-            signs.add(Sign(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
-                    cursor.getString(3), cursor.getString(4), cursor.getInt(5),
-                    cursor.getInt(6), cursor.getInt(7)))
+            signs.add(makeSign(cursor))
         }
 
         cursor.close()

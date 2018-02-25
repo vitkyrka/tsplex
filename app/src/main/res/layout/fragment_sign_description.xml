@@ -72,6 +72,29 @@
                 android:layout_marginBottom="4dp" />
 
             <TextView
+                android:id="@+id/commentTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="0dp"
+                android:text="@string/comment"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/commentText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="4dp"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/topics"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
