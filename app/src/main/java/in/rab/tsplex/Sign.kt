@@ -28,6 +28,12 @@ class Sign internal constructor(internal val id: Int,
         parcel.readList(examples, Example::class.java.classLoader)
     }
 
+    internal fun getTranscriptionUrl(): String {
+        val number = "%05d".format(id)
+        return "http://teckensprakslexikon.su.se/photos/%s/%s-%s-transcription.jpg".format((number.substring(0..1)),
+                    slug, number)
+    }
+
     internal fun getImageUrls(): Array<String> {
         return Array(images, {
             val number = "%05d".format(id)

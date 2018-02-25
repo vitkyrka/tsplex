@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
@@ -45,6 +46,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mVideoTask: AsyncTask<Lexikon, Void, String?>? = null
     private var mControllerVisible: Boolean = false
     private var mSpeed: Float = 0.0f
+    private var mTranscriptionUrl: String ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +55,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             mWord = arguments.getString(ARG_WORD)
             mDescription = arguments.getString(ARG_DESC)
             mComment = arguments.getString(ARG_COMMENT)
+            mTranscriptionUrl = arguments.getString(ARG_TRANSCRIPTION)
             mTopic1 = arguments.getInt(ARG_TOPIC1)
             mTopic2 = arguments.getInt(ARG_TOPIC2)
         }
@@ -115,6 +118,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             commentTitle.visibility = VISIBLE
             commentText.visibility = VISIBLE
         }
+
+        Glide.with(this).load(mTranscriptionUrl).into(transcriptionImage)
 
         if (mTopic1 != 0) {
             view.findViewById<TextView>(R.id.topics).visibility = VISIBLE
@@ -332,6 +337,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         private val ARG_COMMENT = "comment"
         private val ARG_TOPIC1 = "topic1"
         private val ARG_TOPIC2 = "topic2"
+        private val ARG_TRANSCRIPTION = "transcription"
 
         fun newInstance(sign: Sign): SignDescriptionFragment {
             val fragment = SignDescriptionFragment()
@@ -342,6 +348,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             args.putString(ARG_DESC, desc.toString())
             args.putString(ARG_WORD, sign.word)
             args.putString(ARG_COMMENT, sign.comment)
+            args.putString(ARG_TRANSCRIPTION, sign.getTranscriptionUrl())
             args.putInt(ARG_TOPIC1, sign.topic1)
             args.putInt(ARG_TOPIC2, sign.topic2)
 

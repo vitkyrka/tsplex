@@ -29,6 +29,7 @@
     <string name="description">Beskrivning</string>
     <string name="comment">Kommentar</string>
     <string name="word">Ord</string>
+    <string name="transcription">Transkription</string>
     <string name="topic">Ämne</string>
     <string name="id">ID-nummer</string>
     <string name="filter_list">Filtrera listan...</string>
