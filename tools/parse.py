@@ -90,6 +90,17 @@ def parse_one(f):
 
     return sign
 
+def fixup_sign(sign):
+    # The main word is always capitalized and cannot be trusted.  But if there
+    # is more than one word, the secondary words have correct capitalization so
+    # we can try to use that information to capitalize the main word if
+    # necessary.
+    if len(sign['ord']) > 1 and sign['ord'][1][0].isupper() and not sign ['ord'][1][-1].isupper():
+            sign['ord'][0] = sign['ord'][0].capitalize()
+    elif len(sign['ord']) == 1 and any(topic for topic in sign['ämne'] if 'Orter' in topic or 'Länder' in topic):
+            sign['ord'][0] = sign['ord'][0].capitalize()
+
+    return sign
 
 def get_topic_ids(signs):
     topicids = []
@@ -144,6 +155,8 @@ def main():
             with open('signs.pickle', 'wb') as f:
                 pickle.dump(signs, f)
 
+    signs = [fixup_sign(sign) for sign in signs]
+
     if args.dump:
         import pprint
         pprint.pprint(signs)
@@ -168,7 +181,7 @@ def main():
     except:
         pass
 
-    version = 24
+    version = 25
 
     conn = sqlite3.connect(args.db)
 
