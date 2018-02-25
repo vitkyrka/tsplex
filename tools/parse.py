@@ -91,14 +91,10 @@ def parse_one(f):
     return sign
 
 def fixup_sign(sign):
-    # The main word is always capitalized and cannot be trusted.  But if there
-    # is more than one word, the secondary words have correct capitalization so
-    # we can try to use that information to capitalize the main word if
-    # necessary.
-    if len(sign['ord']) > 1 and sign['ord'][1][0].isupper() and not sign ['ord'][1][-1].isupper():
+    if any(topic for topic in sign['ämne'] if 'Orter' in topic or 'Länder' in topic or 'Finland' in topic):
             sign['ord'][0] = sign['ord'][0].capitalize()
-    elif len(sign['ord']) == 1 and any(topic for topic in sign['ämne'] if 'Orter' in topic or 'Länder' in topic):
-            sign['ord'][0] = sign['ord'][0].capitalize()
+    else:
+        sign['ord'] = [word if word.isupper() else word.lower() for word in sign['ord']]
 
     return sign
 
@@ -181,7 +177,7 @@ def main():
     except:
         pass
 
-    version = 26
+    version = 27
 
     conn = sqlite3.connect(args.db)
 
