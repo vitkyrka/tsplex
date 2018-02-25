@@ -101,7 +101,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             true
         }
 
-        view.findViewById<TextView>(R.id.textView).text = Html.fromHtml(mDescription)
+        val desc = mDescription!!.split("//").joinToString("//<br>")
+        view.findViewById<TextView>(R.id.textView).text = Html.fromHtml(desc)
         val idButton = view.findViewById<Button>(R.id.id)
         idButton.text = "%05d".format(mId)
         idButton.setOnClickListener(object : View.OnClickListener {
