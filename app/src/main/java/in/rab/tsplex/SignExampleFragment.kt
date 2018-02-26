@@ -37,6 +37,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     private var mId: Int = 0
     private var mTask: AsyncTask<Lexikon, Void, ArrayList<Example>>? = null
     private var mControllerVisible: Boolean = false
+    private var mSpeed: Float = 0.0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +65,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
                 else -> 1.0f
             }
 
+            mSpeed = speed
             mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed, 1f)
         }
 
@@ -164,10 +166,9 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
         val exo = mSimpleExoPlayer ?: return
         val settings = activity.getSharedPreferences("in.rab.tsplex", 0).edit()
-        val speed = exo.playbackParameters?.speed
 
-        if (speed != null) {
-            settings.putFloat("examplePlaybackSpeed", speed)
+        if (mSpeed != 0.0f) {
+            settings.putFloat("examplePlaybackSpeed", mSpeed)
         }
 
         settings.putInt("exampleRepeatMode", exo.repeatMode)
@@ -246,6 +247,8 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
             0.75f -> exo_075x.isChecked = true
             else -> exo_100x.isChecked = true
         }
+
+        mSpeed = speed
 
         mSimpleExoPlayerView!!.player = mSimpleExoPlayer
         mSimpleExoPlayer!!.repeatMode = settings.getInt("exampleRepeatMode", REPEAT_MODE_ALL)
