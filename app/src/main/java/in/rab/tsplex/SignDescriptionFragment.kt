@@ -206,6 +206,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
     fun showError() {
         loadingProgress.visibility = GONE
+        mSimpleExoPlayerView?.visibility = GONE
 
         val msg: String = if (isOnline()) {
             getString(R.string.fail_video_play)
