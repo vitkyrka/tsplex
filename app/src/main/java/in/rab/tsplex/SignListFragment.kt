@@ -52,10 +52,10 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
             recyler.swapAdapter(adapter, true)
         } else {
             recyler.adapter = adapter
+        }
 
-            if (mState != null) {
-                recyler.layoutManager?.onRestoreInstanceState(mState)
-            }
+        if (mState != null) {
+            recyler.layoutManager?.onRestoreInstanceState(mState)
         }
     }
 
