@@ -45,6 +45,12 @@
                 android:layout_toEndOf="@id/image2"
                 android:visibility="visible" />
 
+            <ImageView
+                android:id="@+id/image4"
+                android:layout_width="@dimen/sign_thumbnail_width"
+                android:layout_height="@dimen/sign_thumbnail_height"
+                android:layout_toEndOf="@id/image3"
+                android:visibility="gone" />
 
     </com.google.android.flexbox.FlexboxLayout>
 
