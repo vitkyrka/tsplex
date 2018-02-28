@@ -54,7 +54,13 @@ class SearchActivity : AppCompatActivity(), SignListFragment.OnListFragmentInter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        mOrdboken!!.initSearchView(this, menu, mQuery, false)
+        val query = if (mQuery != null && mQuery!!.startsWith("topic:")) {
+            null
+        } else {
+            mQuery
+        }
+
+        mOrdboken!!.initSearchView(this, menu, query, false)
         return true
     }
 
