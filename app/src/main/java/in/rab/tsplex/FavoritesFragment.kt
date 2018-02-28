@@ -1,6 +1,6 @@
 package `in`.rab.tsplex
 
-class FavoritesFragment : LocalListFragment("favorites", "signs.sv ASC") {
+class FavoritesFragment : DatabaseListFragment("favorites", "signs.sv ASC") {
     companion object {
         fun newInstance() = FavoritesFragment()
     }
