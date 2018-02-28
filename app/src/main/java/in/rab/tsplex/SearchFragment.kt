@@ -18,7 +18,9 @@ class SearchFragment : SignListFragment() {
 
         if (query!!.startsWith("topic:")) {
             val topic = query!!.substring(6)
-            return db.getTopicSigns(topic.toInt())
+            val topicid = topic.toIntOrNull() ?: return arrayListOf<Sign>()
+
+            return db.getTopicSigns(topicid)
         } else {
             return db.getSigns(query!!)
         }
