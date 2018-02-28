@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
+import com.google.android.flexbox.FlexboxLayout
 
 class SignRecyclerViewAdapter(private val mValues: List<Sign>,
                               private val mListener: SignListFragment.OnListFragmentInteractionListener?,
-                              private val mGlide: RequestManager) : RecyclerView.Adapter<SignRecyclerViewAdapter.ViewHolder>() {
+                              private val mGlide: RequestManager,
+                              private val mLayoutParams: FlexboxLayout.LayoutParams) : RecyclerView.Adapter<SignRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -24,6 +26,10 @@ class SignRecyclerViewAdapter(private val mValues: List<Sign>,
         holder.mIdView.text = sign.word
 
         val urls = sign.getImageUrls()
+
+        for (view in holder.imageViews) {
+            view.layoutParams = mLayoutParams;
+        }
 
         for ((i, url) in sign.getImageUrls().withIndex()) {
             if (i >= holder.imageViews.size) {
