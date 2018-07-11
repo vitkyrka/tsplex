@@ -108,7 +108,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         idButton.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 val b: Button = v as Button
-                val url = "http://teckensprakslexikon.su.se/ord/" + b.text
+                val url = "https://teckensprakslexikon.su.se/ord/" + b.text
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
             }
         })
@@ -234,7 +234,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                     return null
                 }
 
-                val url = "http://teckensprakslexikon.su.se" + matcher.group(1)
+                val url = "https://teckensprakslexikon.su.se" + matcher.group(1)
                 if (!lexikon.cacheVideo(url)) {
                     if (trial == 0 && lexikon.isDeadLink(url)) {
                         continue

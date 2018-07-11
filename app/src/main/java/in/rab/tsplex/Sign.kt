@@ -30,14 +30,14 @@ class Sign internal constructor(internal val id: Int,
 
     internal fun getTranscriptionUrl(): String {
         val number = "%05d".format(id)
-        return "http://teckensprakslexikon.su.se/photos/%s/%s-%s-transcription.jpg".format((number.substring(0..1)),
+        return "https://teckensprakslexikon.su.se/photos/%s/%s-%s-transcription.jpg".format((number.substring(0..1)),
                     slug, number)
     }
 
     internal fun getImageUrls(): Array<String> {
         return Array(images, {
             val number = "%05d".format(id)
-            "http://teckensprakslexikon.su.se/photos/%s/%s-%s-photo-%d.jpg".format((number.substring(0..1)),
+            "https://teckensprakslexikon.su.se/photos/%s/%s-%s-photo-%d.jpg".format((number.substring(0..1)),
                     slug, number, it + 1)
         })
     }
