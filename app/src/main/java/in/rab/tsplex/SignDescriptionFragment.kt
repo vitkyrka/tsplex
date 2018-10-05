@@ -224,7 +224,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             for (trial in 0..1) {
                 val page = lexikon.getSignPage(mId, trial == 1) ?: return null
 
-                val pattern = Pattern.compile("file: \"(.*mp4)")
+                var pattern = Pattern.compile("\"([^\"]+\\.mp4)\"")
                 val matcher = pattern.matcher(page)
                 if (!matcher.find()) {
                     if (trial == 0) {
@@ -234,7 +234,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                     return null
                 }
 
-                val url = "https://teckensprakslexikon.su.se" + matcher.group(1)
+                val url = "https://teckensprakslexikon.su.se/" + matcher.group(1)
                 if (!lexikon.cacheVideo(url)) {
                     if (trial == 0 && lexikon.isDeadLink(url)) {
                         continue

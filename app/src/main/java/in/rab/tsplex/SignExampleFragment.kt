@@ -111,7 +111,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
                 val page = lexikon.getSignPage(mId, trial == 1) ?: return examples
                 val videos: ArrayList<String> = ArrayList()
 
-                var pattern = Pattern.compile("file: \"(.*mp4)")
+                var pattern = Pattern.compile("\"([^\"]+\\.mp4)\"")
                 var matcher = pattern.matcher(page)
 
                 // The first video is not an example
@@ -120,7 +120,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
                 while (matcher.find()) {
                     val video = matcher.group(1)
 
-                    if (!video.contains("-slow")) {
+                    if (!video.contains("-slow") and !video.contains("-tecken.mp4")) {
                         videos.add(video)
                     }
                 }
@@ -142,7 +142,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
                 }
 
                 for (i in 0 until videos.size) {
-                    var url = "https://teckensprakslexikon.su.se" + videos[i]
+                    var url = "https://teckensprakslexikon.su.se/" + videos[i]
                     examples.add(Example(url, descs[i]))
                 }
 
