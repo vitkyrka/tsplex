@@ -92,9 +92,9 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
             val example = mExamples?.get(mPosition) ?: return null
             val lexikon = params[0]
 
-            if (lexikon.isDeadLink(example.video)) {
+            if (lexikon.scraper.isDeadLink(example.video)) {
                 // The parsing will only happen when this sign is opened the next time
-                lexikon.getSignPage(mId, true)
+                lexikon.scraper.getSignPage(mId, true)
             }
 
             return null
@@ -108,7 +108,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
             retryloop@ for (trial in 0..1) {
                 examples = ArrayList()
-                val page = lexikon.getSignPage(mId, trial == 1) ?: return examples
+                val page = lexikon.scraper.getSignPage(mId, trial == 1) ?: return examples
                 val videos: ArrayList<String> = ArrayList()
 
                 var pattern = Pattern.compile("\"([^\"]+\\.mp4)\"")
