@@ -20,7 +20,7 @@ abstract class ShippedSQLiteOpenHelper @JvmOverloads constructor(private val mCo
 
     val database: SQLiteDatabase?
         get() = synchronized(this) {
-            var db: SQLiteDatabase? = try {
+            val db: SQLiteDatabase? = try {
                 databaseLocked
             } catch (e: SQLiteException) {
                 null
@@ -100,7 +100,7 @@ abstract class ShippedSQLiteOpenHelper @JvmOverloads constructor(private val mCo
     }
 
     private fun copyUserTable(old: SQLiteDatabase, new: SQLiteDatabase, table: String) {
-        val cursor = old.rawQuery("SELECT id, date FROM " + table, null) ?: return
+        val cursor = old.rawQuery("SELECT id, date FROM $table", null) ?: return
 
         while (cursor.moveToNext()) {
             val values = ContentValues()
@@ -131,7 +131,7 @@ abstract class ShippedSQLiteOpenHelper @JvmOverloads constructor(private val mCo
 
     @Throws(IOException::class)
     private fun copyDatabase(oldDb: SQLiteDatabase?) {
-        val tempPath = mContext.getDatabasePath(databaseName + "-tmp").path
+        val tempPath = mContext.getDatabasePath("$databaseName-tmp").path
 
         copyApkDatabase(tempPath)
 

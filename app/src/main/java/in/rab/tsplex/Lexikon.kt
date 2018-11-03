@@ -12,19 +12,16 @@ import com.google.android.exoplayer2.upstream.cache.CacheUtil
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.google.android.exoplayer2.util.Util
-import okhttp3.*
 import java.io.File
-import java.io.IOException
 
-class Lexikon {
-    val scraper: Scraper
+class Lexikon(context: Context) {
+    val scraper: Scraper = Scraper(File(context.cacheDir, "okhttp"))
     private val cache: com.google.android.exoplayer2.upstream.cache.Cache
     private val httpDataSourceFactory: DataSource.Factory
     val dataSourceFactory: DataSource.Factory
     val extractorsFactory: ExtractorsFactory
 
-    constructor(context: Context) {
-        scraper = Scraper(File(context.cacheDir, "okhttp"))
+    init {
         cache = SimpleCache(File(context.cacheDir, "exoplayer"),
                 LeastRecentlyUsedCacheEvictor(100 * 1024 * 1024))
         httpDataSourceFactory = DefaultHttpDataSourceFactory(

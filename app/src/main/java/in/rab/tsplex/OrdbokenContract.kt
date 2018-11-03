@@ -6,17 +6,17 @@ class OrdbokenContract {
 
     abstract class HistoryEntry : BaseColumns {
         companion object {
-            val TABLE_NAME = "history"
-            val COLUMN_NAME_ID = "id"
-            val COLUMN_NAME_DATE = "date"
+            const val TABLE_NAME = "history"
+            const val COLUMN_NAME_ID = "id"
+            const val COLUMN_NAME_DATE = "date"
         }
     }
 
     abstract class FavoritesEntry : BaseColumns {
         companion object {
-            val TABLE_NAME = "favorites"
-            val COLUMN_NAME_ID = "id"
-            val COLUMN_NAME_DATE = "date"
+            const val TABLE_NAME = "favorites"
+            const val COLUMN_NAME_ID = "id"
+            const val COLUMN_NAME_DATE = "date"
         }
     }
 }

@@ -54,9 +54,9 @@ class SignProvider : ContentProvider() {
     companion object {
         private val sUriMatcher = buildUriMatcher()
 
-        private val MATCH_ALL = 1
-        private val MATCH_ID = 2
-        private val MATCH_SUGGEST = 3
+        private const val MATCH_ALL = 1
+        private const val MATCH_ID = 2
+        private const val MATCH_SUGGEST = 3
 
         private fun buildUriMatcher(): UriMatcher {
             val matcher = UriMatcher(UriMatcher.NO_MATCH)

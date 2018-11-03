@@ -27,7 +27,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import kotlinx.android.synthetic.main.fragment_signexample.*
-import java.util.regex.Pattern
 
 class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     private var mExamples: ArrayList<Example>? = null
@@ -270,7 +269,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     }
 
     companion object {
-        private val ARG_ID = "id"
+        private const val ARG_ID = "id"
 
         fun newInstance(sign: Sign): SignExampleFragment {
             val fragment = SignExampleFragment()

@@ -1,6 +1,5 @@
 package `in`.rab.tsplex
 
-import android.net.Uri
 import okhttp3.*
 import java.io.File
 import java.io.IOException
@@ -26,7 +25,7 @@ class Scraper(private var client: OkHttpClient) {
     fun getSignPage(id: Int, forceNetwork: Boolean): String? {
         val number = "%05d".format(id)
         var builder = Request.Builder()
-                .url("https://teckensprakslexikon.su.se/ord/" + number)
+                .url("https://teckensprakslexikon.su.se/ord/$number")
 
         if (forceNetwork) {
             builder = builder.cacheControl(CacheControl.FORCE_NETWORK)

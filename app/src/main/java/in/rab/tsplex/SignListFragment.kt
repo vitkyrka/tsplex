@@ -8,8 +8,10 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.ScaleGestureDetector
+import android.view.View
+import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.google.android.flexbox.FlexboxLayout
 
@@ -19,7 +21,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
     private var mState: Parcelable? = null
     private var mTask: AsyncTask<Void, Void, ArrayList<Sign>>? = null
     private var mZoom = 1.0f
-    private var mSigns: ArrayList<Sign> = arrayListOf<Sign>()
+    private var mSigns: ArrayList<Sign> = arrayListOf()
 
     protected abstract fun getSigns(): ArrayList<Sign>
 

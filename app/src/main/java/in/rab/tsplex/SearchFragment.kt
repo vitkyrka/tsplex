@@ -15,15 +15,15 @@ class SearchFragment : SignListFragment() {
     }
 
     override fun getSigns(): ArrayList<Sign> {
-        val act = activity ?: return ArrayList<Sign>()
+        val act = activity ?: return ArrayList()
         val db = SignDatabase(act)
 
         if (query == null)
-            return ArrayList<Sign>()
+            return ArrayList()
 
         if (query!!.startsWith("topic:")) {
             val topic = query!!.substring(6)
-            val topicid = topic.toIntOrNull() ?: return arrayListOf<Sign>()
+            val topicid = topic.toIntOrNull() ?: return arrayListOf()
 
             return db.getTopicSigns(topicid)
         } else {
@@ -32,7 +32,7 @@ class SearchFragment : SignListFragment() {
     }
 
     companion object {
-        private val ARG_QUERY = "query"
+        private const val ARG_QUERY = "query"
 
         fun newInstance(query: String): SearchFragment {
             val fragment = SearchFragment()

@@ -107,7 +107,7 @@ class SignDatabase(context: Context) {
 
     private fun getSignsByDescription(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {
         val selection = "descsegs_signs.rowid IN (SELECT docid FROM descsegs WHERE descsegs.content MATCH ?)"
-        val terms = query.split(" ").map { v -> v + "*" }
+        val terms = query.split(" ").map { v -> "$v*" }
         val selectionArgs = arrayOf(terms.joinToString(" "))
         val sortOrder = "descsegs_signs.pos, descsegs_signs.len, sv"
 
@@ -204,20 +204,18 @@ class SignDatabase(context: Context) {
     private class SignDatabaseOpenHelper internal constructor(context: Context) : ShippedSQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION)
 
     companion object {
-        private val DATABASE_NAME = "signs.jet"
-        private val DATABASE_VERSION = 27
+        private const val DATABASE_NAME = "signs.jet"
+        private const val DATABASE_VERSION = 27
 
         private fun buildColumnMap(): HashMap<String, String> {
             val map = HashMap<String, String>()
 
-            map.put(BaseColumns._ID, "signs.rowid AS " + BaseColumns._ID)
-            map.put("desc", "desc")
-            map.put(SearchManager.SUGGEST_COLUMN_TEXT_1,
-                    "sv AS " + SearchManager.SUGGEST_COLUMN_TEXT_1)
-            map.put(SearchManager.SUGGEST_COLUMN_QUERY, "sv AS " + SearchManager.SUGGEST_COLUMN_QUERY)
-            map.put(SearchManager.SUGGEST_COLUMN_TEXT_2,
-                    "desc AS " + SearchManager.SUGGEST_COLUMN_TEXT_2)
-            map.put(SearchManager.SUGGEST_COLUMN_INTENT_DATA, "id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA)
+            map[BaseColumns._ID] = "signs.rowid AS " + BaseColumns._ID
+            map["desc"] = "desc"
+            map[SearchManager.SUGGEST_COLUMN_TEXT_1] = "sv AS " + SearchManager.SUGGEST_COLUMN_TEXT_1
+            map[SearchManager.SUGGEST_COLUMN_QUERY] = "sv AS " + SearchManager.SUGGEST_COLUMN_QUERY
+            map[SearchManager.SUGGEST_COLUMN_TEXT_2] = "desc AS " + SearchManager.SUGGEST_COLUMN_TEXT_2
+            map[SearchManager.SUGGEST_COLUMN_INTENT_DATA] = "id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA
 
             return map
         }

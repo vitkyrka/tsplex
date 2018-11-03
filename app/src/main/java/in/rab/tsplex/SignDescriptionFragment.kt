@@ -29,7 +29,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import kotlinx.android.synthetic.main.fragment_sign_description.*
-import java.util.regex.Pattern
 
 
 class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
@@ -68,7 +67,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mSimpleExoPlayerView = view.findViewById<SimpleExoPlayerView>(R.id.exoPlayerView)
+        mSimpleExoPlayerView = view.findViewById(R.id.exoPlayerView)
 
         val listener = View.OnClickListener {
             val speed = when (it.id) {
@@ -103,13 +102,11 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         view.findViewById<TextView>(R.id.textView).text = Html.fromHtml(desc)
         val idButton = view.findViewById<Button>(R.id.id)
         idButton.text = "%05d".format(mId)
-        idButton.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                val b: Button = v as Button
-                val url = "https://teckensprakslexikon.su.se/ord/" + b.text
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-            }
-        })
+        idButton.setOnClickListener { v ->
+            val b: Button = v as Button
+            val url = "https://teckensprakslexikon.su.se/ord/" + b.text
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        }
 
         wordText.text = mWord
         if (mComment!!.isNotEmpty()) {
@@ -125,21 +122,13 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
             var button = view.findViewById<Button>(R.id.topic1)
             button.text = Topics.names[mTopic1]
-            button.setOnClickListener(object : View.OnClickListener {
-                override fun onClick(v: View?) {
-                    mListener!!.onTopicClick(mTopic1)
-                }
-            })
+            button.setOnClickListener { mListener!!.onTopicClick(mTopic1) }
             button.visibility = VISIBLE
 
             if (mTopic2 != 0) {
-                button = view.findViewById<Button>(R.id.topic2)
+                button = view.findViewById(R.id.topic2)
                 button.text = Topics.names[mTopic2]
-                button.setOnClickListener(object : View.OnClickListener {
-                    override fun onClick(v: View?) {
-                        mListener!!.onTopicClick(mTopic2)
-                    }
-                })
+                button.setOnClickListener { mListener!!.onTopicClick(mTopic2) }
                 button.visibility = VISIBLE
             }
         }
@@ -329,13 +318,13 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     }
 
     companion object {
-        private val ARG_ID = "id"
-        private val ARG_WORD = "word"
-        private val ARG_DESC = "desc"
-        private val ARG_COMMENT = "comment"
-        private val ARG_TOPIC1 = "topic1"
-        private val ARG_TOPIC2 = "topic2"
-        private val ARG_TRANSCRIPTION = "transcription"
+        private const val ARG_ID = "id"
+        private const val ARG_WORD = "word"
+        private const val ARG_DESC = "desc"
+        private const val ARG_COMMENT = "comment"
+        private const val ARG_TOPIC1 = "topic1"
+        private const val ARG_TOPIC2 = "topic2"
+        private const val ARG_TRANSCRIPTION = "transcription"
 
         fun newInstance(sign: Sign): SignDescriptionFragment {
             val fragment = SignDescriptionFragment()

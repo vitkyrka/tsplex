@@ -3,7 +3,7 @@ package `in`.rab.tsplex
 import android.os.Bundle
 
 class ArrayListFragment : SignListFragment() {
-    private var signs: ArrayList<Sign> = ArrayList<Sign>()
+    private var signs: ArrayList<Sign> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +19,7 @@ class ArrayListFragment : SignListFragment() {
     }
 
     companion object {
-        private val ARG_SIGNS = "signs"
+        private const val ARG_SIGNS = "signs"
 
         fun newInstance(signs: ArrayList<Sign>): ArrayListFragment {
             val fragment = ArrayListFragment()

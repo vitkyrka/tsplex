@@ -60,11 +60,11 @@ class SignRecyclerViewAdapter(private val mValues: List<Sign>,
     }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.findViewById<TextView>(R.id.id)
+        val mIdView: TextView = mView.findViewById(R.id.id)
         private val imageViewIds = intArrayOf(R.id.image1, R.id.image2, R.id.image3, R.id.image4)
-        val imageViews: Array<ImageView> = Array(imageViewIds.size, { i ->
+        val imageViews: Array<ImageView> = Array(imageViewIds.size) { i ->
             mView.findViewById<ImageView>(imageViewIds[i])
-        })
+        }
         var mItem: Sign? = null
     }
 }

@@ -18,7 +18,6 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
-import android.widget.Toast
 import java.util.*
 
 class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickListener, SignListFragment.OnListFragmentInteractionListener {
@@ -67,7 +66,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
         )
 
         mViewPager = pager
-        mTabLayout = findViewById<TabLayout>(R.id.tabs)
+        mTabLayout = findViewById(R.id.tabs)
 
         SignLoadTask().execute(Integer.parseInt(url))
     }
@@ -237,9 +236,8 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
     private inner class StarUpdateTask : StarTask() {
         override fun doInBackground(vararg params: Void): Boolean? {
             val db = db
-            val starred = isStarred(db)
 
-            return starred
+            return isStarred(db)
         }
     }
 
