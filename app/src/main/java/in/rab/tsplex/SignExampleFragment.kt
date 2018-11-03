@@ -42,18 +42,18 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (arguments != null) {
-            mId = arguments.getInt(ARG_ID)
+        val args = arguments
+        if (args != null) {
+            mId = args.getInt(ARG_ID)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_signexample, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_signexample, container, false)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         mSimpleExoPlayerView = exoPlayerView
@@ -165,14 +165,14 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         mTask = null
 
         val exo = mSimpleExoPlayer ?: return
-        val settings = activity.getSharedPreferences("in.rab.tsplex", 0).edit()
+        val settings = activity?.getSharedPreferences("in.rab.tsplex", 0)?.edit()
 
         if (mSpeed != 0.0f) {
-            settings.putFloat("examplePlaybackSpeed", mSpeed)
+            settings?.putFloat("examplePlaybackSpeed", mSpeed)
         }
 
-        settings.putInt("exampleRepeatMode", exo.repeatMode)
-        settings.apply()
+        settings?.putInt("exampleRepeatMode", exo.repeatMode)
+        settings?.apply()
 
         mSimpleExoPlayerView?.player = null
         exo.release()
@@ -189,7 +189,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         mSimpleExoPlayerView?.visibility = GONE
 
         val msg: String = if (isOnline()) {
-            UncachePage().execute(Lexikon.getInstance(activity))
+            UncachePage().execute(Lexikon.getInstance(activity!!))
             getString(R.string.fail_video_play)
         } else {
             getString(R.string.fail_offline)
@@ -237,7 +237,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
         })
 
-        val settings = activity.getSharedPreferences("in.rab.tsplex", 0)
+        val settings = activity!!.getSharedPreferences("in.rab.tsplex", 0)
         val speed = settings.getFloat("examplePlaybackSpeed", 0.75f)
 
         exo_speed.clearCheck()
@@ -256,7 +256,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         mSimpleExoPlayer!!.playWhenReady = true
 
         if (mExamples == null) {
-            mTask = GetExamplesTask().execute(Lexikon.getInstance(activity))
+            mTask = GetExamplesTask().execute(Lexikon.getInstance(activity!!))
         } else {
             playVideo()
         }
@@ -264,7 +264,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
     fun playVideo() {
         if (listView.adapter == null) {
-            val adapter = ArrayAdapter(activity,
+            val adapter = ArrayAdapter(activity!!,
                     android.R.layout.simple_list_item_1, mExamples!!)
             listView.adapter = adapter
         }
@@ -274,7 +274,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
         if (mPosition >= 0) {
             val example = listView.adapter?.getItem(mPosition) as Example
-            val lexikon = Lexikon.getInstance(context)
+            val lexikon = Lexikon.getInstance(context!!)
             val videoSource = ExtractorMediaSource(Uri.parse(example.video),
                     lexikon.dataSourceFactory, lexikon.extractorsFactory,
                     null, null)
@@ -292,7 +292,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
 
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
         val example = l?.adapter?.getItem(position) as Example
-        val lexikon = Lexikon.getInstance(context)
+        val lexikon = Lexikon.getInstance(context!!)
         val videoSource = ExtractorMediaSource(Uri.parse(example.video),
                 lexikon.dataSourceFactory, lexikon.extractorsFactory,
                 null, null)

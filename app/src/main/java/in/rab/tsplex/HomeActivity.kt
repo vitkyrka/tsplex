@@ -54,19 +54,19 @@ class HomeActivity : AppCompatActivity(), SignListFragment.OnListFragmentInterac
             when (it.itemId) {
                 R.id.navigation_history -> {
                     val fragment: Fragment? = HistoryFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
+                    supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
                     actionBar.setTitle(R.string.title_history)
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.navigation_favorites -> {
                     val fragment: Fragment? = FavoritesFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
+                    supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
                     actionBar.setTitle(R.string.title_favorites)
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.navigation_topics -> {
                     val fragment: Fragment? = TopicListFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
+                    supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
                     actionBar.setTitle(R.string.title_topics)
                     return@setNavigationItemSelectedListener true
                 }
@@ -77,7 +77,9 @@ class HomeActivity : AppCompatActivity(), SignListFragment.OnListFragmentInterac
         }
 
         val fragment: Fragment? = HistoryFragment.newInstance()
-        supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
+        if (fragment != null) {
+            supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
+        }
         actionBar.setTitle(R.string.title_history)
         navigation.menu.findItem(R.id.navigation_history).isChecked = true
     }

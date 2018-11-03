@@ -50,27 +50,24 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mId = arguments.getInt(ARG_ID)
-            mWord = arguments.getString(ARG_WORD)
-            mDescription = arguments.getString(ARG_DESC)
-            mComment = arguments.getString(ARG_COMMENT)
-            mTranscriptionUrl = arguments.getString(ARG_TRANSCRIPTION)
-            mTopic1 = arguments.getInt(ARG_TOPIC1)
-            mTopic2 = arguments.getInt(ARG_TOPIC2)
+
+        val args = arguments
+        if (args != null) {
+            mId = args.getInt(ARG_ID)
+            mWord = args.getString(ARG_WORD)
+            mDescription = args.getString(ARG_DESC)
+            mComment = args.getString(ARG_COMMENT)
+            mTranscriptionUrl = args.getString(ARG_TRANSCRIPTION)
+            mTopic1 = args.getInt(ARG_TOPIC1)
+            mTopic2 = args.getInt(ARG_TOPIC2)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_sign_description, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_sign_description, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        if (view == null) {
-            return
-        }
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mSimpleExoPlayerView = view.findViewById<SimpleExoPlayerView>(R.id.exoPlayerView)
 
         val listener = View.OnClickListener {
@@ -155,7 +152,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         mVideoTask = null
 
         val exo = mSimpleExoPlayer ?: return
-        val settings = activity.getSharedPreferences("in.rab.tsplex", 0).edit()
+        val settings = activity!!.getSharedPreferences("in.rab.tsplex", 0).edit()
 
         if (mSpeed != 0.0f) {
             settings.putFloat("signPlaybackSpeed", mSpeed)
@@ -174,12 +171,12 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             return
         }
 
-        val lexikon = Lexikon.getInstance(context)
+        val lexikon = Lexikon.getInstance(context!!)
         val videoSource = ExtractorMediaSource(Uri.parse(mVideo),
                 lexikon.dataSourceFactory, lexikon.extractorsFactory,
                 null, null)
 
-        val settings = activity.getSharedPreferences("in.rab.tsplex", 0)
+        val settings = activity!!.getSharedPreferences("in.rab.tsplex", 0)
         val speed = settings.getFloat("signPlaybackSpeed", 0.75f)
 
         exo_speed.clearCheck()
@@ -303,7 +300,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         if (mVideo == null) {
             loadingProgress.visibility = VISIBLE
-            mVideoTask = GetVideoUrlTask().execute(Lexikon.getInstance(activity))
+            mVideoTask = GetVideoUrlTask().execute(Lexikon.getInstance(activity!!))
         } else {
             playVideo()
         }

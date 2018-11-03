@@ -44,7 +44,9 @@ class SearchActivity : AppCompatActivity(), SignListFragment.OnListFragmentInter
             supportActionBar?.title = title
 
             mQuery = query
-            supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
+            if (fragment != null) {
+                supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
+            }
         } else if (Intent.ACTION_VIEW == intent.action) {
             val url = intent.dataString
             val word = intent.getStringExtra(SearchManager.EXTRA_DATA_KEY)

@@ -56,11 +56,11 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
         pager.addOnPageChangeListener(
                 object : ViewPager.SimpleOnPageChangeListener() {
                     override fun onPageSelected(position: Int) {
-                        var fragment = pager.adapter.instantiateItem(pager, mPosition) as FragmentVisibilityNotifier
+                        var fragment = pager.adapter?.instantiateItem(pager, mPosition) as FragmentVisibilityNotifier
                         fragment.onHide()
 
                         mPosition = position
-                        fragment = pager.adapter.instantiateItem(pager, position) as FragmentVisibilityNotifier
+                        fragment = pager.adapter?.instantiateItem(pager, position) as FragmentVisibilityNotifier
                         fragment.onShow()
                     }
                 }

@@ -14,15 +14,14 @@ class TopicListFragment : FragmentVisibilityNotifier, ListFragment() {
     private var listener: OnTopicClickListener? = null
     private val topics = Topics.names.values.toList()
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_topic_list, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_topic_list, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = ArrayAdapter(activity,
+        val adapter = ArrayAdapter(activity!!,
                 android.R.layout.simple_list_item_1, topics)
         listView.adapter = adapter
     }

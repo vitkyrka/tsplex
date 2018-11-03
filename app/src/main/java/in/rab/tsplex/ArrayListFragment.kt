@@ -8,8 +8,9 @@ class ArrayListFragment : SignListFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (arguments != null) {
-            signs = arguments.getParcelableArrayList(ARG_SIGNS)
+        val args = arguments
+        if (args != null) {
+            signs = args.getParcelableArrayList(ARG_SIGNS)!!
         }
     }
 

@@ -9,8 +9,8 @@ class Example internal constructor(internal val video: String, internal val desc
     }
 
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString()
+            parcel.readString()!!,
+            parcel.readString()!!
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

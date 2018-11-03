@@ -41,7 +41,7 @@ class SignProvider : ContentProvider() {
 
             MATCH_ID -> return null
 
-            MATCH_SUGGEST -> return mDatabase!!.search(uri.lastPathSegment, columns)
+            MATCH_SUGGEST -> return mDatabase!!.search(uri.lastPathSegment!!, columns)
         }
 
         return null

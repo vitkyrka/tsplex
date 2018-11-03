@@ -8,13 +8,18 @@ class SearchFragment : SignListFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (arguments != null) {
-            query = arguments.getString(ARG_QUERY)
+        val args = arguments
+        if (args != null) {
+            query = args.getString(ARG_QUERY)
         }
     }
 
     override fun getSigns(): ArrayList<Sign> {
-        val db = SignDatabase(activity)
+        val act = activity ?: return ArrayList<Sign>()
+        val db = SignDatabase(act)
+
+        if (query == null)
+            return ArrayList<Sign>()
 
         if (query!!.startsWith("topic:")) {
             val topic = query!!.substring(6)

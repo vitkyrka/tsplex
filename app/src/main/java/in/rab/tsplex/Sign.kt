@@ -17,11 +17,11 @@ class Sign internal constructor(internal val id: Int,
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.readString()!!,
             parcel.readInt(),
             parcel.readInt(),
             parcel.readInt()) {

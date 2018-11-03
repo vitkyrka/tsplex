@@ -40,7 +40,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
             return
         }
 
-        val dpToPixels = context.resources.displayMetrics.density
+        val dpToPixels = context!!.resources.displayMetrics.density
         val width = (120 * mZoom * dpToPixels + 0.5f).toInt()
         val height = (90 * mZoom * dpToPixels + 0.5f).toInt()
         val params = FlexboxLayout.LayoutParams(width, height)
@@ -59,9 +59,8 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fragment_sign_list, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_sign_list, container, false)
 
         if (view is RecyclerView) {
             val context = view.getContext()
@@ -100,16 +99,18 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
         mTask = null
         mState = recylerView?.layoutManager?.onSaveInstanceState()
 
-        val settings = activity.getSharedPreferences("in.rab.tsplex", 0).edit()
-        settings.putFloat("imageZoom", mZoom)
-        settings.apply()
+        val settings = activity?.getSharedPreferences("in.rab.tsplex", 0)?.edit()
+        settings?.putFloat("imageZoom", mZoom)
+        settings?.apply()
     }
 
     override fun onResume() {
         super.onResume()
 
-        val settings = activity.getSharedPreferences("in.rab.tsplex", 0)
-        mZoom = settings.getFloat("imageZoom", 1f)
+        val settings = activity?.getSharedPreferences("in.rab.tsplex", 0)
+        if (settings != null) {
+            mZoom = settings.getFloat("imageZoom", 1f)
+        }
 
         mTask = DatabaseTask().execute()
     }
