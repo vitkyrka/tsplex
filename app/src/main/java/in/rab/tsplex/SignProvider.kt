@@ -39,10 +39,7 @@ class SignProvider : ContentProvider() {
         when (sUriMatcher.match(uri)) {
             MATCH_ALL -> return mDatabase!!.getAll(columns)
 
-            MATCH_ID -> {
-                val columns2 = arrayOf(BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1, "video", "desc")
-                return null
-            }
+            MATCH_ID -> return null
 
             MATCH_SUGGEST -> return mDatabase!!.search(uri.lastPathSegment, columns)
         }
