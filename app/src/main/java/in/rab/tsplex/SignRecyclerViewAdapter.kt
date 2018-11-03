@@ -47,10 +47,10 @@ class SignRecyclerViewAdapter(private val mValues: List<Sign>,
         }
 
         holder.mView.setOnClickListener {
-            var sign = holder.mItem
+            val thissign = holder.mItem
 
-            if (sign != null) {
-                mListener?.onListFragmentInteraction(sign)
+            if (thissign != null) {
+                mListener?.onListFragmentInteraction(thissign)
             }
         }
     }
