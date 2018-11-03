@@ -102,6 +102,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         }
 
         val desc = mDescription!!.split("//").joinToString("//<br>")
+        @Suppress("DEPRECATION")
         view.findViewById<TextView>(R.id.textView).text = Html.fromHtml(desc)
         val idButton = view.findViewById<Button>(R.id.id)
         idButton.text = "%05d".format(mId)
