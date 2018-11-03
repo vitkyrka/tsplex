@@ -102,48 +102,16 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     }
 
     private inner class GetExamplesTask : AsyncTask<Lexikon, Void, ArrayList<Example>>() {
-        override fun doInBackground(vararg params: Lexikon): ArrayList<Example>? {
+        override fun doInBackground(vararg params: Lexikon): ArrayList<Example> {
             var examples: ArrayList<Example> = ArrayList()
             val lexikon = params[0]
 
             retryloop@ for (trial in 0..1) {
-                examples = ArrayList()
                 val page = lexikon.scraper.getSignPage(mId, trial == 1) ?: return examples
-                val videos: ArrayList<String> = ArrayList()
+                examples = lexikon.scraper.parseExamples(page)
 
-                var pattern = Pattern.compile("\"([^\"]+\\.mp4)\"")
-                var matcher = pattern.matcher(page)
-
-                // The first video is not an example
-                matcher.find()
-
-                while (matcher.find()) {
-                    val video = matcher.group(1)
-
-                    if (!video.contains("-slow") and !video.contains("-tecken.mp4")) {
-                        videos.add(video)
-                    }
-                }
-
-                pattern = Pattern.compile(">Exempel .*?\"text\">(.*?)</span>", Pattern.DOTALL)
-                matcher = pattern.matcher(page)
-                val descs: ArrayList<String> = ArrayList()
-
-                while (matcher.find()) {
-                    descs.add(matcher.group(1))
-                }
-
-                if (videos.size == 0 || videos.size != descs.size) {
-                    if (trial == 0) {
-                        continue
-                    }
-
-                    break
-                }
-
-                for (i in 0 until videos.size) {
-                    var url = "https://teckensprakslexikon.su.se/" + videos[i]
-                    examples.add(Example(url, descs[i]))
+                if (examples.isEmpty() && trial == 0) {
+                    continue
                 }
 
                 break
