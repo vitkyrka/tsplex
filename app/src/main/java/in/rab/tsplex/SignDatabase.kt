@@ -106,7 +106,7 @@ class SignDatabase(context: Context) {
     }
 
     private fun getSignsByDescription(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {
-        val selection = "descsegs_signs.rowid IN (SELECT docid FROM descsegs WHERE descsegs.content MATCH ?)";
+        val selection = "descsegs_signs.rowid IN (SELECT docid FROM descsegs WHERE descsegs.content MATCH ?)"
         val terms = query.split(" ").map { v -> v + "*" }
         val selectionArgs = arrayOf(terms.joinToString(" "))
         val sortOrder = "descsegs_signs.pos, descsegs_signs.len, sv"
@@ -118,9 +118,9 @@ class SignDatabase(context: Context) {
     }
 
     private fun getSigns(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {
-        val fixedQuery = query.trim().toLowerCase();
-        val selection = "words_signs.rowid IN (SELECT docid FROM words WHERE words.content MATCH ?) OR signs.id == ?";
-        val selectionArgs = arrayOf(fixedQuery.trim() + "*", fixedQuery);
+        val fixedQuery = query.trim().toLowerCase()
+        val selection = "words_signs.rowid IN (SELECT docid FROM words WHERE words.content MATCH ?) OR signs.id == ?"
+        val selectionArgs = arrayOf(fixedQuery.trim() + "*", fixedQuery)
         val groupBy = "signs.id"
         val sortOrder = "words_signs.len"
 
@@ -129,7 +129,7 @@ class SignDatabase(context: Context) {
         val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 groupBy, null, sortOrder)
         if (cursor.count > 0) {
-            return cursor;
+            return cursor
         }
 
         return getSignsByDescription(fixedQuery, columns, builder)
@@ -137,7 +137,7 @@ class SignDatabase(context: Context) {
 
     fun search(query: String, columns: Array<String>): Cursor {
         val builder = SQLiteQueryBuilder()
-        builder.setProjectionMap(buildColumnMap());
+        builder.setProjectionMap(buildColumnMap())
         return getSigns(query, columns, builder)
     }
 
@@ -159,7 +159,7 @@ class SignDatabase(context: Context) {
         var mask = 0
 
         while (remaining > 0) {
-            remaining = remaining shr 8;
+            remaining = remaining shr 8
             mask = (mask shl 8) or 0xff
         }
 
@@ -201,8 +201,7 @@ class SignDatabase(context: Context) {
 
     fun getDatabase() = mOpenHelper.database
 
-    private class SignDatabaseOpenHelper internal constructor(context: Context) : ShippedSQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-    }
+    private class SignDatabaseOpenHelper internal constructor(context: Context) : ShippedSQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION)
 
     companion object {
         private val DATABASE_NAME = "signs.jet"

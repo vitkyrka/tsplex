@@ -5,7 +5,7 @@ import android.os.Parcelable
 
 class Example internal constructor(internal val video: String, internal val description: String) : Parcelable {
     override fun toString(): String {
-        return description;
+        return description
     }
 
     constructor(parcel: Parcel) : this(

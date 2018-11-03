@@ -28,22 +28,22 @@ class SignRecyclerViewAdapter(private val mValues: List<Sign>,
         val urls = sign.getImageUrls()
 
         for (view in holder.imageViews) {
-            view.layoutParams = mLayoutParams;
+            view.layoutParams = mLayoutParams
         }
 
         for ((i, url) in sign.getImageUrls().withIndex()) {
             if (i >= holder.imageViews.size) {
-                break;
+                break
             }
 
             mGlide.load(url).into(holder.imageViews[i])
-            holder.imageViews[i].visibility = View.VISIBLE;
+            holder.imageViews[i].visibility = View.VISIBLE
         }
 
         for (i in urls.size until holder.imageViews.size) {
             mGlide.clear(holder.imageViews[i])
             holder.imageViews[i].setImageDrawable(null)
-            holder.imageViews[i].visibility = View.GONE;
+            holder.imageViews[i].visibility = View.GONE
         }
 
         holder.mView.setOnClickListener {
@@ -61,7 +61,7 @@ class SignRecyclerViewAdapter(private val mValues: List<Sign>,
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById<TextView>(R.id.id)
-        private val imageViewIds = intArrayOf(R.id.image1, R.id.image2, R.id.image3, R.id.image4);
+        private val imageViewIds = intArrayOf(R.id.image1, R.id.image2, R.id.image3, R.id.image4)
         val imageViews: Array<ImageView> = Array(imageViewIds.size, { i ->
             mView.findViewById<ImageView>(imageViewIds[i])
         })

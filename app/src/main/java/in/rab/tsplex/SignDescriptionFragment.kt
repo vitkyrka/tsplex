@@ -77,7 +77,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 else -> 1.0f
             }
 
-            mSpeed = speed;
+            mSpeed = speed
             mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed, 1f)
         }
 
@@ -111,9 +111,9 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             }
         })
 
-        wordText.text = mWord;
+        wordText.text = mWord
         if (mComment!!.isNotEmpty()) {
-            commentText.text = mComment;
+            commentText.text = mComment
             commentTitle.visibility = VISIBLE
             commentText.visibility = VISIBLE
         }
@@ -187,7 +187,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             else -> exo_100x.isChecked = true
         }
 
-        mSpeed = speed;
+        mSpeed = speed
 
         mSimpleExoPlayer?.prepare(videoSource)
         mSimpleExoPlayerView?.player = mSimpleExoPlayer
@@ -305,11 +305,11 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     }
 
     override fun onShow() {
-        mSimpleExoPlayer?.playWhenReady = true;
+        mSimpleExoPlayer?.playWhenReady = true
     }
 
     override fun onHide() {
-        mSimpleExoPlayer?.playWhenReady = false;
+        mSimpleExoPlayer?.playWhenReady = false
     }
 
     override fun onAttach(context: Context?) {

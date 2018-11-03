@@ -88,7 +88,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
 
     private inner class TabPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         override fun getPageTitle(position: Int): CharSequence {
-            var adjpos = position;
+            var adjpos = position
 
             if (adjpos > 0) {
                 if (mSign!!.examples.size == 0) {
@@ -112,7 +112,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
         }
 
         override fun getItem(pos: Int): android.support.v4.app.Fragment? {
-            var adjpos = pos;
+            var adjpos = pos
 
             if (adjpos > 0) {
                 if (mSign!!.examples.size == 0) {

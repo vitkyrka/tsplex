@@ -18,7 +18,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
     private var recylerView: RecyclerView? = null
     private var mState: Parcelable? = null
     private var mTask: AsyncTask<Void, Void, ArrayList<Sign>>? = null
-    private var mZoom = 1.0f;
+    private var mZoom = 1.0f
     private var mSigns: ArrayList<Sign> = arrayListOf<Sign>()
 
     protected abstract fun getSigns(): ArrayList<Sign>
@@ -29,7 +29,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
         }
 
         override fun onPostExecute(signs: ArrayList<Sign>) {
-            mSigns = signs;
+            mSigns = signs
             loadList()
         }
     }
@@ -64,7 +64,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
 
         if (view is RecyclerView) {
             val context = view.getContext()
-            val layoutManager = LinearLayoutManager(context);
+            val layoutManager = LinearLayoutManager(context)
             val decoration = DividerItemDecoration(getContext(), layoutManager.orientation)
 
             view.addItemDecoration(decoration)
@@ -77,15 +77,15 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
                         return true
                     }
 
-                    mZoom *= detector!!.scaleFactor;
-                    mZoom = Math.max(0.1f, Math.min(mZoom, 5.0f));
+                    mZoom *= detector!!.scaleFactor
+                    mZoom = Math.max(0.1f, Math.min(mZoom, 5.0f))
                     loadList()
                     return true
                 }
             })
 
             view.setOnTouchListener { _, event ->
-                scaleGestureDetector.onTouchEvent(event);
+                scaleGestureDetector.onTouchEvent(event)
                 false
             }
         }

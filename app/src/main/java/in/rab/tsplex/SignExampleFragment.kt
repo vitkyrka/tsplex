@@ -251,11 +251,11 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     }
 
     override fun onShow() {
-        mSimpleExoPlayer?.playWhenReady = true;
+        mSimpleExoPlayer?.playWhenReady = true
     }
 
     override fun onHide() {
-        mSimpleExoPlayer?.playWhenReady = false;
+        mSimpleExoPlayer?.playWhenReady = false
     }
 
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
