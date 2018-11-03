@@ -12,5 +12,4 @@ build/
 signs.jet
 app/release/
 .settings
-test/
 .gradle
