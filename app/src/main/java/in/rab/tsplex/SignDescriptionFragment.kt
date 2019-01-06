@@ -115,7 +115,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             commentText.visibility = VISIBLE
         }
 
-        if (mTopic1 != 0) {
+        if (mTopic1 != 0 && Topics.names[mTopic1]?.startsWith("Ospec") == false) {
             view.findViewById<TextView>(R.id.topics).visibility = VISIBLE
 
             var button = view.findViewById<Button>(R.id.topic1)
