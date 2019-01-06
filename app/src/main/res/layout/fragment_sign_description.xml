@@ -96,36 +96,33 @@
                 android:text="@string/topic"
                 android:visibility="gone" />
 
-            <com.google.android.flexbox.FlexboxLayout
-                app:flexWrap="wrap"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/topic1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:textAllCaps="false"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:paddingLeft="4dp"
+                android:textColor="@color/primary"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:visibility="gone" />
 
-                <Button
-                    android:id="@+id/topic1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp"
-                    android:textAllCaps="false"
-                    android:backgroundTint="@color/primary"
-                    android:textColor="@android:color/primary_text_dark"
-                    android:visibility="gone" />
-
-                <Button
-                    android:id="@+id/topic2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp"
-                    android:textAllCaps="false"
-                    android:backgroundTint="@color/primary"
-                    android:textColor="@android:color/primary_text_dark"
-                    android:visibility="gone" />
-
-            </com.google.android.flexbox.FlexboxLayout>
+            <Button
+                android:id="@+id/topic2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:textAllCaps="false"
+                android:paddingTop="0dp"
+                android:paddingLeft="4dp"
+                android:paddingBottom="0dp"
+                android:textColor="@color/primary"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:visibility="gone" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -141,12 +138,14 @@
                 android:id="@+id/id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
                 android:minHeight="0dp"
                 android:minWidth="0dp"
                 android:textAllCaps="false"
-                android:backgroundTint="@color/primary"
-                android:textColor="@android:color/primary_text_dark" />
+                android:paddingTop="0dp"
+                android:paddingLeft="4dp"
+                android:paddingBottom="0dp"
+                android:textColor="@color/primary"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
             <TextView
                 android:layout_width="wrap_content"
