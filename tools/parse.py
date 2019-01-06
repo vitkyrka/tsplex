@@ -107,7 +107,7 @@ def get_topic_ids(signs):
             base = alltopics
             parts = topic.split(' / ')
             for i, topic in enumerate(parts):
-                name = ' / '.join(parts[:i + 1])
+                name = ' » '.join(parts[:i + 1])
                 try:
                     base = base[name]
                 except KeyError:
