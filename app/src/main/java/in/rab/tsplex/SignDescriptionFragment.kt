@@ -101,10 +101,10 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         @Suppress("DEPRECATION")
         view.findViewById<TextView>(R.id.textView).text = Html.fromHtml(desc)
         val idButton = view.findViewById<Button>(R.id.id)
-        idButton.text = "%05d".format(mId)
+        idButton.text = "[%05d]".format(mId)
         idButton.setOnClickListener { v ->
             val b: Button = v as Button
-            val url = "https://teckensprakslexikon.su.se/ord/" + b.text
+            val url = "https://teckensprakslexikon.su.se/ord/%05d".format(mId)
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 

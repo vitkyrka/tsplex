@@ -67,16 +67,39 @@
                 android:textColor="#000"
                 android:text="@string/word" />
 
-            <TextView
-                android:id="@+id/wordText"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="0dp"
-                android:textColor="#000" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/wordText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:textColor="#000" />
+
+                <Button
+                    android:id="@+id/id"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:textAllCaps="false"
+                    android:paddingTop="0dp"
+                    android:paddingLeft="4dp"
+                    android:paddingBottom="0dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/commentTitle"
@@ -145,31 +168,6 @@
                 android:textColor="@color/primary"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:visibility="gone" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="0dp"
-                android:textColor="#000"
-                android:text="@string/id" />
-
-            <Button
-                android:id="@+id/id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:textAllCaps="false"
-                android:paddingTop="0dp"
-                android:paddingLeft="4dp"
-                android:paddingBottom="0dp"
-                android:textSize="16sp"
-                android:textColor="@color/primary"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
         </LinearLayout>
 
