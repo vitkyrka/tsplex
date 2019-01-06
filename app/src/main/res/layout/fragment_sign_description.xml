@@ -39,7 +39,10 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:layout_marginTop="0dp"
-                android:layout_marginBottom="4dp" />
+                android:layout_marginBottom="4dp"
+                android:scrollHorizontally="true"
+                android:maxLines="3"
+                android:ellipsize="end" />
 
             <ImageView
                 android:id="@+id/transcriptionImage"

@@ -131,12 +131,14 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             }
         }
 
-        textView.setOnClickListener { v ->
-            if (transcriptionImage.visibility == VISIBLE)
+        textView.setOnClickListener {
+            if (transcriptionImage.visibility == VISIBLE) {
                 transcriptionImage.visibility = GONE
-            else {
+                textView.maxLines = 3
+            } else {
                 Glide.with(this).load(mTranscriptionUrl).into(transcriptionImage)
                 transcriptionImage.visibility = VISIBLE
+                textView.maxLines = 100
             }
         }
     }
