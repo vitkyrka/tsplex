@@ -115,8 +115,6 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             commentText.visibility = VISIBLE
         }
 
-        Glide.with(this).load(mTranscriptionUrl).into(transcriptionImage)
-
         if (mTopic1 != 0) {
             view.findViewById<TextView>(R.id.topics).visibility = VISIBLE
 
@@ -130,6 +128,15 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 button.text = Topics.names[mTopic2]
                 button.setOnClickListener { mListener!!.onTopicClick(mTopic2) }
                 button.visibility = VISIBLE
+            }
+        }
+
+        textView.setOnClickListener { v ->
+            if (transcriptionImage.visibility == VISIBLE)
+                transcriptionImage.visibility = GONE
+            else {
+                Glide.with(this).load(mTranscriptionUrl).into(transcriptionImage)
+                transcriptionImage.visibility = VISIBLE
             }
         }
     }
