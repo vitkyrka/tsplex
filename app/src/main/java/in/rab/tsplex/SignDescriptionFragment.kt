@@ -116,7 +116,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         }
 
         if (mTopic1 != 0 && Topics.names[mTopic1]?.startsWith("Ospec") == false) {
-            view.findViewById<TextView>(R.id.topics).visibility = VISIBLE
+            topics.visibility = VISIBLE
 
             var button = view.findViewById<Button>(R.id.topic1)
             button.text = Topics.names[mTopic1]
@@ -128,6 +128,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 button.text = Topics.names[mTopic2]
                 button.setOnClickListener { mListener!!.onTopicClick(mTopic2) }
                 button.visibility = VISIBLE
+
+                topics.text = getString(R.string.topics)
             }
         }
 
