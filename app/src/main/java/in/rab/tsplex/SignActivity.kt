@@ -90,12 +90,6 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
             var adjpos = position
 
             if (adjpos > 0) {
-                if (mSign!!.examples.size == 0) {
-                    adjpos += 1
-                }
-            }
-
-            if (adjpos > 1) {
                 if (mSynonyms!!.size == 0) {
                     adjpos += 1
                 }
@@ -103,9 +97,8 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
 
             return when (adjpos) {
                 0 -> getText(R.string.sign)
-                1 -> getText(R.string.examples)
-                2 -> getText(R.string.other_signs)
-                3 -> getText(R.string.other_meanings)
+                1 -> getText(R.string.other_signs)
+                2 -> getText(R.string.other_meanings)
                 else -> ""
             }
         }
@@ -114,12 +107,6 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
             var adjpos = pos
 
             if (adjpos > 0) {
-                if (mSign!!.examples.size == 0) {
-                    adjpos += 1
-                }
-            }
-
-            if (adjpos > 1) {
                 if (mSynonyms!!.size == 0) {
                     adjpos += 1
                 }
@@ -127,19 +114,14 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
 
             return when (adjpos) {
                 0 -> SignDescriptionFragment.newInstance(mSign!!)
-                1 -> SignExampleFragment.newInstance(mSign!!)
-                2 -> ArrayListFragment.newInstance(mSynonyms!!)
-                3 -> ArrayListFragment.newInstance(mHomonyms!!)
+                1 -> ArrayListFragment.newInstance(mSynonyms!!)
+                2 -> ArrayListFragment.newInstance(mHomonyms!!)
                 else -> null
             }
         }
 
         override fun getCount(): Int {
             var count = 1
-
-            if (mSign!!.examples.size > 0) {
-                count += 1
-            }
 
             if (mSynonyms!!.size > 0) {
                 count += 1
