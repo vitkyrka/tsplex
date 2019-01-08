@@ -75,7 +75,7 @@ class Scraper(private var client: OkHttpClient) {
 
         val descs: ArrayList<String> = ArrayList()
         while (matcher.find()) {
-            descs.add(matcher.group(1))
+            descs.add(matcher.group(1).trim())
         }
 
         val examples: ArrayList<Example> = ArrayList()
