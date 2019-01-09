@@ -42,17 +42,13 @@ def parse_one(f):
     x = lxml.html.parse(f)
     root = x.getroot()
 
-    scripts = root.xpath('//div[contains(@class, "videodiv")]//script')
-    videos = [next(l for l in script.text.splitlines() if '.mp4' in l).strip('" ,').split('"')[1]
-              for script in scripts
-              if '-slow' not in script.text]
-
+    video = root.xpath('//source[@type="video/mp4"]/@src')[0]
+    examplevids = root.xpath('//a/@data-video')
     exampledescs = root.xpath('//ul[@class="video-example-nav"]//span[@class="text"]/text()')
-    examplevids = videos[1:]
 
     assert(len(exampledescs) == len(examplevids))
 
-    sign['video'] = videos[0]
+    sign['video'] = video
     sign['examples'] = list(zip(examplevids, exampledescs))
 
     word = root.xpath('//div[@class="su-infohead"]/h2/text()')[0].strip()
