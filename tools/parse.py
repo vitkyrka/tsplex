@@ -199,6 +199,7 @@ def main():
     conn.execute("CREATE TABLE android_metadata (locale TEXT DEFAULT en_US)")
     conn.execute("INSERT INTO android_metadata VALUES ('en_US')")
 
+    conn.execute("COMMIT")
     conn.execute("BEGIN")
 
     for sign in signs:
