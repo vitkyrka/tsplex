@@ -210,8 +210,8 @@ def main():
                       sign['slug'],
                       len(sign['images']),
                       sign['beskrivning'],
-                      topictoid[sign['ämne'][0]],
-                      topictoid[sign['ämne'][1]] if len(sign['ämne']) > 1 else 0,
+                      topictoid[sign['ämne'][0].replace('/', '»')],
+                      topictoid[sign['ämne'][1].replace('/', '»')] if len(sign['ämne']) > 1 else 0,
                       sign['kommentar']))
 
         for word in sign['ord']:
