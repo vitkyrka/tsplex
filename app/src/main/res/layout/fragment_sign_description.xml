@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -40,6 +40,7 @@
                     android:id="@+id/wordText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:layout_marginLeft="4dp"
@@ -50,20 +51,20 @@
 
                 <Button
                     android:id="@+id/id"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
+                    android:layout_alignParentRight="true"
                     android:minHeight="0dp"
                     android:minWidth="0dp"
                     android:textAllCaps="false"
-                    android:paddingTop="0dp"
-                    android:paddingLeft="4dp"
+                    android:paddingTop="2dp"
+                    android:paddingLeft="0dp"
                     android:paddingBottom="0dp"
                     android:textSize="12sp"
                     android:textColor="@color/primary"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/textView"
