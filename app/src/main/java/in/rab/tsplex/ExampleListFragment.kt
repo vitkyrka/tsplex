@@ -1,7 +1,9 @@
 package `in`.rab.tsplex
 
 import android.annotation.SuppressLint
+import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.AsyncTask
@@ -28,24 +30,14 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import kotlinx.android.synthetic.main.fragment_signexample.*
 
-class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
+class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
     private var mExamples: ArrayList<Example>? = null
     private var mSimpleExoPlayerView: SimpleExoPlayerView? = null
     private var mSimpleExoPlayer: SimpleExoPlayer? = null
     private var mPosition = -1
-    private var mId: Int = 0
-    private var mTask: AsyncTask<Lexikon, Void, ArrayList<Example>>? = null
+    private var mTask: AsyncTask<Void, Void, ArrayList<Example>>? = null
     private var mControllerVisible: Boolean = false
     private var mSpeed: Float = 0.0f
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val args = arguments
-        if (args != null) {
-            mId = args.getInt(ARG_ID)
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_signexample, container, false)
@@ -84,44 +76,19 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
             }
             true
         }
-    }
 
-    private inner class UncachePage : AsyncTask<Lexikon, Void, Void>() {
-        override fun doInBackground(vararg params: Lexikon): Void? {
-            val example = mExamples?.get(mPosition) ?: return null
-            val lexikon = params[0]
+        listView.setOnItemLongClickListener { parent, _, position, _ ->
+            val l = parent as ListView
+            val example = l.adapter?.getItem(position) as Example
 
-            if (lexikon.scraper.isDeadLink(example.video)) {
-                // The parsing will only happen when this sign is opened the next time
-                lexikon.scraper.getSignPage(mId, true)
-            }
+            val q = Uri.parse(example.video).lastPathSegment
+            val intent = Intent(activity, SearchActivity::class.java)
+            intent.action = Intent.ACTION_SEARCH
+            intent.putExtra(Intent.EXTRA_TITLE, example.toString())
+            intent.putExtra(SearchManager.QUERY, "ex:$q")
 
-            return null
-        }
-    }
-
-    private inner class GetExamplesTask : AsyncTask<Lexikon, Void, ArrayList<Example>>() {
-        override fun doInBackground(vararg params: Lexikon): ArrayList<Example> {
-            var examples: ArrayList<Example> = ArrayList()
-            val lexikon = params[0]
-
-            retryloop@ for (trial in 0..1) {
-                val page = lexikon.scraper.getSignPage(mId, trial == 1) ?: return examples
-                examples = lexikon.scraper.parseExamples(page)
-
-                if (examples.isEmpty() && trial == 0) {
-                    continue
-                }
-
-                break
-            }
-
-            return examples
-        }
-
-        override fun onPostExecute(examples: ArrayList<Example>) {
-            mExamples = examples
-            playVideo()
+            startActivity(intent)
+            false
         }
     }
 
@@ -156,13 +123,25 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         mSimpleExoPlayerView?.visibility = GONE
 
         val msg: String = if (isOnline()) {
-            UncachePage().execute(Lexikon.getInstance(activity!!))
             getString(R.string.fail_video_play)
         } else {
             getString(R.string.fail_offline)
         }
 
         Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
+    }
+
+    private inner class DatabaseTask : AsyncTask<Void, Void, ArrayList<Example>>() {
+        override fun doInBackground(vararg params: Void): ArrayList<Example> {
+            val act = activity ?: return ArrayList<Example>()
+
+            return SignDatabase(act).getExamples()
+        }
+
+        override fun onPostExecute(signs: ArrayList<Example>) {
+            mExamples = signs
+            playVideo()
+        }
     }
 
     override fun onResume() {
@@ -205,7 +184,7 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         })
 
         val settings = activity!!.getSharedPreferences("in.rab.tsplex", 0)
-        val speed = settings.getFloat("examplePlaybackSpeed", 0.75f)
+        val speed = settings.getFloat("signPlaybackSpeed", 0.75f)
 
         exo_speed.clearCheck()
 
@@ -218,12 +197,14 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
         mSpeed = speed
 
         mSimpleExoPlayerView!!.player = mSimpleExoPlayer
-        mSimpleExoPlayer!!.repeatMode = settings.getInt("exampleRepeatMode", REPEAT_MODE_ALL)
+        mSimpleExoPlayer!!.repeatMode = settings.getInt("signRepeatMode", REPEAT_MODE_ALL)
         mSimpleExoPlayer!!.playbackParameters = PlaybackParameters(speed, 1f)
         mSimpleExoPlayer!!.playWhenReady = true
 
+
+
         if (mExamples == null) {
-            mTask = GetExamplesTask().execute(Lexikon.getInstance(activity!!))
+            mTask = DatabaseTask().execute()
         } else {
             playVideo()
         }
@@ -269,16 +250,8 @@ class SignExampleFragment : FragmentVisibilityNotifier, ListFragment() {
     }
 
     companion object {
-        private const val ARG_ID = "id"
-
-        fun newInstance(sign: Sign): SignExampleFragment {
-            val fragment = SignExampleFragment()
-            val args = Bundle()
-
-            args.putInt(ARG_ID, sign.id)
-
-            fragment.arguments = args
-            return fragment
+        fun newInstance(): ExampleListFragment {
+            return ExampleListFragment()
         }
     }
 }

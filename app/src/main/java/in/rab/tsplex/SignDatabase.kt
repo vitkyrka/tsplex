@@ -166,6 +166,23 @@ class SignDatabase(context: Context) {
         return mask
     }
 
+    fun getExamples(): ArrayList<Example> {
+        var examples = ArrayList<Example>()
+        val builder = SQLiteQueryBuilder()
+        builder.tables = "examples"
+
+        val columns = arrayOf("video", "desc")
+        val cursor = builder.query(mOpenHelper.database, columns, null, null,
+                "video", null, "desc") ?: return examples
+
+        while (cursor.moveToNext()) {
+            examples.add(Example("https://teckensprakslexikon.su.se/" + cursor.getString(0), cursor.getString(1)))
+        }
+
+        cursor.close()
+        return examples
+    }
+
     fun getExampleSigns(keyword: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val columns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "comment", "slug", "images", "topic1", "topic2")

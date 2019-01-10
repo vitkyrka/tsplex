@@ -69,6 +69,12 @@ class HomeActivity : AppCompatActivity(), SignListFragment.OnListFragmentInterac
                     actionBar.setTitle(R.string.title_topics)
                     return@setNavigationItemSelectedListener true
                 }
+                R.id.navigation_examples -> {
+                    val fragment: Fragment? = ExampleListFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
+                    actionBar.setTitle(R.string.title_examples)
+                    return@setNavigationItemSelectedListener true
+                }
                 else -> {
                     return@setNavigationItemSelectedListener false
                 }
