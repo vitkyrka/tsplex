@@ -117,6 +117,26 @@
                 android:visibility="gone" />
 
             <TextView
+                android:id="@+id/videosHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="0dp"
+                android:text="@string/video"
+                android:textSize="12sp"
+                android:textColor="#000"
+                android:visibility="gone" />
+
+            <RadioGroup
+                android:id="@+id/videoGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/topics"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -156,26 +176,6 @@
                 android:paddingBottom="0dp"
                 android:textColor="@color/primary"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/videosHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="0dp"
-                android:text="@string/video"
-                android:textSize="12sp"
-                android:textColor="#000"
-                android:visibility="gone" />
-
-            <RadioGroup
-                android:id="@+id/videoGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:visibility="gone" />
 
         </LinearLayout>
