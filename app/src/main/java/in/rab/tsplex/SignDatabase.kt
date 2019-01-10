@@ -166,6 +166,28 @@ class SignDatabase(context: Context) {
         return mask
     }
 
+    fun getExampleSigns(keyword: String): ArrayList<Sign> {
+        val signs = ArrayList<Sign>()
+        val columns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "comment", "slug", "images", "topic1", "topic2")
+        val selection = "examples.desc LIKE ? OR examples.video LIKE ?"
+        val like = "%$keyword%"
+        val selectionArgs = arrayOf(like, like)
+        val groupBy = "signs.id"
+
+        val builder = SQLiteQueryBuilder()
+        builder.tables = "signs JOIN examples ON examples.id == signs.id"
+
+        val cursor: Cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
+                groupBy, null, "sv") ?: return signs
+
+        while (cursor.moveToNext()) {
+            signs.add(makeSign(cursor))
+        }
+
+        cursor.close()
+        return signs
+    }
+
     fun getTopicSigns(topic: Int): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val mask = getMask(topic)

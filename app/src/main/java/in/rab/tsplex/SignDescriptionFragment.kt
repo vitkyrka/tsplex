@@ -199,6 +199,10 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                     mPosition = i
                     mSimpleExoPlayer?.prepare(videoSource)
                 }
+                v.setOnLongClickListener {
+                    mListener?.onExampleLongClick(adapter.getItem(i)!!)
+                    true
+                }
                 if (i == 0) {
                     v.isChecked = true
                 }
@@ -391,6 +395,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
     interface OnTopicClickListener {
         fun onTopicClick(topic: Int)
+        fun onExampleLongClick(example: Example)
     }
 
     companion object {

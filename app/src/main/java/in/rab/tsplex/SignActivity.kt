@@ -7,6 +7,7 @@ import android.app.SearchManager
 import android.content.ContentValues
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.TabLayout
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
@@ -69,6 +71,16 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
         mTabLayout = findViewById(R.id.tabs)
 
         SignLoadTask().execute(Integer.parseInt(url))
+    }
+
+    override fun onExampleLongClick(example: Example) {
+        val q = Uri.parse(example.video).lastPathSegment
+        val intent = Intent(this, SearchActivity::class.java)
+        intent.action = Intent.ACTION_SEARCH
+        intent.putExtra(Intent.EXTRA_TITLE, example.toString())
+        intent.putExtra(SearchManager.QUERY, "ex:" + q)
+
+        startActivity(intent)
     }
 
     override fun onTopicClick(topic: Int) {
