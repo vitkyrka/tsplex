@@ -209,11 +209,6 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 videoGroup.addView(v)
             }
 
-            if (adapter.count > 1) {
-                videosHeader.text = getString(R.string.videos)
-            }
-
-            videosHeader.visibility = VISIBLE
             videoGroup.visibility = VISIBLE
         }
 
