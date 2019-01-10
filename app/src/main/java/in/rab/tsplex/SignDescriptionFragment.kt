@@ -179,6 +179,10 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             val adapter = ArrayAdapter(activity!!,
                     R.layout.item_video, mExamples!!)
             mAdapter = adapter
+        }
+
+        if (videoGroup.visibility != VISIBLE && mAdapter != null) {
+            val adapter = mAdapter!!
 
             for (i in 0 until adapter.count) {
                 val v = adapter.getView(i, null, videoGroup) as RadioButton
@@ -208,12 +212,26 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 }
                 videoGroup.addView(v)
             }
-
-            videoGroup.visibility = VISIBLE
         }
 
+        var video: String? = null
+
+        if (mPosition >= 0) {
+            video = mExamples?.get(mPosition)?.video
+            if (video != null) {
+                val r  = videoGroup.getChildAt(mPosition) as RadioButton
+                r.isChecked = true
+            }
+        }
+
+        if (video == null)  {
+            video = mVideo
+        }
+
+        videoGroup.visibility = VISIBLE
+
         val lexikon = Lexikon.getInstance(context!!)
-        val videoSource = ExtractorMediaSource(Uri.parse(mVideo),
+        val videoSource = ExtractorMediaSource(Uri.parse(video),
                 lexikon.dataSourceFactory, lexikon.extractorsFactory,
                 null, null)
         mSimpleExoPlayer?.prepare(videoSource)
