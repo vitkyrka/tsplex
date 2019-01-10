@@ -227,7 +227,7 @@ class SignDatabase(context: Context) {
 
     companion object {
         private const val DATABASE_NAME = "signs.jet"
-        private const val DATABASE_VERSION = 27
+        private const val DATABASE_VERSION = 28
 
         private fun buildColumnMap(): HashMap<String, String> {
             val map = HashMap<String, String>()

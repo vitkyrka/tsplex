@@ -173,7 +173,7 @@ def main():
     except:
         pass
 
-    version = 27
+    version = 28
 
     conn = sqlite3.connect(args.db)
 
