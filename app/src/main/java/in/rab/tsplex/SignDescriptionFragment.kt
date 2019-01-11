@@ -45,6 +45,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mTranscriptionUrl: String? = null
     private var mExamples: ArrayList<Example>? = null
     private var mPosition = 0
+    private var mScrollPos = 0
     private var mAdapter: ArrayAdapter<Example>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +63,13 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             mTopic2 = args.getInt(ARG_TOPIC2)
             mExamples = args.getParcelableArrayList(ARG_EXAMPLES)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putInt("scrollPos", scrollView.scrollY)
+        outState.putInt("videoPosition", mPosition)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -182,6 +190,11 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         }
 
         videoGroup.visibility = VISIBLE
+
+        if (savedInstanceState != null) {
+            mScrollPos = savedInstanceState.getInt("scrollPos")
+            mPosition = savedInstanceState.getInt("videoPosition", -1)
+        }
     }
 
     override fun onPause() {
@@ -196,6 +209,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         settings.putInt("signRepeatMode", exo.repeatMode)
         settings.apply()
+
+        mScrollPos = scrollView.scrollY
 
         mSimpleExoPlayerView?.player = null
         exo.release()
@@ -273,6 +288,12 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 if (playbackState == Player.STATE_READY) {
                     mSimpleExoPlayerView?.visibility = VISIBLE
                     loadingProgress.visibility = GONE
+
+                    if (mScrollPos != 0) {
+                        val scrollPos = mScrollPos
+                        scrollView.post { scrollView.smoothScrollTo(0, scrollPos) }
+                        mScrollPos = 0
+                    }
                 }
             }
 
