@@ -6,7 +6,7 @@ import java.util.*
 
 class Sign internal constructor(internal val id: Int,
                                 internal val word: String,
-                                private val video: String,
+                                internal val video: String,
                                 internal val description: String,
                                 internal val comment: String,
                                 private val slug: String,

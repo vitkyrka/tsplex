@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Html
@@ -32,8 +31,8 @@ import kotlinx.android.synthetic.main.fragment_sign_description.*
 
 class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mListener: OnTopicClickListener? = null
-    private var mVideo: String? = null
     private var mWord: String? = null
+    private var mVideo: String? = null
     private var mDescription: String? = null
     private var mComment: String? = null
     private var mSimpleExoPlayerView: SimpleExoPlayerView? = null
@@ -41,14 +40,12 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mTopic1: Int = 0
     private var mTopic2: Int = 0
     private var mId: Int = 0
-    private var mVideoTask: AsyncTask<Lexikon, Void, Pair<String, ArrayList<Example>>?>? = null
     private var mControllerVisible: Boolean = false
     private var mSpeed: Float = 0.0f
-    private var mTranscriptionUrl: String ?= null
+    private var mTranscriptionUrl: String? = null
     private var mExamples: ArrayList<Example>? = null
-    private var mPosition = -1
+    private var mPosition = 0
     private var mAdapter: ArrayAdapter<Example>? = null
-    private var mNumExamples: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,11 +55,12 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             mId = args.getInt(ARG_ID)
             mWord = args.getString(ARG_WORD)
             mDescription = args.getString(ARG_DESC)
+            mVideo = args.getString(ARG_VIDEO)
             mComment = args.getString(ARG_COMMENT)
             mTranscriptionUrl = args.getString(ARG_TRANSCRIPTION)
             mTopic1 = args.getInt(ARG_TOPIC1)
             mTopic2 = args.getInt(ARG_TOPIC2)
-            mNumExamples = args.getInt(ARG_NUM_EXAMPLES)
+            mExamples = args.getParcelableArrayList(ARG_EXAMPLES)
         }
     }
 
@@ -147,13 +145,47 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 textView.maxLines = 100
             }
         }
+
+        val videoExample = arrayListOf(Example(mVideo!!, mWord!!))
+        val adapter = ArrayAdapter(activity!!,
+                R.layout.item_video, videoExample + mExamples!!)
+
+        mAdapter = adapter
+
+        for (i in 0 until adapter.count) {
+            val v = adapter.getView(i, null, videoGroup) as RadioButton
+            v.id = i
+            v.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked)
+                    buttonView.typeface = Typeface.DEFAULT_BOLD
+                else
+                    buttonView.typeface = Typeface.DEFAULT
+            }
+            v.setOnClickListener {
+                val example = adapter.getItem(i) as Example
+                val lexikon = Lexikon.getInstance(context!!)
+                val videoSource = ExtractorMediaSource(Uri.parse("https://teckensprakslexikon.su.se/" + example.video),
+                        lexikon.dataSourceFactory, lexikon.extractorsFactory,
+                        null, null)
+
+                mPosition = i
+                mSimpleExoPlayer?.prepare(videoSource)
+            }
+            v.setOnLongClickListener {
+                mListener?.onExampleLongClick(adapter.getItem(i)!!)
+                true
+            }
+            if (i == 0) {
+                v.isChecked = true
+            }
+            videoGroup.addView(v)
+        }
+
+        videoGroup.visibility = VISIBLE
     }
 
     override fun onPause() {
         super.onPause()
-
-        mVideoTask?.cancel(true)
-        mVideoTask = null
 
         val exo = mSimpleExoPlayer ?: return
         val settings = activity!!.getSharedPreferences("in.rab.tsplex", 0).edit()
@@ -168,87 +200,23 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         mSimpleExoPlayerView?.player = null
         exo.release()
         mSimpleExoPlayer = null
+
     }
 
-    fun playVideo() {
+    private fun playVideo() {
         if (context == null) {
             return
         }
 
-        if (mAdapter == null) {
-            val adapter = ArrayAdapter(activity!!,
-                    R.layout.item_video, mExamples!!)
-            mAdapter = adapter
-        }
-
-        if (videoGroup.visibility != VISIBLE && mAdapter != null) {
-            val adapter = mAdapter!!
-
-            for (i in 0 until adapter.count) {
-                val v = adapter.getView(i, null, videoGroup) as RadioButton
-                v.id = i
-                v.setOnCheckedChangeListener { buttonView, isChecked ->
-                    if (isChecked)
-                        buttonView.typeface = Typeface.DEFAULT_BOLD
-                    else
-                        buttonView.typeface = Typeface.DEFAULT
-                }
-                v.setOnClickListener{
-                    val example = adapter.getItem(i) as Example
-                    val lexikon = Lexikon.getInstance(context!!)
-                    val videoSource = ExtractorMediaSource(Uri.parse(example.video),
-                            lexikon.dataSourceFactory, lexikon.extractorsFactory,
-                            null, null)
-
-                    mPosition = i
-                    mSimpleExoPlayer?.prepare(videoSource)
-                }
-                v.setOnLongClickListener {
-                    mListener?.onExampleLongClick(adapter.getItem(i)!!)
-                    true
-                }
-                if (i == 0) {
-                    v.isChecked = true
-                }
-                videoGroup.addView(v)
-            }
-        }
-
-        var video: String? = null
-
-        if (mPosition >= 0) {
-            video = mExamples?.get(mPosition)?.video
-            if (video != null) {
-                val r  = videoGroup.getChildAt(mPosition) as RadioButton
-                r.isChecked = true
-            }
-        }
-
-        if (video == null)  {
-            video = mVideo
-        }
-
-        videoGroup.visibility = VISIBLE
+        val video = mAdapter?.getItem(mPosition)?.video ?: return
+        val r = videoGroup.getChildAt(mPosition) as RadioButton
+        r.isChecked = true
 
         val lexikon = Lexikon.getInstance(context!!)
-        val videoSource = ExtractorMediaSource(Uri.parse(video),
+        val videoSource = ExtractorMediaSource(Uri.parse("https://teckensprakslexikon.su.se/$video"),
                 lexikon.dataSourceFactory, lexikon.extractorsFactory,
                 null, null)
         mSimpleExoPlayer?.prepare(videoSource)
-    }
-
-    private inner class UncachePage : AsyncTask<Lexikon, Void, Void>() {
-        override fun doInBackground(vararg params: Lexikon): Void? {
-            val example = mExamples?.get(mPosition) ?: return null
-            val lexikon = params[0]
-
-            if (lexikon.scraper.isDeadLink(example.video)) {
-                // The parsing will only happen when this sign is opened the next time
-                lexikon.scraper.getSignPage(mId, true)
-            }
-
-            return null
-        }
     }
 
     private fun isOnline(): Boolean {
@@ -262,62 +230,12 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         mSimpleExoPlayerView?.visibility = GONE
 
         val msg: String = if (isOnline()) {
-            UncachePage().execute(Lexikon.getInstance(activity!!))
             getString(R.string.fail_video_play)
         } else {
             getString(R.string.fail_offline)
         }
 
         Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
-    }
-
-    private inner class GetVideoUrlTask : AsyncTask<Lexikon, Void, Pair<String, ArrayList<Example>>?>() {
-        override fun doInBackground(vararg params: Lexikon): Pair<String, ArrayList<Example>>? {
-            var examples: ArrayList<Example> = ArrayList()
-            val lexikon = params[0]
-
-            for (trial in 0..1) {
-                val page = lexikon.scraper.getSignPage(mId, trial == 1) ?: return null
-                val url = lexikon.scraper.parseVideoUrl(page)
-
-                if (url == null) {
-                    if (trial == 0) {
-                        continue
-                    }
-
-                    return null
-                }
-
-                if (!lexikon.cacheVideo(url)) {
-                    if (trial == 0 && lexikon.scraper.isDeadLink(url)) {
-                        continue
-                    }
-
-                    return null
-                }
-
-                examples = lexikon.scraper.parseExamples(page)
-                if (mNumExamples > 0 && examples.isEmpty() && trial == 0) {
-                    continue
-                }
-
-                examples.add(0, Example(url.toString(), mWord!!))
-                return Pair(url.toString(), examples)
-            }
-
-            return null
-        }
-
-        override fun onPostExecute(result: Pair<String, ArrayList<Example>>?) {
-            if (result == null) {
-                showError()
-                return
-            }
-
-            mVideo = result.first
-            mExamples = result.second
-            playVideo()
-        }
     }
 
     override fun onResume() {
@@ -378,12 +296,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed, 1f)
         mSimpleExoPlayer?.playWhenReady = true
 
-        if (mVideo == null) {
-            loadingProgress.visibility = VISIBLE
-            mVideoTask = GetVideoUrlTask().execute(Lexikon.getInstance(activity!!))
-        } else {
-            playVideo()
-        }
+        loadingProgress.visibility = VISIBLE
+        playVideo()
     }
 
     override fun onShow() {
@@ -415,11 +329,12 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         private const val ARG_ID = "id"
         private const val ARG_WORD = "word"
         private const val ARG_DESC = "desc"
+        private const val ARG_VIDEO = "video"
         private const val ARG_COMMENT = "comment"
         private const val ARG_TOPIC1 = "topic1"
         private const val ARG_TOPIC2 = "topic2"
         private const val ARG_TRANSCRIPTION = "transcription"
-        private const val ARG_NUM_EXAMPLES = "numexamples"
+        private const val ARG_EXAMPLES = "examples"
 
         fun newInstance(sign: Sign): SignDescriptionFragment {
             val fragment = SignDescriptionFragment()
@@ -429,11 +344,12 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             args.putInt(ARG_ID, sign.id)
             args.putString(ARG_DESC, desc.toString())
             args.putString(ARG_WORD, sign.word)
+            args.putString(ARG_VIDEO, sign.video)
             args.putString(ARG_COMMENT, sign.comment)
             args.putString(ARG_TRANSCRIPTION, sign.getTranscriptionUrl())
             args.putInt(ARG_TOPIC1, sign.topic1)
             args.putInt(ARG_TOPIC2, sign.topic2)
-            args.putInt(ARG_NUM_EXAMPLES, sign.examples.size)
+            args.putParcelableArrayList(ARG_EXAMPLES, sign.examples)
 
             fragment.arguments = args
             return fragment
