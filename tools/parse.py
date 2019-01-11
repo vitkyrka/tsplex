@@ -44,7 +44,7 @@ def parse_one(f):
 
     video = root.xpath('//source[@type="video/mp4"]/@src')[0]
     examplevids = root.xpath('//a/@data-video')
-    exampledescs = root.xpath('//ul[@class="video-example-nav"]//span[@class="text"]/text()')
+    exampledescs = [x.strip() for x in root.xpath('//ul[@class="video-example-nav"]//span[@class="text"]/text()')]
 
     assert(len(exampledescs) == len(examplevids))
 
@@ -173,7 +173,7 @@ def main():
     except:
         pass
 
-    version = 28
+    version = 29
 
     conn = sqlite3.connect(args.db)
 
