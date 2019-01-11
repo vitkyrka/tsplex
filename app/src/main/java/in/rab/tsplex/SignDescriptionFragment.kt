@@ -107,9 +107,13 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             true
         }
 
-        val desc = mDescription!!.split("//").joinToString("//<br>")
+        var desc = mDescription!!.split("//").joinToString("//<br>")
+        if (!desc.endsWith('.')) {
+            desc = "$desc."
+        }
+
         @Suppress("DEPRECATION")
-        view.findViewById<TextView>(R.id.textView).text = Html.fromHtml("$desc.")
+        view.findViewById<TextView>(R.id.textView).text = Html.fromHtml(desc)
         val idButton = view.findViewById<Button>(R.id.id)
         idButton.text = "[%05d]".format(mId)
         idButton.setOnClickListener { v ->
