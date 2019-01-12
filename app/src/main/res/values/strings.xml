@@ -33,7 +33,7 @@
     <string name="topic">Ämne</string>
     <string name="topics">Ämnen</string>
     <string name="id">ID-nummer</string>
-    <string name="filter_list">Filtrera listan...</string>
+    <string name="filter_list">Sök i listan</string>
     <string name="fail_video_play">Videouppspelning misslyckades.</string>
     <string name="fail_offline">Ingen anslutning.</string>
 

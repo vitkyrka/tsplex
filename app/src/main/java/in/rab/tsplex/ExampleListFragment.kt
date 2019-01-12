@@ -40,6 +40,8 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
     private var mTask: AsyncTask<Void, Void, ArrayList<Example>>? = null
     private var mControllerVisible: Boolean = false
     private var mSpeed: Float = 0.0f
+    private var mFilter = ""
+    private var mVideo = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_signexample, container, false)
@@ -49,6 +51,8 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
         super.onSaveInstanceState(outState)
 
         outState.putInt("videoPosition", mPosition)
+        outState.putString("video", mVideo)
+        outState.putString("filter", mFilter)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -64,6 +68,7 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
                 }
 
                 val adapter = listView.adapter as ArrayAdapter<*>
+                mFilter = s.toString()
                 adapter.filter.filter(s)
             }
 
@@ -124,6 +129,8 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
 
         if (savedInstanceState != null) {
             mPosition = savedInstanceState.getInt("videoPosition", -1)
+            mFilter = savedInstanceState.getString("filter", "")
+            mVideo = savedInstanceState.getString("video", "")
         }
     }
 
@@ -248,20 +255,32 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
             val adapter = ArrayAdapter(activity!!,
                     android.R.layout.simple_list_item_1, mExamples!!)
             listView.adapter = adapter
+
+            if (mFilter.isNotEmpty()) {
+                adapter.filter.filter(mFilter)
+            }
         }
 
         loadingProgress.visibility = GONE
         listView.visibility = VISIBLE
 
-        if (mPosition >= 0) {
+        var video = mVideo
+
+        if (video.isEmpty() && mPosition >= 0) {
             var item = listView.adapter?.getItem(mPosition)
             if (item == null) {
                 item = listView.adapter?.getItem(0)
             }
 
-            val example = item as Example
+            if (item != null) {
+                val example = item as Example
+                video = example.video
+            }
+        }
+
+        if (video.isNotEmpty()) {
             val lexikon = Lexikon.getInstance(context!!)
-            val videoSource = ExtractorMediaSource(Uri.parse(example.video),
+            val videoSource = ExtractorMediaSource(Uri.parse(video),
                     lexikon.dataSourceFactory, lexikon.extractorsFactory,
                     null, null)
 
@@ -287,8 +306,8 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
                 lexikon.dataSourceFactory, lexikon.extractorsFactory,
                 null, null)
 
-
         mPosition = position
+        mVideo = example.video
         mSimpleExoPlayer?.prepare(videoSource)
     }
 
