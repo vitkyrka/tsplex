@@ -4,11 +4,14 @@ import Topics
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.ListFragment
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import kotlinx.android.synthetic.main.fragment_signexample.*
 
 class TopicListFragment : FragmentVisibilityNotifier, ListFragment() {
     private var listener: OnTopicClickListener? = null
@@ -24,6 +27,17 @@ class TopicListFragment : FragmentVisibilityNotifier, ListFragment() {
         val adapter = ArrayAdapter(activity!!,
                 android.R.layout.simple_list_item_1, topics)
         listView.adapter = adapter
+
+        filterText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                adapter.filter.filter(s)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                    Unit
+
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
     }
 
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
