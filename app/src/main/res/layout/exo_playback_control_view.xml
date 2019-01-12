@@ -18,37 +18,18 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:layoutDirection="ltr"
-    android:background="#CC000000"
+    android:background="#1000"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingTop="4dp"
-            android:orientation="horizontal">
-
-            <ImageButton android:id="@id/exo_prev"
-                style="@style/ExoMediaButton.Previous"/>
-
-            <ImageButton android:id="@id/exo_play"
-                style="@style/ExoMediaButton.Play"/>
-
-            <ImageButton android:id="@id/exo_pause"
-                style="@style/ExoMediaButton.Pause"/>
-
-            <ImageButton android:id="@id/exo_repeat_toggle"
-                style="@style/ExoMediaButton"/>
-
-        </LinearLayout>
+        android:orientation="horizontal"
+        android:weightSum="6">
 
         <RadioGroup
+            android:layout_weight="1"
             android:id="@+id/exo_speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,7 +42,7 @@
                 android:layout_weight="1"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="#FFBEBEBE"
+                android:textColor="#fff"
                 android:text="0.5×" />
 
             <RadioButton
@@ -71,7 +52,7 @@
                 android:layout_weight="1"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="#FFBEBEBE"
+                android:textColor="#fff"
                 android:text="0.75×" />
 
             <RadioButton
@@ -81,10 +62,35 @@
                 android:layout_weight="1"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="#FFBEBEBE"
+                android:textColor="#fff"
                 android:text="1×" />
 
         </RadioGroup>
+
+        <ImageButton android:id="@id/exo_repeat_toggle"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ExoMediaButton"/>
+
+        <ImageButton android:id="@id/exo_prev"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ExoMediaButton.Previous"/>
+
+        <ImageButton android:id="@id/exo_play"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ExoMediaButton.Play"/>
+
+        <ImageButton android:id="@id/exo_pause"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ExoMediaButton.Pause"/>
+
 
     </LinearLayout>
 
@@ -110,16 +116,6 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="26dp"/>
-
-        <TextView android:id="@id/exo_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:includeFontPadding="false"
-            android:textColor="#FFBEBEBE"/>
 
     </LinearLayout>
 
