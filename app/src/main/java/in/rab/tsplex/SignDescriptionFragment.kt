@@ -188,9 +188,11 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                 mPosition = i
                 mSimpleExoPlayer?.prepare(videoSource)
             }
-            v.setOnLongClickListener {
-                mListener?.onExampleLongClick(adapter.getItem(i)!!)
-                true
+            if (i != 0) {
+                v.setOnLongClickListener {
+                    mListener?.onExampleLongClick(adapter.getItem(i)!!)
+                    true
+                }
             }
             if (i == 0) {
                 v.isChecked = true
