@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import kotlinx.android.synthetic.main.fragment_sign_description.*
+import java.lang.IllegalStateException
 
 
 class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
@@ -68,7 +69,11 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putInt("scrollPos", scrollView.scrollY)
+        try {
+            outState.putInt("scrollPos", scrollView.scrollY)
+        } catch (e: IllegalStateException) {
+            // java.lang.IllegalStateException: scrollView must not be null
+        }
         outState.putInt("videoPosition", mPosition)
     }
 
