@@ -16,11 +16,11 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import java.util.*
+
 
 class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickListener, SignListFragment.OnListFragmentInteractionListener {
     private var mOrdboken: Ordboken? = null
@@ -47,11 +47,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
 
         mStarred = false
 
-        val intent = intent
-
         title = ""
-
-        val url = intent.getStringExtra("url") ?: return
 
         val pager = findViewById<ViewPager>(R.id.viewPager)
         pager.addOnPageChangeListener(
@@ -70,7 +66,34 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
         mViewPager = pager
         mTabLayout = findViewById(R.id.tabs)
 
-        SignLoadTask().execute(Integer.parseInt(url))
+        handleIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        handleIntent(intent)
+    }
+
+    private fun failLoad(signId: String) {
+        // The slash at the end ensures that it doesn't match our app links filter
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://teckensprakslexikon.su.se/ord/$signId/"))
+        startActivity(browserIntent)
+        finish()
+    }
+
+    private fun handleIntent(intent: Intent) {
+        var signId = intent.getStringExtra("url")
+
+        if (intent.action == Intent.ACTION_VIEW && signId == null) {
+            signId = intent.data?.lastPathSegment
+        }
+
+        if (signId == null) {
+            finish()
+        }
+
+        SignLoadTask().execute(signId)
     }
 
     override fun onExampleLongClick(example: Example) {
@@ -147,10 +170,20 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
         }
     }
 
-    private inner class SignLoadTask : AsyncTask<Int, Void, Sign?>() {
-        override fun doInBackground(vararg params: Int?): Sign? {
+    private inner class SignLoadTask : AsyncTask<String, Void, Sign?>() {
+        var mSignId: String = ""
+
+        override fun doInBackground(vararg params: String?): Sign? {
+            mSignId = params[0]!!
+
+            val id = try {
+                Integer.parseInt(mSignId)
+            } catch (e: NumberFormatException) {
+                return null
+            }
+
             val database = SignDatabase(this@SignActivity)
-            val sign = database.getSign(params[0]!!) ?: return null
+            val sign = database.getSign(id) ?: return null
 
             mSign = sign
             mSynonyms = database.getSynonyms(sign.id)
@@ -163,6 +196,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
             super.onPostExecute(result)
 
             if (result == null) {
+                failLoad(mSignId)
                 return
             }
 

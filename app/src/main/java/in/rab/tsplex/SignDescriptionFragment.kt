@@ -123,7 +123,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         idButton.text = "[%05d]".format(mId)
         idButton.setOnClickListener { v ->
             val b: Button = v as Button
-            val url = "https://teckensprakslexikon.su.se/ord/%05d".format(mId)
+            // The slash at the end ensures that it doesn't match our app links filter
+            val url = "https://teckensprakslexikon.su.se/ord/%05d/".format(mId)
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
