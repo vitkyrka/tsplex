@@ -9,6 +9,8 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.ListFragment
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -43,9 +45,38 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
         return inflater.inflate(R.layout.fragment_signexample, container, false)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putInt("videoPosition", mPosition)
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        filterText.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                mSimpleExoPlayerView?.visibility = GONE
+
+                if (listView.adapter == null) {
+                    return
+                }
+
+                val adapter = listView.adapter as ArrayAdapter<*>
+                adapter.filter.filter(s)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                    Unit
+
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
+
+        filterText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus)
+                mSimpleExoPlayerView?.visibility = GONE
+        }
 
         mSimpleExoPlayerView = exoPlayerView
 
@@ -89,6 +120,10 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
 
             startActivity(intent)
             false
+        }
+
+        if (savedInstanceState != null) {
+            mPosition = savedInstanceState.getInt("videoPosition", -1)
         }
     }
 
@@ -201,8 +236,6 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
         mSimpleExoPlayer!!.playbackParameters = PlaybackParameters(speed, 1f)
         mSimpleExoPlayer!!.playWhenReady = true
 
-
-
         if (mExamples == null) {
             mTask = DatabaseTask().execute()
         } else {
@@ -221,11 +254,19 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
         listView.visibility = VISIBLE
 
         if (mPosition >= 0) {
-            val example = listView.adapter?.getItem(mPosition) as Example
+            var item = listView.adapter?.getItem(mPosition)
+            if (item == null) {
+                item = listView.adapter?.getItem(0)
+            }
+
+            val example = item as Example
             val lexikon = Lexikon.getInstance(context!!)
             val videoSource = ExtractorMediaSource(Uri.parse(example.video),
                     lexikon.dataSourceFactory, lexikon.extractorsFactory,
                     null, null)
+
+            listView.setSelection(mPosition)
+
             mSimpleExoPlayer?.prepare(videoSource)
         }
     }
@@ -239,11 +280,13 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
     }
 
     override fun onListItemClick(l: ListView?, v: View?, position: Int, id: Long) {
-        val example = l?.adapter?.getItem(position) as Example
+        val adapter = l?.adapter ?: return
+        val example = adapter.getItem(position) as Example
         val lexikon = Lexikon.getInstance(context!!)
         val videoSource = ExtractorMediaSource(Uri.parse(example.video),
                 lexikon.dataSourceFactory, lexikon.extractorsFactory,
                 null, null)
+
 
         mPosition = position
         mSimpleExoPlayer?.prepare(videoSource)

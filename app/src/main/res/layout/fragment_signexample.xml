@@ -26,6 +26,19 @@
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="0dp"
-        android:choiceMode="singleChoice" />
+        android:choiceMode="singleChoice"
+        android:listSelector="#9ca6dc" />
+
+    <EditText
+        android:id="@+id/filterText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cursorVisible="false"
+        android:padding="2dp"
+        android:background="#8eee"
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:inputType="textFilter"
+        android:hint="@string/filter_list" />
 
 </LinearLayout>
