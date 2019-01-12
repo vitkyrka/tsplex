@@ -244,7 +244,7 @@ class ExampleListFragment : FragmentVisibilityNotifier, ListFragment() {
     }
 
     fun playVideo() {
-        if (listView.adapter == null) {
+        if (listView.adapter == null || listView.adapter.count == 0) {
             val adapter = ArrayAdapter(activity!!,
                     android.R.layout.simple_list_item_1, mExamples!!)
             listView.adapter = adapter
