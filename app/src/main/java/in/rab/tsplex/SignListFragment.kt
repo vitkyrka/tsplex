@@ -133,5 +133,6 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
 
     interface OnListFragmentInteractionListener {
         fun onListFragmentInteraction(item: Sign)
+        fun onListFragmentInteraction(item: Example)
     }
 }

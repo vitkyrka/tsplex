@@ -71,4 +71,7 @@ class SearchActivity : AppCompatActivity(), SignListFragment.OnListFragmentInter
         intent.putExtra("url", item.id.toString())
         startActivity(intent)
     }
+
+    override fun onListFragmentInteraction(item: Example) {
+    }
 }

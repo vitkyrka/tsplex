@@ -120,6 +120,9 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
         startActivity(intent)
     }
 
+    override fun onListFragmentInteraction(item: Example) {
+    }
+
     private inner class TabPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         override fun getPageTitle(position: Int): CharSequence {
             var adjpos = position

@@ -25,6 +25,9 @@ class HomeActivity : AppCompatActivity(), SignListFragment.OnListFragmentInterac
         startActivity(intent)
     }
 
+    override fun onListFragmentInteraction(item: Example) {
+    }
+
     override fun onTopicClick(topic: Int) {
         val intent = Intent(this, SearchActivity::class.java)
         intent.action = Intent.ACTION_SEARCH
