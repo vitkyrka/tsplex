@@ -36,6 +36,7 @@
     <string name="filter_list">Sök i listan</string>
     <string name="fail_video_play">Videouppspelning misslyckades.</string>
     <string name="fail_offline">Ingen anslutning.</string>
+    <string name="fail_database">Databasuppgradering misslyckades</string>
 
     <string name="title_activity_home">Teckenspråkslexikon</string>
     <string name="title_history">Historik</string>
