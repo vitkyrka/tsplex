@@ -40,6 +40,7 @@ class HomeActivity : AppCompatActivity(), SignListFragment.OnListFragmentInterac
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
 
         mOrdboken = Ordboken.getInstance(this)
