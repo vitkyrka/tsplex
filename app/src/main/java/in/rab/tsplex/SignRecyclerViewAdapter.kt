@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.flexbox.FlexboxLayout
 
 class SignRecyclerViewAdapter(private val mValues: List<Sign>,
@@ -31,12 +33,21 @@ class SignRecyclerViewAdapter(private val mValues: List<Sign>,
             view.layoutParams = mLayoutParams
         }
 
+        val lowOptions = RequestOptions.priorityOf(Priority.LOW)
+        val highOptions = RequestOptions.priorityOf(Priority.HIGH)
+
         for ((i, url) in sign.getImageUrls().withIndex()) {
             if (i >= holder.imageViews.size) {
                 break
             }
 
-            mGlide.load(url).into(holder.imageViews[i])
+            val options = if (i == 0) {
+                highOptions
+            } else {
+                lowOptions
+            }
+
+            mGlide.load(url).apply(options).into(holder.imageViews[i])
             holder.imageViews[i].visibility = View.VISIBLE
         }
 
