@@ -23,3 +23,7 @@ licensed under the Apache license, version
 
 The [material design icons](https://github.com/google/material-design-icons)
 are also licensed under the Apache License, version 2.0.
+
+The [FreeSans-SWL
+font](https://zrajm.github.io/teckentranskription/freesans-swl.html) font is
+licensed under the GNU GPL version 3.
