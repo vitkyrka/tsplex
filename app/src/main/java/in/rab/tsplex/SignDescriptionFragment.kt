@@ -43,7 +43,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mId: Int = 0
     private var mControllerVisible: Boolean = false
     private var mSpeed: Float = 0.0f
-    private var mTranscriptionUrl: String? = null
+    private var mTranscription: String? = null
     private var mExamples: ArrayList<Example>? = null
     private var mPosition = 0
     private var mScrollPos = 0
@@ -59,7 +59,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             mDescription = args.getString(ARG_DESC)
             mVideo = args.getString(ARG_VIDEO)
             mComment = args.getString(ARG_COMMENT)
-            mTranscriptionUrl = args.getString(ARG_TRANSCRIPTION)
+            mTranscription = args.getString(ARG_TRANSCRIPTION)
             mTopic1 = args.getInt(ARG_TOPIC1)
             mTopic2 = args.getInt(ARG_TOPIC2)
             mExamples = args.getParcelableArrayList(ARG_EXAMPLES)
@@ -129,6 +129,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         }
 
         wordText.text = mWord
+        transcriptionText.text = mTranscription
         if (mComment!!.isNotEmpty()) {
             commentText.text = mComment
             commentTitle.visibility = VISIBLE
@@ -154,12 +155,11 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         }
 
         textView.setOnClickListener {
-            if (transcriptionImage.visibility == VISIBLE) {
-                transcriptionImage.visibility = GONE
+            if (transcriptionText.visibility == VISIBLE) {
+                transcriptionText.visibility = GONE
                 textView.maxLines = 3
             } else {
-                Glide.with(this).load(mTranscriptionUrl).into(transcriptionImage)
-                transcriptionImage.visibility = VISIBLE
+                transcriptionText.visibility = VISIBLE
                 textView.maxLines = 100
             }
         }
@@ -379,7 +379,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             args.putString(ARG_WORD, sign.word)
             args.putString(ARG_VIDEO, sign.video)
             args.putString(ARG_COMMENT, sign.comment)
-            args.putString(ARG_TRANSCRIPTION, sign.getTranscriptionUrl())
+            args.putString(ARG_TRANSCRIPTION, sign.transcription)
             args.putInt(ARG_TOPIC1, sign.topic1)
             args.putInt(ARG_TOPIC2, sign.topic2)
             args.putParcelableArrayList(ARG_EXAMPLES, sign.examples)

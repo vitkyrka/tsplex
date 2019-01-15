@@ -8,6 +8,7 @@ class Sign internal constructor(internal val id: Int,
                                 internal val word: String,
                                 internal val video: String,
                                 internal val description: String,
+                                internal val transcription: String,
                                 internal val comment: String,
                                 private val slug: String,
                                 private val images: Int,
@@ -22,16 +23,11 @@ class Sign internal constructor(internal val id: Int,
             parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString()!!,
+            parcel.readString()!!,
             parcel.readInt(),
             parcel.readInt(),
             parcel.readInt()) {
         parcel.readList(examples, Example::class.java.classLoader)
-    }
-
-    internal fun getTranscriptionUrl(): String {
-        val number = "%05d".format(id)
-        return "https://teckensprakslexikon.su.se/photos/%s/%s-%s-transcription.jpg".format((number.substring(0..1)),
-                    slug, number)
     }
 
     internal fun getImageUrls(): Array<String> {
@@ -47,6 +43,7 @@ class Sign internal constructor(internal val id: Int,
         parcel.writeString(word)
         parcel.writeString(video)
         parcel.writeString(description)
+        parcel.writeString(transcription)
         parcel.writeString(comment)
         parcel.writeString(slug)
         parcel.writeInt(images)

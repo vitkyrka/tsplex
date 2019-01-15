@@ -22,15 +22,16 @@ class SignDatabase(context: Context) {
                 cursor.getString(3),
                 cursor.getString(4),
                 cursor.getString(5),
-                cursor.getInt(6),
+                cursor.getString(6),
                 cursor.getInt(7),
-                cursor.getInt(8))
+                cursor.getInt(8),
+                cursor.getInt(9))
     }
 
     fun getSign(id: Int): Sign? {
         val selection = "id = ?"
         val selectionArgs = arrayOf(id.toString())
-        var columns = arrayOf("id", "sv", "video", "desc", "comment", "slug", "images", "topic1", "topic2")
+        var columns = arrayOf("id", "sv", "video", "desc", "transcription", "comment", "slug", "images", "topic1", "topic2")
 
         var builder = SQLiteQueryBuilder()
         builder.tables = "signs"
@@ -66,7 +67,7 @@ class SignDatabase(context: Context) {
     internal fun getSynonyms(id: Int): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = mOpenHelper.database!!.rawQuery(
-                "SELECT id, sv, video, desc, comment, slug, images, topic1, topic2 FROM signs WHERE id in (SELECT otherid FROM synonyms WHERE id = ?)",
+                "SELECT id, sv, video, desc, transcription, comment, slug, images, topic1, topic2 FROM signs WHERE id in (SELECT otherid FROM synonyms WHERE id = ?)",
                 arrayOf(id.toString())) ?: return signs
 
         while (cursor.moveToNext()) {
@@ -80,7 +81,7 @@ class SignDatabase(context: Context) {
     internal fun getHomonyms(id: Int): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = mOpenHelper.database!!.rawQuery(
-                "SELECT id, sv, video, desc, comment, slug, images, topic1, topic2 FROM signs WHERE id in (SELECT otherid FROM homonyms WHERE id = ?)",
+                "SELECT id, sv, video, desc, transcription, comment, slug, images, topic1, topic2 FROM signs WHERE id in (SELECT otherid FROM homonyms WHERE id = ?)",
                 arrayOf(id.toString())) ?: return signs
 
         while (cursor.moveToNext()) {
@@ -94,7 +95,7 @@ class SignDatabase(context: Context) {
     fun getSignsByIds(idTable: String, orderBy: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = mOpenHelper.database!!.rawQuery(
-                "SELECT signs.id, sv, video, desc, comment, slug, images, topic1, topic2 FROM signs INNER JOIN " + idTable +
+                "SELECT signs.id, sv, video, desc, transcription, comment, slug, images, topic1, topic2 FROM signs INNER JOIN " + idTable +
                         " ON signs.id = " + idTable + ".id ORDER BY " + orderBy, null) ?: return signs
 
         while (cursor.moveToNext()) {
@@ -143,7 +144,7 @@ class SignDatabase(context: Context) {
 
     fun getSigns(query: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
-        val columns = arrayOf("signs.id", "sv", "video", "desc", "comment", "slug", "images", "topic1", "topic2")
+        val columns = arrayOf("signs.id", "sv", "video", "desc", "transcription", "comment", "slug", "images", "topic1", "topic2")
         val cursor = getSigns(query, columns, SQLiteQueryBuilder())
 
         while (cursor.moveToNext()) {
@@ -185,7 +186,7 @@ class SignDatabase(context: Context) {
 
     fun getExampleSigns(keyword: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
-        val columns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "comment", "slug", "images", "topic1", "topic2")
+        val columns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2")
         val selection = "examples.desc LIKE ? OR examples.video LIKE ?"
         val like = "%$keyword%"
         val selectionArgs = arrayOf(like, like)
@@ -208,7 +209,7 @@ class SignDatabase(context: Context) {
     fun getTopicSigns(topic: Int): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val mask = getMask(topic)
-        val columns = arrayOf("id", "sv", "video", "desc", "comment", "slug", "images", "topic1", "topic2")
+        val columns = arrayOf("id", "sv", "video", "desc", "transcription", "comment", "slug", "images", "topic1", "topic2")
 
         val selection = StringBuilder()
                 .append("(topic1 & ").append(mask).append(") = ").append(topic).append(" OR")

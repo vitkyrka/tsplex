@@ -81,8 +81,8 @@
                 android:maxLines="3"
                 android:ellipsize="end" />
 
-            <ImageView
-                android:id="@+id/transcriptionImage"
+            <TextView
+                android:id="@+id/transcriptionText"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:layout_marginTop="2dp"
@@ -90,6 +90,9 @@
                 android:adjustViewBounds="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/freesans_swl"
+                android:textSize="24sp"
+                android:textColor="#000"
                 android:visibility="gone" />
 
             <TextView
