@@ -173,12 +173,12 @@ def main():
     except:
         pass
 
-    version = 29
+    version = 30
 
     conn = sqlite3.connect(args.db)
 
     conn.execute("PRAGMA user_version = %d" % version)
-    conn.execute("CREATE TABLE signs (id INTEGER, sv TEXT, video TEXT, slug TEXT, images INT, desc TEXT, topic1 INT, topic2 INT, comment TEXT)")
+    conn.execute("CREATE TABLE signs (id INTEGER, sv TEXT, video TEXT, slug TEXT, transcription TEXT, images INT, desc TEXT, topic1 INT, topic2 INT, comment TEXT)")
     conn.execute("CREATE TABLE examples (id INTEGER, video TEXT, desc TEXT)")
     conn.execute("CREATE TABLE synonyms (id INTEGER, otherid INTEGER)")
     conn.execute("CREATE TABLE homonyms (id INTEGER, otherid INTEGER)")
@@ -201,10 +201,11 @@ def main():
     for sign in signs:
         thisid = int(sign['id-nummer'])
 
-        conn.execute("insert into signs values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        conn.execute("insert into signs values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                      (thisid, ', '.join(sign['ord']),
                       sign['video'],
                       sign['slug'],
+                      sign['transkription'],
                       len(sign['images']),
                       sign['beskrivning'],
                       topictoid[sign['ämne'][0].replace('/', '»')],
