@@ -12,8 +12,8 @@ import android.view.LayoutInflater
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.bumptech.glide.Glide
-import com.google.android.flexbox.FlexboxLayout
 
 abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
     private var mListener: OnListFragmentInteractionListener? = null
@@ -45,7 +45,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
         val dpToPixels = context!!.resources.displayMetrics.density
         val width = (120 * mZoom * dpToPixels + 0.5f).toInt()
         val height = (90 * mZoom * dpToPixels + 0.5f).toInt()
-        val params = FlexboxLayout.LayoutParams(width, height)
+        val params = FrameLayout.LayoutParams(width, height)
 
         val adapter = SignRecyclerViewAdapter(mSigns, mListener,
                 Glide.with(this@SignListFragment), params)
@@ -73,7 +73,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
             view.layoutManager = layoutManager
             recylerView = view
 
-            val scaleGestureDetector = ScaleGestureDetector(context, object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            val scaleGestureDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
                 override fun onScale(detector: ScaleGestureDetector?): Boolean {
                     if (mSigns.size == 0) {
                         return true

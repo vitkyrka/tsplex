@@ -16,42 +16,34 @@
         android:visibility="visible"
         android:textAppearance="@android:style/TextAppearance.Holo"/>
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/images"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:flexWrap="wrap"
-        app:alignItems="stretch"
-        app:alignContent="stretch" >
+    <ViewFlipper
+            android:id="@+id/images"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:flipInterval="500"
+            android:autoStart="false">
 
             <ImageView
                 android:id="@+id/image1"
                 android:layout_width="@dimen/sign_thumbnail_width"
                 android:layout_height="@dimen/sign_thumbnail_height"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
                 android:gravity="left" />
 
             <ImageView
                 android:id="@+id/image2"
                 android:layout_width="@dimen/sign_thumbnail_width"
-                android:layout_height="@dimen/sign_thumbnail_height"
-                android:layout_toEndOf="@id/image1" />
+                android:layout_height="@dimen/sign_thumbnail_height" />
 
             <ImageView
                 android:id="@+id/image3"
                 android:layout_width="@dimen/sign_thumbnail_width"
-                android:layout_height="@dimen/sign_thumbnail_height"
-                android:layout_toEndOf="@id/image2"
-                android:visibility="visible" />
+                android:layout_height="@dimen/sign_thumbnail_height" />
 
             <ImageView
                 android:id="@+id/image4"
                 android:layout_width="@dimen/sign_thumbnail_width"
-                android:layout_height="@dimen/sign_thumbnail_height"
-                android:layout_toEndOf="@id/image3"
-                android:visibility="gone" />
+                android:layout_height="@dimen/sign_thumbnail_height" />
 
-    </com.google.android.flexbox.FlexboxLayout>
+    </ViewFlipper>
 
 </LinearLayout>

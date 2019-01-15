@@ -4,21 +4,22 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ViewFlipper
 import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.flexbox.FlexboxLayout
 
 class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
                               private val mExamples: List<Example>,
                               private val mListener: SignListFragment.OnListFragmentInteractionListener?,
                               private val mGlide: RequestManager,
-                              private val mLayoutParams: FlexboxLayout.LayoutParams) : RecyclerView.Adapter<SignRecyclerViewAdapter.ViewHolder>() {
+                              private val mLayoutParams: FrameLayout.LayoutParams) : RecyclerView.Adapter<SignRecyclerViewAdapter.ViewHolder>() {
 
     constructor(signs: List<Sign>, listener: SignListFragment.OnListFragmentInteractionListener?,
-                glide: RequestManager, layoutParams: FlexboxLayout.LayoutParams) :
+                glide: RequestManager, layoutParams: FrameLayout.LayoutParams) :
             this(signs, ArrayList<Example>(), listener, glide, layoutParams)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,7 +42,7 @@ class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
         val lowOptions = RequestOptions.priorityOf(Priority.LOW)
         val highOptions = RequestOptions.priorityOf(Priority.HIGH)
 
-        for ((i, url) in sign.getImageUrls().withIndex()) {
+        for ((i, url) in urls.withIndex()) {
             if (i >= holder.imageViews.size) {
                 break
             }
@@ -53,13 +54,10 @@ class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
             }
 
             mGlide.load(url).apply(options).into(holder.imageViews[i])
-            holder.imageViews[i].visibility = View.VISIBLE
         }
 
         for (i in urls.size until holder.imageViews.size) {
-            mGlide.clear(holder.imageViews[i])
-            holder.imageViews[i].setImageDrawable(null)
-            holder.imageViews[i].visibility = View.GONE
+            mGlide.load(urls[i % urls.size]).apply(lowOptions).into(holder.imageViews[i])
         }
 
         holder.mView.setOnClickListener {
@@ -106,6 +104,7 @@ class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
 
     inner class ViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
+        val mImages: ViewFlipper = mView.findViewById(R.id.images)
         private val imageViewIds = intArrayOf(R.id.image1, R.id.image2, R.id.image3, R.id.image4)
         val imageViews: Array<ImageView> = Array(imageViewIds.size) { i ->
             mView.findViewById<ImageView>(imageViewIds[i])
