@@ -123,7 +123,11 @@ class SignDatabase(context: Context) {
         val selection = "words_signs.rowid IN (SELECT docid FROM words WHERE words.content MATCH ?) OR signs.id == ?"
         val selectionArgs = arrayOf(fixedQuery.trim() + "*", fixedQuery)
         val groupBy = "signs.id"
-        val sortOrder = "words_signs.len"
+
+        // The comment is usally says that the sign is not that common so prefer no comment.
+        // A lower ID is also presumed to indicate a more important sign (since it was added
+        // earlier), but perhaps this is not true.
+        val sortOrder = "words_signs.len, length(comment), signs.id"
 
         builder.tables = "signs JOIN words_signs ON words_signs.signid == signs.id"
 
