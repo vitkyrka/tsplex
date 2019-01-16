@@ -14,36 +14,65 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        android:textAppearance="@android:style/TextAppearance.Holo"/>
+        android:textSize="16sp"
+        android:textColor="#000"/>
 
-    <ViewFlipper
-            android:id="@+id/images"
-            android:layout_width="match_parent"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ViewFlipper
+                android:id="@+id/images"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:flipInterval="500"
+                android:autoStart="false">
+
+                <ImageView
+                    android:id="@+id/image1"
+                    android:scaleType="centerCrop"
+                    android:layout_width="@dimen/sign_thumbnail_width"
+                    android:layout_height="@dimen/sign_thumbnail_height"
+                    android:gravity="left" />
+
+                <ImageView
+                    android:id="@+id/image2"
+                    android:scaleType="centerCrop"
+                    android:layout_width="@dimen/sign_thumbnail_width"
+                    android:layout_height="@dimen/sign_thumbnail_height" />
+
+                <ImageView
+                    android:id="@+id/image3"
+                    android:scaleType="centerCrop"
+                    android:layout_width="@dimen/sign_thumbnail_width"
+                    android:layout_height="@dimen/sign_thumbnail_height" />
+
+                <ImageView
+                    android:id="@+id/image4"
+                    android:scaleType="centerCrop"
+                    android:layout_width="@dimen/sign_thumbnail_width"
+                    android:layout_height="@dimen/sign_thumbnail_height" />
+
+        </ViewFlipper>
+
+        <TextView
+            android:id="@+id/transcriptionText"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="0dp"
+            android:paddingBottom="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:flipInterval="500"
-            android:autoStart="false">
+            android:fontFamily="@font/freesans_swl"
+            android:gravity="bottom"
+            android:textSize="16sp"
+            android:textColor="#fff"
+            android:shadowColor="#000"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="5"/>
 
-            <ImageView
-                android:id="@+id/image1"
-                android:layout_width="@dimen/sign_thumbnail_width"
-                android:layout_height="@dimen/sign_thumbnail_height"
-                android:gravity="left" />
-
-            <ImageView
-                android:id="@+id/image2"
-                android:layout_width="@dimen/sign_thumbnail_width"
-                android:layout_height="@dimen/sign_thumbnail_height" />
-
-            <ImageView
-                android:id="@+id/image3"
-                android:layout_width="@dimen/sign_thumbnail_width"
-                android:layout_height="@dimen/sign_thumbnail_height" />
-
-            <ImageView
-                android:id="@+id/image4"
-                android:layout_width="@dimen/sign_thumbnail_width"
-                android:layout_height="@dimen/sign_thumbnail_height" />
-
-    </ViewFlipper>
+    </FrameLayout>
 
 </LinearLayout>
