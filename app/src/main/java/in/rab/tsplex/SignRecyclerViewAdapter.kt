@@ -42,7 +42,7 @@ class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
         holder.mImages.displayedChild = 0
 
         val realCount = sign.transcription.codePointCount(0, sign.transcription.length)
-        val numShow = 20
+        val numShow = 15
 
         if (realCount > numShow) {
             val cutOffset = sign.transcription.offsetByCodePoints(0, min(numShow, realCount))
@@ -86,7 +86,7 @@ class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
         }
 
         for (i in urls.size until holder.imageViews.size) {
-            mGlide.load(urls[i % urls.size]).apply(lowOptions).into(holder.imageViews[i])
+            mGlide.load(urls[urls.size - 1]).apply(lowOptions).into(holder.imageViews[i])
         }
 
         holder.mView.setOnClickListener {

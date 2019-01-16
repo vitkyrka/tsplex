@@ -26,31 +26,31 @@
                 android:id="@+id/images"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:flipInterval="500"
+                android:flipInterval="250"
                 android:autoStart="false">
 
                 <ImageView
                     android:id="@+id/image1"
-                    android:scaleType="centerCrop"
+                    android:scaleType="center"
                     android:layout_width="@dimen/sign_thumbnail_width"
                     android:layout_height="@dimen/sign_thumbnail_height"
                     android:gravity="left" />
 
                 <ImageView
                     android:id="@+id/image2"
-                    android:scaleType="centerCrop"
+                    android:scaleType="center"
                     android:layout_width="@dimen/sign_thumbnail_width"
                     android:layout_height="@dimen/sign_thumbnail_height" />
 
                 <ImageView
                     android:id="@+id/image3"
-                    android:scaleType="centerCrop"
+                    android:scaleType="center"
                     android:layout_width="@dimen/sign_thumbnail_width"
                     android:layout_height="@dimen/sign_thumbnail_height" />
 
                 <ImageView
                     android:id="@+id/image4"
-                    android:scaleType="centerCrop"
+                    android:scaleType="center"
                     android:layout_width="@dimen/sign_thumbnail_width"
                     android:layout_height="@dimen/sign_thumbnail_height" />
 
