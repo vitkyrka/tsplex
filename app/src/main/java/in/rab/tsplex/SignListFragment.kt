@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -43,7 +44,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
         }
 
         val dpToPixels = context!!.resources.displayMetrics.density
-        val width = (120 * mZoom * dpToPixels + 0.5f).toInt()
+        val width = (100 * mZoom * dpToPixels + 0.5f).toInt()
         val height = (90 * mZoom * dpToPixels + 0.5f).toInt()
         val params = FrameLayout.LayoutParams(width, height)
 
@@ -66,7 +67,7 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
 
         if (view is RecyclerView) {
             val context = view.getContext()
-            val layoutManager = LinearLayoutManager(context)
+            val layoutManager = GridLayoutManager(context, 2)
             val decoration = DividerItemDecoration(getContext(), layoutManager.orientation)
 
             view.addItemDecoration(decoration)
