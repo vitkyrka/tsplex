@@ -9,14 +9,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Html
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import android.widget.*
-import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
@@ -27,7 +23,6 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import kotlinx.android.synthetic.main.fragment_sign_description.*
-import java.lang.IllegalStateException
 
 
 class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
@@ -207,6 +202,20 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             mScrollPos = savedInstanceState.getInt("scrollPos")
             mPosition = savedInstanceState.getInt("videoPosition", -1)
         }
+
+        val grand = playerGrandParent
+        val player = playerParent
+
+        grand.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val height = grand.measuredHeight
+
+                if (height > 0) {
+                    player.maxHeight = height * 2 / 3
+                    player.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            }
+        })
     }
 
     override fun onPause() {
