@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ScaleGestureDetector
@@ -15,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
+
 
 abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
     private var mListener: OnListFragmentInteractionListener? = null
@@ -48,6 +47,11 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
         val height = (90 * mZoom * dpToPixels + 0.5f).toInt()
         val params = FrameLayout.LayoutParams(width, height)
 
+        val layout = recyler.layoutManager
+        if (layout != null) {
+            (layout as GridAutofitLayoutManager).setColumnWidth(width)
+        }
+
         val adapter = SignRecyclerViewAdapter(mSigns, mListener,
                 Glide.with(this@SignListFragment), params)
 
@@ -67,7 +71,8 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
 
         if (view is RecyclerView) {
             val context = view.getContext()
-            val layoutManager = GridLayoutManager(context, 2)
+
+            val layoutManager = GridAutofitLayoutManager(context, 1)
             val decoration = DividerItemDecoration(getContext(), layoutManager.orientation)
 
             view.addItemDecoration(decoration)
