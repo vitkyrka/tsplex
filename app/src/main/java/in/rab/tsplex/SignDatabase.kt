@@ -9,6 +9,7 @@ import java.util.*
 
 class SignDatabase(context: Context) {
 
+    private val mSignColumns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples")
     private val mOpenHelper: SignDatabaseOpenHelper
 
     init {
@@ -32,12 +33,11 @@ class SignDatabase(context: Context) {
     fun getSign(id: Int): Sign? {
         val selection = "id = ?"
         val selectionArgs = arrayOf(id.toString())
-        var columns = arrayOf("id", "sv", "video", "desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples")
 
         var builder = SQLiteQueryBuilder()
         builder.tables = "signs"
 
-        var cursor: Cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
+        var cursor: Cursor = builder.query(mOpenHelper.database, mSignColumns, selection, selectionArgs,
                 null, null, null) ?: return null
 
         if (!cursor.moveToNext()) {
@@ -50,7 +50,7 @@ class SignDatabase(context: Context) {
 
         builder = SQLiteQueryBuilder()
         builder.tables = "examples"
-        columns = arrayOf("video", "desc")
+        val columns = arrayOf("video", "desc")
         cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 null, null, null)
         if (cursor == null) {
@@ -97,7 +97,8 @@ class SignDatabase(context: Context) {
         val signs = ArrayList<Sign>()
         val cursor = mOpenHelper.database!!.rawQuery(
                 "SELECT signs.id, sv, video, desc, transcription, comment, slug, images, topic1, topic2, num_examples FROM signs INNER JOIN " + idTable +
-                        " ON signs.id = " + idTable + ".id ORDER BY " + orderBy, null) ?: return signs
+                        " ON signs.id = " + idTable + ".id ORDER BY " + orderBy, null)
+                ?: return signs
 
         while (cursor.moveToNext()) {
             signs.add(makeSign(cursor))
@@ -149,8 +150,7 @@ class SignDatabase(context: Context) {
 
     fun getSigns(query: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
-        val columns = arrayOf("signs.id", "sv", "video", "desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples")
-        val cursor = getSigns(query, columns, SQLiteQueryBuilder())
+        val cursor = getSigns(query, mSignColumns, SQLiteQueryBuilder())
 
         while (cursor.moveToNext()) {
             signs.add(makeSign(cursor))
@@ -191,7 +191,6 @@ class SignDatabase(context: Context) {
 
     fun getExampleSigns(keyword: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
-        val columns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples")
         val selection = "examples.desc LIKE ? OR examples.video LIKE ?"
         val like = "%$keyword%"
         val selectionArgs = arrayOf(like, like)
@@ -200,7 +199,7 @@ class SignDatabase(context: Context) {
         val builder = SQLiteQueryBuilder()
         builder.tables = "signs JOIN examples ON examples.id == signs.id"
 
-        val cursor: Cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
+        val cursor: Cursor = builder.query(mOpenHelper.database, mSignColumns, selection, selectionArgs,
                 groupBy, null, "sv") ?: return signs
 
         while (cursor.moveToNext()) {
@@ -214,7 +213,6 @@ class SignDatabase(context: Context) {
     fun getTopicSigns(topic: Int): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val mask = getMask(topic)
-        val columns = arrayOf("id", "sv", "video", "desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples")
 
         val selection = StringBuilder()
                 .append("(topic1 & ").append(mask).append(") = ").append(topic).append(" OR")
@@ -224,7 +222,7 @@ class SignDatabase(context: Context) {
         val builder = SQLiteQueryBuilder()
         builder.tables = "signs"
 
-        val cursor: Cursor = builder.query(mOpenHelper.database, columns, selection, null,
+        val cursor: Cursor = builder.query(mOpenHelper.database, mSignColumns, selection, null,
                 null, null, "sv") ?: return signs
 
         while (cursor.moveToNext()) {
