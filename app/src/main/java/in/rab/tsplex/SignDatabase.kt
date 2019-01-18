@@ -127,7 +127,7 @@ class SignDatabase(context: Context) {
         // The comment is usally says that the sign is not that common so prefer no comment.
         // A lower ID is also presumed to indicate a more important sign (since it was added
         // earlier), but perhaps this is not true.
-        val sortOrder = "words_signs.len, length(comment), signs.id"
+        val sortOrder = "words_signs.len, length(comment), num_examples DESC, signs.id"
 
         builder.tables = "signs JOIN words_signs ON words_signs.signid == signs.id"
 
@@ -249,7 +249,7 @@ class SignDatabase(context: Context) {
 
     companion object {
         private const val DATABASE_NAME = "signs.jet"
-        const val DATABASE_VERSION = 30
+        const val DATABASE_VERSION = 31
 
         private fun buildColumnMap(): HashMap<String, String> {
             val map = HashMap<String, String>()
