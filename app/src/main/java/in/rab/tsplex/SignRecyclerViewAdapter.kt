@@ -36,6 +36,14 @@ class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
         holder.mItem = sign
         holder.mIdView.text = sign.word
 
+        if (sign.examplesCount > 0) {
+            holder.mExamplesCountText.text = sign.examplesCount.toString()
+            holder.mExamplesCountText.visibility = VISIBLE
+        } else {
+            holder.mExamplesCountText.visibility = GONE
+        }
+
+
         val urls = sign.getImageUrls()
 
         holder.mImages.stopFlipping()
@@ -135,6 +143,7 @@ class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
         val mIdView: TextView = mView.findViewById(R.id.id)
         val mImages: ViewFlipper = mView.findViewById(R.id.images)
         val mTranscriptionText: TextView = mView.findViewById(R.id.transcriptionText)
+        val mExamplesCountText: TextView = mView.findViewById(R.id.examplesCountText)
         private val imageViewIds = intArrayOf(R.id.image1, R.id.image2, R.id.image3, R.id.image4)
         val imageViews: Array<ImageView> = Array(imageViewIds.size) { i ->
             mView.findViewById<ImageView>(imageViewIds[i])
