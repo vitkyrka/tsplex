@@ -15,7 +15,6 @@ import com.google.android.exoplayer2.util.Util
 import java.io.File
 
 class Lexikon(context: Context) {
-    val scraper: Scraper = Scraper(File(context.cacheDir, "okhttp"))
     private val cache: com.google.android.exoplayer2.upstream.cache.Cache
     private val httpDataSourceFactory: DataSource.Factory
     val dataSourceFactory: DataSource.Factory
