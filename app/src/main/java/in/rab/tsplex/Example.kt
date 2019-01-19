@@ -3,7 +3,7 @@ package `in`.rab.tsplex
 import android.os.Parcel
 import android.os.Parcelable
 
-class Example internal constructor(internal val video: String, private val description: String) : Parcelable {
+class Example internal constructor(internal val video: String, private val description: String) : Parcelable, Item() {
     override fun toString(): String {
         return description
     }

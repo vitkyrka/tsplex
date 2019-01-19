@@ -19,18 +19,18 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
     private var mListener: OnListFragmentInteractionListener? = null
     private var recylerView: RecyclerView? = null
     private var mState: Parcelable? = null
-    private var mTask: AsyncTask<Void, Void, ArrayList<Sign>>? = null
+    private var mTask: AsyncTask<Void, Void, ArrayList<Item>>? = null
     private var mZoom = 1.0f
-    private var mSigns: ArrayList<Sign> = arrayListOf()
+    private var mSigns: ArrayList<Item> = arrayListOf()
 
-    protected abstract fun getSigns(): ArrayList<Sign>
+    protected abstract fun getSigns(): ArrayList<Item>
 
-    private inner class DatabaseTask : AsyncTask<Void, Void, ArrayList<Sign>>() {
-        override fun doInBackground(vararg params: Void): ArrayList<Sign> {
+    private inner class DatabaseTask : AsyncTask<Void, Void, ArrayList<Item>>() {
+        override fun doInBackground(vararg params: Void): ArrayList<Item> {
             return getSigns()
         }
 
-        override fun onPostExecute(signs: ArrayList<Sign>) {
+        override fun onPostExecute(signs: ArrayList<Item>) {
             mSigns = signs
             loadList()
         }

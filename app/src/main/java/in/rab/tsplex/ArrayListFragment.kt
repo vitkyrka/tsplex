@@ -14,8 +14,8 @@ class ArrayListFragment : SignListFragment() {
         }
     }
 
-    override fun getSigns(): ArrayList<Sign> {
-        return signs
+    override fun getSigns(): ArrayList<Item> {
+        return ArrayList(signs)
     }
 
     companion object {

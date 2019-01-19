@@ -14,15 +14,10 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import kotlin.math.min
 
-class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
-                              private val mExamples: List<Example>,
+class SignRecyclerViewAdapter(private val mSigns: List<Item>,
                               private val mListener: SignListFragment.OnListFragmentInteractionListener?,
                               private val mGlide: RequestManager,
                               private val mLayoutParams: FrameLayout.LayoutParams) : RecyclerView.Adapter<SignRecyclerViewAdapter.ViewHolder>() {
-
-    constructor(signs: List<Sign>, listener: SignListFragment.OnListFragmentInteractionListener?,
-                glide: RequestManager, layoutParams: FrameLayout.LayoutParams) :
-            this(signs, ArrayList<Example>(), listener, glide, layoutParams)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -31,8 +26,7 @@ class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
     }
 
     @SuppressLint("SetTextI18n")
-    private fun bindSign(holder: ViewHolder, position: Int) {
-        val sign = mSigns[position]
+    private fun bindSign(holder: ViewHolder, sign: Sign) {
         holder.mItem = sign
         holder.mIdView.text = sign.word
 
@@ -98,41 +92,36 @@ class SignRecyclerViewAdapter(private val mSigns: List<Sign>,
         }
 
         holder.mView.setOnClickListener {
-            val item = holder.mItem as Sign?
-
-            if (item != null) {
-                mListener?.onListFragmentInteraction(item)
-            }
+            mListener?.onListFragmentInteraction(sign)
         }
     }
 
-    private fun bindExample(holder: ViewHolder, position: Int) {
-        val example = mExamples[position]
+    private fun bindExample(holder: ViewHolder, example: Example) {
         holder.mItem = example
         holder.mIdView.text = example.toString()
 
         holder.mView.setOnClickListener {
-            val item = holder.mItem as Example?
-
-            if (item != null) {
-                mListener?.onListFragmentInteraction(item)
-            }
+            mListener?.onListFragmentInteraction(example)
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        when (holder.mViewType) {
-            R.layout.fragment_sign -> bindSign(holder, position)
-            R.layout.item_example -> bindExample(holder, position - mSigns.size)
+        val item = mSigns[position]
+
+        when (getItemViewType(position)) {
+            R.layout.fragment_sign -> bindSign(holder, item as Sign)
+            R.layout.item_example -> bindExample(holder, item as Example)
         }
     }
 
     override fun getItemCount(): Int {
-        return mSigns.size + mExamples.size
+        return mSigns.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position < mSigns.size) {
+        val item = mSigns[position]
+
+        return if (item is Sign) {
             R.layout.fragment_sign
         } else {
             R.layout.item_example
