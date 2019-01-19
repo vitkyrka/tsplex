@@ -14,7 +14,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:elevation="4dp"
-
             android:background="@android:color/white"
             android:theme="@style/ThemeOverlay.AppCompat.Light"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
