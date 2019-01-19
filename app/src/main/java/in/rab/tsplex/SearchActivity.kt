@@ -1,6 +1,7 @@
 package `in`.rab.tsplex
 
 import android.app.SearchManager
+import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
@@ -93,8 +94,16 @@ class SearchActivity : RoutingAppCompactActivity() {
     }
 
     private fun saveRecent(query: String) {
-        val suggestions = SearchRecentSuggestions(this@SearchActivity,
-                SignRecentSuggestionsProvider.AUTHORITY, SignRecentSuggestionsProvider.MODE)
+        val suggestions = object : SearchRecentSuggestions(this@SearchActivity,
+                SignRecentSuggestionsProvider.AUTHORITY, SignRecentSuggestionsProvider.MODE) {
+            override fun truncateHistory(cr: ContentResolver?, maxEntries: Int) {
+                super.truncateHistory(cr, if (maxEntries > 0) {
+                    10
+                } else {
+                    maxEntries
+                })
+            }
+        }
         suggestions.saveRecentQuery(query, null)
     }
 
@@ -130,7 +139,7 @@ class SearchActivity : RoutingAppCompactActivity() {
 
         override fun onPostExecute(queries: List<String>) {
             recentList?.adapter = ArrayAdapter<String>(this@SearchActivity,
-                    android.R.layout.simple_list_item_1,
+                    R.layout.item_recent,
                     queries)
         }
     }

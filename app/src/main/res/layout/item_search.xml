@@ -24,7 +24,7 @@
             android:drawablePadding="3dp"
             android:editable="false"
             android:focusable="false"
-            android:hint="@string/search_hint">
+            android:text="@string/search_hint">
 
         </EditText>
 
