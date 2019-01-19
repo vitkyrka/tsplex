@@ -16,17 +16,20 @@ import kotlin.math.min
 class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
                               private val mListener: ItemListFragment.OnListFragmentInteractionListener?,
                               private val mGlide: RequestManager,
-                              private val mLayoutParams: FrameLayout.LayoutParams) : RecyclerView.Adapter<ItemRecyclerViewAdapter.ViewHolder>() {
+                              private val mLayoutParams: FrameLayout.LayoutParams) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(viewType, parent, false)
-        return ViewHolder(view, viewType)
+
+        return when (viewType) {
+            R.layout.fragment_sign -> SignViewHolder(view, viewType)
+            else -> ExampleViewHolder(view, viewType)
+        }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun bindSign(holder: ViewHolder, sign: Sign) {
-        holder.mItem = sign
+    private fun bindSign(holder: SignViewHolder, sign: Sign) {
         holder.mIdView.text = sign.word
 
         if (sign.examplesCount > 0) {
@@ -95,8 +98,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         }
     }
 
-    private fun bindExample(holder: ViewHolder, example: Example) {
-        holder.mItem = example
+    private fun bindExample(holder: ExampleViewHolder, example: Example) {
         holder.mIdView.text = example.toString()
 
         holder.mView.setOnClickListener {
@@ -104,12 +106,12 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = mSigns[position]
 
         when (getItemViewType(position)) {
-            R.layout.fragment_sign -> bindSign(holder, item as Sign)
-            R.layout.item_example -> bindExample(holder, item as Example)
+            R.layout.fragment_sign -> bindSign(holder as SignViewHolder, item as Sign)
+            R.layout.item_example -> bindExample(holder as ExampleViewHolder, item as Example)
         }
     }
 
@@ -127,7 +129,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         }
     }
 
-    inner class ViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
+    inner class SignViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
         val mImages: ViewFlipper = mView.findViewById(R.id.images)
         val mTranscriptionText: TextView = mView.findViewById(R.id.transcriptionText)
@@ -136,6 +138,9 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         val imageViews: Array<ImageView> = Array(imageViewIds.size) { i ->
             mView.findViewById<ImageView>(imageViewIds[i])
         }
-        var mItem: Any? = null
+    }
+
+    inner class ExampleViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
+        val mIdView: TextView = mView.findViewById(R.id.id)
     }
 }

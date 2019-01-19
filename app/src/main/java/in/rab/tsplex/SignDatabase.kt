@@ -172,13 +172,21 @@ class SignDatabase(context: Context) {
         return mask
     }
 
-    fun getExamples(): ArrayList<Example> {
+    fun getExamples(query: String?): ArrayList<Example> {
         var examples = ArrayList<Example>()
         val builder = SQLiteQueryBuilder()
         builder.tables = "examples"
 
+        var selection: String? = null
+        var selectionArgs: Array<String>? = null
+
+        if (query != null) {
+            selection = "examples.desc LIKE ?"
+            selectionArgs = arrayOf("%$query%")
+        }
+
         val columns = arrayOf("video", "desc")
-        val cursor = builder.query(mOpenHelper.database, columns, null, null,
+        val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 "video", null, "desc") ?: return examples
 
         while (cursor.moveToNext()) {
@@ -187,6 +195,10 @@ class SignDatabase(context: Context) {
 
         cursor.close()
         return examples
+    }
+
+    fun getExamples(): ArrayList<Example> {
+        return getExamples(null)
     }
 
     fun getExampleSigns(keyword: String): ArrayList<Sign> {

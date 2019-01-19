@@ -31,7 +31,7 @@ class SearchFragment : ItemListFragment() {
 
             return ArrayList(db.getExampleSigns(ex))
         } else {
-            return ArrayList(db.getSigns(query!!))
+            return ArrayList<Item>(db.getSigns(query!!) + ArrayList<Item>(db.getExamples(query!!)))
         }
     }
 
