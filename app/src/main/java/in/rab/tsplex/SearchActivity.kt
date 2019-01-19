@@ -83,7 +83,7 @@ class SearchActivity : RoutingAppCompactActivity() {
             mQuery
         }
 
-        mOrdboken!!.initSearchView(this, menu, query, false)
+        menuInflater.inflate(R.menu.main_search, menu)
         return true
     }
 }
