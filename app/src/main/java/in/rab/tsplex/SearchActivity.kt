@@ -2,13 +2,22 @@ package `in`.rab.tsplex
 
 import android.app.SearchManager
 import android.content.Intent
+import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
+import android.provider.SearchRecentSuggestions
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import kotlinx.android.synthetic.main.activity_search.*
+
 
 class SearchActivity : RoutingAppCompactActivity() {
     private var mOrdboken: Ordboken? = null
@@ -37,20 +46,92 @@ class SearchActivity : RoutingAppCompactActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s.toString()
 
-                val fragment: Fragment? = SearchFragment.newInstance(query)
                 mQuery = query
-                if (fragment != null) {
-                    supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
+
+                if (query.isEmpty()) {
+                    recentList?.visibility = VISIBLE
+
+                    val fragment = supportFragmentManager.findFragmentByTag("foo")
+                    if (fragment != null) {
+                        supportFragmentManager.beginTransaction().remove(fragment).commit()
+                    }
+                } else {
+                    recentList?.visibility = GONE
+
+                    val fragment: Fragment? = SearchFragment.newInstance(query)
+                    if (fragment != null) {
+                        supportFragmentManager.beginTransaction().replace(R.id.content, fragment, "foo").commit()
+                    }
                 }
             }
 
         })
+
+        searchView.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                mQuery?.let { saveRecent(it) }
+            }
+
+            false
+        }
+
+        recentList.setOnItemClickListener { parent, view, position, id ->
+            (parent as ListView).adapter?.apply {
+                val item = this.getItem(position) as String
+
+                searchView?.append(item)
+            }
+        }
 
         val intent = intent
         if (Intent.ACTION_SEARCH == intent.action || Intent.ACTION_VIEW == intent.action) {
             onNewIntent(intent)
         } else {
             searchView.requestFocus()
+            RecentTask().execute()
+        }
+    }
+
+    private fun saveRecent(query: String) {
+        val suggestions = SearchRecentSuggestions(this@SearchActivity,
+                SignRecentSuggestionsProvider.AUTHORITY, SignRecentSuggestionsProvider.MODE)
+        suggestions.saveRecentQuery(query, null)
+    }
+
+    override fun onListFragmentInteraction(item: Sign) {
+        mQuery?.let { saveRecent(it) }
+
+        super.onListFragmentInteraction(item)
+    }
+
+    override fun onListFragmentInteraction(item: Example) {
+        mQuery?.let { saveRecent(it) }
+
+        super.onListFragmentInteraction(item)
+    }
+
+    private inner class RecentTask : AsyncTask<Void, Void, List<String>>() {
+        override fun doInBackground(vararg params: Void): List<String> {
+            var cur = contentResolver.query(Uri.parse("content://in.rab.tsplex.SignRecentSuggestionsProvider/search_suggest_query"),
+                    arrayOf(SearchManager.SUGGEST_COLUMN_TEXT_1),
+                    null, arrayOf(""), null)
+            val queries = ArrayList<String>()
+
+            cur?.apply {
+                val col = getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1)
+
+                while (moveToNext()) {
+                    queries.add(cur.getString(col))
+                }
+            }
+
+            return queries
+        }
+
+        override fun onPostExecute(queries: List<String>) {
+            recentList?.adapter = ArrayAdapter<String>(this@SearchActivity,
+                    android.R.layout.simple_list_item_1,
+                    queries)
         }
     }
 

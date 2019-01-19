@@ -66,6 +66,11 @@
             android:authorities="in.rab.tsplex.SignProvider"
             android:exported="false" />
 
+        <provider
+            android:name=".SignRecentSuggestionsProvider"
+            android:authorities="in.rab.tsplex.SignRecentSuggestionsProvider"
+            android:exported="false" />
+
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".HomeActivity" />
