@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Html
+import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -43,6 +44,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
     private var mPosition = 0
     private var mScrollPos = 0
     private var mAdapter: ArrayAdapter<Example>? = null
+    private var mSelectedExample = -1
+    private var mClicked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +61,8 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             mTopic1 = args.getInt(ARG_TOPIC1)
             mTopic2 = args.getInt(ARG_TOPIC2)
             mExamples = args.getParcelableArrayList(ARG_EXAMPLES)
+            mSelectedExample = args.getInt(ARG_SELECTED_EXAMPLE)
+            mPosition = mSelectedExample + 1
         }
     }
 
@@ -159,7 +164,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             }
         }
 
-        val videoExample = arrayListOf(Example(mVideo!!, mWord!!))
+        val videoExample = arrayListOf(Example(mVideo!!, mWord!!, mId))
         val adapter = ArrayAdapter(activity!!,
                 R.layout.item_video, videoExample + mExamples!!)
 
@@ -183,6 +188,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
                 mPosition = i
                 mSimpleExoPlayer?.prepare(videoSource)
+                mClicked = true
             }
             if (i != 0) {
                 v.setOnLongClickListener {
@@ -200,7 +206,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
 
         if (savedInstanceState != null) {
             mScrollPos = savedInstanceState.getInt("scrollPos")
-            mPosition = savedInstanceState.getInt("videoPosition", -1)
+            mPosition = savedInstanceState.getInt("videoPosition", mSelectedExample + 1)
         }
 
         val grand = playerGrandParent
@@ -314,6 +320,11 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
                         val scrollPos = mScrollPos
                         scrollView.post { scrollView.smoothScrollTo(0, scrollPos) }
                         mScrollPos = 0
+                        mClicked = true
+                    } else if (mPosition != 0 && mSelectedExample != -1 && !mClicked) {
+                        scrollView.post {
+                            scrollView.requestChildFocus(videoGroup, videoGroup.findViewById(videoGroup.checkedRadioButtonId))
+                        }
                     }
                 }
             }
@@ -377,8 +388,9 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         private const val ARG_TOPIC2 = "topic2"
         private const val ARG_TRANSCRIPTION = "transcription"
         private const val ARG_EXAMPLES = "examples"
+        private const val ARG_SELECTED_EXAMPLE = "selectedExample"
 
-        fun newInstance(sign: Sign): SignDescriptionFragment {
+        fun newInstance(sign: Sign, exampleUrl: String?): SignDescriptionFragment {
             val fragment = SignDescriptionFragment()
             val args = Bundle()
             val desc = StringBuilder(sign.description)
@@ -392,6 +404,16 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             args.putInt(ARG_TOPIC1, sign.topic1)
             args.putInt(ARG_TOPIC2, sign.topic2)
             args.putParcelableArrayList(ARG_EXAMPLES, sign.examples)
+
+            if (exampleUrl == null) {
+                args.putInt(ARG_SELECTED_EXAMPLE, -1)
+            } else {
+                for ((i, example) in sign.examples.withIndex()) {
+                    if (exampleUrl.endsWith(example.video)) {
+                        args.putInt(ARG_SELECTED_EXAMPLE, i)
+                    }
+                }
+            }
 
             fragment.arguments = args
             return fragment

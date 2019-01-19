@@ -73,5 +73,9 @@ class SearchActivity : AppCompatActivity(), ItemListFragment.OnListFragmentInter
     }
 
     override fun onListFragmentInteraction(item: Example) {
+        val intent = Intent(this, SignActivity::class.java)
+        intent.putExtra("url", item.signId.toString())
+        intent.putExtra("exampleUrl", item.video)
+        startActivity(intent)
     }
 }

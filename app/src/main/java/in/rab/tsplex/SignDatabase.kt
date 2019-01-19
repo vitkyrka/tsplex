@@ -50,7 +50,7 @@ class SignDatabase(context: Context) {
 
         builder = SQLiteQueryBuilder()
         builder.tables = "examples"
-        val columns = arrayOf("video", "desc")
+        val columns = arrayOf("video", "desc", "examples.id")
         cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 null, null, null)
         if (cursor == null) {
@@ -58,7 +58,9 @@ class SignDatabase(context: Context) {
         }
 
         while (cursor.moveToNext()) {
-            sign.examples.add(Example(cursor.getString(0), cursor.getString(1)))
+            sign.examples.add(Example(cursor.getString(0),
+                    cursor.getString(1),
+                    cursor.getInt(2)))
         }
 
         cursor.close()
@@ -185,12 +187,14 @@ class SignDatabase(context: Context) {
             selectionArgs = arrayOf("%$query%")
         }
 
-        val columns = arrayOf("video", "desc")
+        val columns = arrayOf("video", "desc", "examples.id")
         val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 "video", null, "desc") ?: return examples
 
         while (cursor.moveToNext()) {
-            examples.add(Example("https://teckensprakslexikon.su.se/" + cursor.getString(0), cursor.getString(1)))
+            examples.add(Example("https://teckensprakslexikon.su.se/" + cursor.getString(0),
+                    cursor.getString(1),
+                    cursor.getInt(2)))
         }
 
         cursor.close()

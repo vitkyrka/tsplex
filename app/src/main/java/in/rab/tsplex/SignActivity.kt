@@ -27,6 +27,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
     private var mStarred: Boolean = false
     private var mGotStarred: Boolean = false
     private var mSign: Sign? = null
+    private var mExampleUrl: String? = null
     private var mSynonyms: ArrayList<Sign>? = null
     private var mHomonyms: ArrayList<Sign>? = null
     private var mPosition = 0
@@ -93,6 +94,8 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
             finish()
         }
 
+        mExampleUrl = intent.getStringExtra("exampleUrl")
+
         SignLoadTask().execute(signId)
     }
 
@@ -151,7 +154,7 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
             }
 
             return when (adjpos) {
-                0 -> SignDescriptionFragment.newInstance(mSign!!)
+                0 -> SignDescriptionFragment.newInstance(mSign!!, mExampleUrl)
                 1 -> ArrayListFragment.newInstance(mSynonyms!!)
                 2 -> ArrayListFragment.newInstance(mHomonyms!!)
                 else -> null
