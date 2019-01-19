@@ -129,6 +129,13 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         }
     }
 
+    fun getSpanSize(position: Int): Int {
+        return when (getItemViewType(position)) {
+            R.layout.item_example -> 2
+            else -> 1
+        }
+    }
+
     inner class SignViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
         val mImages: ViewFlipper = mView.findViewById(R.id.images)

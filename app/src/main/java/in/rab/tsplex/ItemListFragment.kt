@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ScaleGestureDetector
@@ -54,6 +55,14 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
 
         val adapter = ItemRecyclerViewAdapter(mSigns, mListener,
                 Glide.with(this@ItemListFragment), params)
+
+        if (layout != null) {
+            (layout as GridAutofitLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return adapter.getSpanSize(position)
+                }
+            }
+        }
 
         if (recyler.adapter != null) {
             recyler.swapAdapter(adapter, true)
