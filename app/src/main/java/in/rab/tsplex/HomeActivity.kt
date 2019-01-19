@@ -45,7 +45,7 @@ class HomeActivity : RoutingAppCompactActivity(), NavigationView.OnNavigationIte
         }
 
         if (mTitle == null) {
-            onNavigationItemSelected(navigation.menu.findItem(R.id.navigation_history))
+            onNavigationItemSelected(navigation.menu.findItem(R.id.navigation_home))
         } else {
             mActionBar!!.setTitle(mTitle)
         }
@@ -61,6 +61,12 @@ class HomeActivity : RoutingAppCompactActivity(), NavigationView.OnNavigationIte
         drawer_layout.closeDrawers()
 
         when (it.itemId) {
+            R.id.navigation_home -> {
+                val fragment: Fragment? = HomeFragment.newInstance()
+                supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
+                setAndSaveTitle(R.string.app_name)
+                return true
+            }
             R.id.navigation_history -> {
                 val fragment: Fragment? = HistoryFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
