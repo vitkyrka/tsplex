@@ -283,11 +283,11 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
         val star = menu.findItem(R.id.menu_star)
 
         if (mStarred) {
-            star.setIcon(R.drawable.ic_favorite_white_24dp)
+            star.setIcon(R.drawable.ic_bookmark_white_24dp)
             star.isChecked = true
             star.title = getString(R.string.remove_bookmark)
         } else {
-            star.setIcon(R.drawable.ic_favorite_border_white_24dp)
+            star.setIcon(R.drawable.ic_bookmark_border_white_24dp)
             star.isChecked = false
             star.title = getString(R.string.add_bookmark)
         }

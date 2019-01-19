@@ -39,13 +39,13 @@
     <string name="fail_database">Databasuppgradering misslyckades</string>
     <string name="random_examples">Slumpmässigt exempel</string>
     <string name="recently_seen">Nyligen visade tecken</string>
-    <string name="random_favorites">Slumpmässiga favorittecken</string>
+    <string name="random_favorites">Slumpmässiga bokmärken</string>
 
 
     <string name="title_activity_home">Teckenspråkslexikon</string>
     <string name="title_home">Hemsida</string>
     <string name="title_history">Historik</string>
-    <string name="title_favorites">Favoriter</string>
+    <string name="title_favorites">Bokmärken</string>
     <string name="title_topics">Ämnen</string>
     <string name="title_examples">Exempel</string>
 
