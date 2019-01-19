@@ -14,7 +14,7 @@ class ArrayListFragment : ItemListFragment() {
         }
     }
 
-    override fun getSigns(): ArrayList<Item> {
+    override fun getSigns(): List<Item> {
         return ArrayList(signs)
     }
 

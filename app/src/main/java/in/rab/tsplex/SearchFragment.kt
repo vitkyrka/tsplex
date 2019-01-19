@@ -14,7 +14,7 @@ class SearchFragment : ItemListFragment() {
         }
     }
 
-    override fun getSigns(): ArrayList<Item> {
+    override fun getSigns(): List<Item> {
         val act = activity ?: return ArrayList()
         val db = SignDatabase(act)
 
@@ -31,7 +31,14 @@ class SearchFragment : ItemListFragment() {
 
             return ArrayList(db.getExampleSigns(ex))
         } else {
-            return ArrayList<Item>(db.getSigns(query!!) + ArrayList<Item>(db.getExamples(query!!)))
+            val signs = db.getSigns(query!!)
+            val examples = db.getExamples(query!!)
+
+            if (examples.size == 0) {
+                return ArrayList<Item>(signs)
+            }
+
+            return ArrayList<Item>(signs) + arrayListOf(Header(getString(R.string.examples))) + ArrayList<Item>(examples)
         }
     }
 

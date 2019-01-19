@@ -24,6 +24,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
 
         return when (viewType) {
             R.layout.fragment_sign -> SignViewHolder(view, viewType)
+            R.layout.item_header -> HeaderViewHolder(view, viewType)
             else -> ExampleViewHolder(view, viewType)
         }
     }
@@ -106,12 +107,17 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         }
     }
 
+    private fun bindHeader(holder: HeaderViewHolder, header: Header) {
+        holder.mIdView.text = header.toString()
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = mSigns[position]
 
         when (getItemViewType(position)) {
             R.layout.fragment_sign -> bindSign(holder as SignViewHolder, item as Sign)
             R.layout.item_example -> bindExample(holder as ExampleViewHolder, item as Example)
+            R.layout.item_header -> bindHeader(holder as HeaderViewHolder, item as Header)
         }
     }
 
@@ -124,14 +130,17 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
 
         return if (item is Sign) {
             R.layout.fragment_sign
-        } else {
+        } else if (item is Example) {
             R.layout.item_example
+        } else {
+            R.layout.item_header
         }
     }
 
     fun getSpanSize(position: Int): Int {
         return when (getItemViewType(position)) {
             R.layout.item_example -> 2
+            R.layout.item_header -> 2
             else -> 1
         }
     }
@@ -148,6 +157,10 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
     }
 
     inner class ExampleViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
+        val mIdView: TextView = mView.findViewById(R.id.id)
+    }
+
+    inner class HeaderViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
     }
 }

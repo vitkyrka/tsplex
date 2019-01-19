@@ -20,18 +20,18 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
     private var mListener: OnListFragmentInteractionListener? = null
     private var recylerView: RecyclerView? = null
     private var mState: Parcelable? = null
-    private var mTask: AsyncTask<Void, Void, ArrayList<Item>>? = null
+    private var mTask: AsyncTask<Void, Void, List<Item>>? = null
     private var mZoom = 1.0f
-    private var mSigns: ArrayList<Item> = arrayListOf()
+    private var mSigns: List<Item> = arrayListOf()
 
-    protected abstract fun getSigns(): ArrayList<Item>
+    protected abstract fun getSigns(): List<Item>
 
-    private inner class DatabaseTask : AsyncTask<Void, Void, ArrayList<Item>>() {
-        override fun doInBackground(vararg params: Void): ArrayList<Item> {
+    private inner class DatabaseTask : AsyncTask<Void, Void, List<Item>>() {
+        override fun doInBackground(vararg params: Void): List<Item> {
             return getSigns()
         }
 
-        override fun onPostExecute(signs: ArrayList<Item>) {
+        override fun onPostExecute(signs: List<Item>) {
             mSigns = signs
             loadList()
         }
@@ -84,7 +84,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
             val layoutManager = GridAutofitLayoutManager(context, 1)
             val decoration = DividerItemDecoration(getContext(), layoutManager.orientation)
 
-            view.addItemDecoration(decoration)
+            // view.addItemDecoration(decoration)
             view.layoutManager = layoutManager
             recylerView = view
 
