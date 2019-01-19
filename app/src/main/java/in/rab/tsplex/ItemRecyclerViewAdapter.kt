@@ -2,6 +2,7 @@ package `in`.rab.tsplex
 
 import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -12,6 +13,10 @@ import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import kotlin.math.min
+import android.os.Build
+import android.text.Spanned
+
+
 
 class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
                               private val mListener: ItemListFragment.OnListFragmentInteractionListener?,
@@ -100,8 +105,16 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         }
     }
 
+    private fun fromHtml(html: String): Spanned {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(html)
+        }
+    }
+
     private fun bindExample(holder: ExampleViewHolder, example: Example) {
-        holder.mIdView.text = example.toString()
+        holder.mIdView.text = fromHtml("$example <em>(<strong>${example.signWord}</strong>)</em>")
 
         holder.mView.setOnClickListener {
             mListener?.onListFragmentInteraction(example)
