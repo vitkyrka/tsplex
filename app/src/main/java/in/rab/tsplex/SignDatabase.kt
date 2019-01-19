@@ -10,6 +10,8 @@ import java.util.*
 class SignDatabase(context: Context) {
 
     private val mSignColumns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples")
+    private val mExampleColumns = arrayOf("examples.video", "examples.desc", "examples.id", "signs.sv")
+    private val mExampleTables = "examples JOIN signs on examples.id == signs.id"
     private val mOpenHelper: SignDatabaseOpenHelper
 
     init {
@@ -28,6 +30,13 @@ class SignDatabase(context: Context) {
                 cursor.getInt(8),
                 cursor.getInt(9),
                 cursor.getInt(10))
+    }
+
+    private fun makeExample(cursor: Cursor): Example {
+        return Example(cursor.getString(0),
+                cursor.getString(1),
+                cursor.getInt(2),
+                cursor.getString(3))
     }
 
     fun getSign(id: Int): Sign? {
@@ -49,18 +58,16 @@ class SignDatabase(context: Context) {
         cursor.close()
 
         builder = SQLiteQueryBuilder()
-        builder.tables = "examples"
-        val columns = arrayOf("video", "desc", "examples.id")
-        cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
+        builder.tables = mExampleTables
+        val columns = mExampleColumns
+        cursor = builder.query(mOpenHelper.database, columns, "examples.id = ?", selectionArgs,
                 null, null, null)
         if (cursor == null) {
             return sign
         }
 
         while (cursor.moveToNext()) {
-            sign.examples.add(Example(cursor.getString(0),
-                    cursor.getString(1),
-                    cursor.getInt(2)))
+            sign.examples.add(makeExample(cursor))
         }
 
         cursor.close()
@@ -171,16 +178,15 @@ class SignDatabase(context: Context) {
     fun getRandomExamples(): ArrayList<Example> {
         var examples = ArrayList<Example>()
         val builder = SQLiteQueryBuilder()
-        builder.tables = "examples"
+        builder.tables = mExampleTables
 
-        val columns = arrayOf("video", "desc", "examples.id")
+        val columns = mExampleColumns
         val cursor = builder.query(mOpenHelper.database, columns, null, null,
-                "video", null, "RANDOM() LIMIT 2") ?: return examples
+                "examples.video", null,
+                "RANDOM() LIMIT 2") ?: return examples
 
         while (cursor.moveToNext()) {
-            examples.add(Example("https://teckensprakslexikon.su.se/" + cursor.getString(0),
-                    cursor.getString(1),
-                    cursor.getInt(2)))
+            examples.add(makeExample(cursor))
         }
 
         cursor.close()
@@ -214,7 +220,7 @@ class SignDatabase(context: Context) {
     fun getExamples(query: String?): ArrayList<Example> {
         var examples = ArrayList<Example>()
         val builder = SQLiteQueryBuilder()
-        builder.tables = "examples"
+        builder.tables = mExampleTables
 
         var selection: String? = null
         var selectionArgs: Array<String>? = null
@@ -224,14 +230,12 @@ class SignDatabase(context: Context) {
             selectionArgs = arrayOf("%$query%")
         }
 
-        val columns = arrayOf("video", "desc", "examples.id")
+        val columns = mExampleColumns
         val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
-                "video", null, "desc") ?: return examples
+                "examples.video", null, "examples.desc") ?: return examples
 
         while (cursor.moveToNext()) {
-            examples.add(Example("https://teckensprakslexikon.su.se/" + cursor.getString(0),
-                    cursor.getString(1),
-                    cursor.getInt(2)))
+            examples.add(makeExample(cursor))
         }
 
         cursor.close()

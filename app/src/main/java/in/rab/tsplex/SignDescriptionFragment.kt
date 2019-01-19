@@ -164,7 +164,7 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
             }
         }
 
-        val videoExample = arrayListOf(Example(mVideo!!, mWord!!, mId))
+        val videoExample = arrayListOf(Example(mVideo!!, mWord!!, mId, mWord!!))
         val adapter = ArrayAdapter(activity!!,
                 R.layout.item_video, videoExample + mExamples!!)
 
