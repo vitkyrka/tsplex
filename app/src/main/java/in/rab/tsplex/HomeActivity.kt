@@ -79,12 +79,6 @@ class HomeActivity : RoutingAppCompactActivity(), NavigationView.OnNavigationIte
                 setAndSaveTitle(R.string.title_topics)
                 return true
             }
-            R.id.navigation_examples -> {
-                val fragment: Fragment? = ExampleListFragment.newInstance()
-                supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
-                setAndSaveTitle(R.string.title_examples)
-                return true
-            }
             else -> {
                 return false
             }
