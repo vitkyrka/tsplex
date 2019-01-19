@@ -2,7 +2,7 @@ package `in`.rab.tsplex
 
 import android.os.Bundle
 
-class ArrayListFragment : SignListFragment() {
+class ArrayListFragment : ItemListFragment() {
     private var signs: ArrayList<Sign> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {

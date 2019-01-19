@@ -13,7 +13,7 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_home.*
 
-class HomeActivity : AppCompatActivity(), SignListFragment.OnListFragmentInteractionListener, TopicListFragment.OnTopicClickListener, NavigationView.OnNavigationItemSelectedListener {
+class HomeActivity : AppCompatActivity(), ItemListFragment.OnListFragmentInteractionListener, TopicListFragment.OnTopicClickListener, NavigationView.OnNavigationItemSelectedListener {
     private var mOrdboken: Ordboken? = null
     private var mDrawerToggle: ActionBarDrawerToggle? = null
     private var mActionBar: android.support.v7.app.ActionBar? = null

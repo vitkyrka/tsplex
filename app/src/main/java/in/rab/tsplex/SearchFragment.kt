@@ -2,7 +2,7 @@ package `in`.rab.tsplex
 
 import android.os.Bundle
 
-class SearchFragment : SignListFragment() {
+class SearchFragment : ItemListFragment() {
     private var query: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

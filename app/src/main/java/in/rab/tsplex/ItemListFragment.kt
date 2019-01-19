@@ -15,7 +15,7 @@ import android.widget.FrameLayout
 import com.bumptech.glide.Glide
 
 
-abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
+abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
     private var mListener: OnListFragmentInteractionListener? = null
     private var recylerView: RecyclerView? = null
     private var mState: Parcelable? = null
@@ -52,8 +52,8 @@ abstract class SignListFragment : FragmentVisibilityNotifier, Fragment() {
             (layout as GridAutofitLayoutManager).setColumnWidth(width)
         }
 
-        val adapter = SignRecyclerViewAdapter(mSigns, mListener,
-                Glide.with(this@SignListFragment), params)
+        val adapter = ItemRecyclerViewAdapter(mSigns, mListener,
+                Glide.with(this@ItemListFragment), params)
 
         if (recyler.adapter != null) {
             recyler.swapAdapter(adapter, true)

@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 
-class SearchActivity : AppCompatActivity(), SignListFragment.OnListFragmentInteractionListener {
+class SearchActivity : AppCompatActivity(), ItemListFragment.OnListFragmentInteractionListener {
     private var mOrdboken: Ordboken? = null
     private var mQuery: String? = null
 

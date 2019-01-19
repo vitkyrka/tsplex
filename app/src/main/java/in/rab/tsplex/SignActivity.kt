@@ -22,7 +22,7 @@ import android.view.View.GONE
 import java.util.*
 
 
-class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickListener, SignListFragment.OnListFragmentInteractionListener {
+class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickListener, ItemListFragment.OnListFragmentInteractionListener {
     private var mOrdboken: Ordboken? = null
     private var mStarred: Boolean = false
     private var mGotStarred: Boolean = false

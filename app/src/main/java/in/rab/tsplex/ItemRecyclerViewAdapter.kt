@@ -1,7 +1,6 @@
 package `in`.rab.tsplex
 
 import android.annotation.SuppressLint
-import android.opengl.Visibility
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +13,10 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import kotlin.math.min
 
-class SignRecyclerViewAdapter(private val mSigns: List<Item>,
-                              private val mListener: SignListFragment.OnListFragmentInteractionListener?,
+class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
+                              private val mListener: ItemListFragment.OnListFragmentInteractionListener?,
                               private val mGlide: RequestManager,
-                              private val mLayoutParams: FrameLayout.LayoutParams) : RecyclerView.Adapter<SignRecyclerViewAdapter.ViewHolder>() {
+                              private val mLayoutParams: FrameLayout.LayoutParams) : RecyclerView.Adapter<ItemRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
