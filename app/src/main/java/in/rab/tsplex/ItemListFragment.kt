@@ -149,5 +149,6 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
     interface OnListFragmentInteractionListener {
         fun onListFragmentInteraction(item: Sign)
         fun onListFragmentInteraction(item: Example)
+        fun onListFragmentInteraction(item: Search)
     }
 }

@@ -25,6 +25,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         return when (viewType) {
             R.layout.fragment_sign -> SignViewHolder(view, viewType)
             R.layout.item_header -> HeaderViewHolder(view, viewType)
+            R.layout.item_search -> SearchViewHolder(view, viewType)
             else -> ExampleViewHolder(view, viewType)
         }
     }
@@ -111,6 +112,12 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         holder.mIdView.text = header.toString()
     }
 
+    private fun bindSearch(holder: SearchViewHolder, search: Search) {
+        holder.mView.findViewById<EditText>(R.id.homeSearchView)?.setOnClickListener {
+            mListener?.onListFragmentInteraction(search)
+        }
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = mSigns[position]
 
@@ -118,6 +125,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
             R.layout.fragment_sign -> bindSign(holder as SignViewHolder, item as Sign)
             R.layout.item_example -> bindExample(holder as ExampleViewHolder, item as Example)
             R.layout.item_header -> bindHeader(holder as HeaderViewHolder, item as Header)
+            R.layout.item_search -> bindSearch(holder as SearchViewHolder, item as Search)
         }
     }
 
@@ -132,6 +140,8 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
             R.layout.fragment_sign
         } else if (item is Example) {
             R.layout.item_example
+        } else if (item is Search) {
+            R.layout.item_search
         } else {
             R.layout.item_header
         }
@@ -141,6 +151,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         return when (getItemViewType(position)) {
             R.layout.item_example -> 2
             R.layout.item_header -> 2
+            R.layout.item_search -> 2
             else -> 1
         }
     }
@@ -163,4 +174,6 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
     inner class HeaderViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
     }
+
+    inner class SearchViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView)
 }
