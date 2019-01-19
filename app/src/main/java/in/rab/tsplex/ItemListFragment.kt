@@ -57,9 +57,16 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
                 Glide.with(this@ItemListFragment), params)
 
         if (layout != null) {
-            (layout as GridAutofitLayoutManager).spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            val autoFitLayout = (layout as GridAutofitLayoutManager)
+            autoFitLayout.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return adapter.getSpanSize(position)
+                    val size = adapter.getSpanSize(position)
+
+                    return if (size == 2) {
+                        autoFitLayout.spanCount
+                    } else {
+                        size
+                    }
                 }
             }
         }
