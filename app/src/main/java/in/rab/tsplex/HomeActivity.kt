@@ -1,44 +1,19 @@
 package `in`.rab.tsplex
 
-import Topics
-import android.app.SearchManager
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_home.*
 
-class HomeActivity : AppCompatActivity(), ItemListFragment.OnListFragmentInteractionListener, TopicListFragment.OnTopicClickListener, NavigationView.OnNavigationItemSelectedListener {
+class HomeActivity : RoutingAppCompactActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var mOrdboken: Ordboken? = null
     private var mDrawerToggle: ActionBarDrawerToggle? = null
     private var mActionBar: android.support.v7.app.ActionBar? = null
     private var mTitle: String? = null
-
-    override fun onListFragmentInteraction(item: Sign) {
-        val intent = Intent(this, SignActivity::class.java)
-        intent.putExtra("url", item.id.toString())
-        startActivity(intent)
-    }
-
-    override fun onListFragmentInteraction(item: Example) {
-        val intent = Intent(this, SignActivity::class.java)
-        intent.putExtra("url", item.signId.toString())
-        intent.putExtra("exampleUrl", item.video)
-        startActivity(intent)
-    }
-
-    override fun onTopicClick(topic: Int) {
-        val intent = Intent(this, SearchActivity::class.java)
-        intent.action = Intent.ACTION_SEARCH
-        intent.putExtra(Intent.EXTRA_TITLE, Topics.names[topic])
-        intent.putExtra(SearchManager.QUERY, "topic:" + topic.toString())
-        startActivity(intent)
-    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -137,6 +112,11 @@ class HomeActivity : AppCompatActivity(), ItemListFragment.OnListFragmentInterac
         if (mDrawerToggle?.onOptionsItemSelected(item)!!) {
             return true
         }
+
+        if (mOrdboken!!.onOptionsItemSelected(this, item)) {
+            return true
+        }
+
 
         return super.onOptionsItemSelected(item)
     }

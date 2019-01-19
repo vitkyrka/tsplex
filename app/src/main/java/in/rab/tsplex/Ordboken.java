@@ -13,6 +13,8 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import static android.content.Intent.ACTION_SEARCH;
+
 public class Ordboken {
     private static Ordboken sInstance = null;
     private final ConnectivityManager mConnMgr;
@@ -34,25 +36,8 @@ public class Ordboken {
         return sInstance;
     }
 
-    public SearchView initSearchView(Activity activity, Menu menu, String query, Boolean focus) {
+    public void initSearchView(Activity activity, Menu menu, String query, Boolean focus) {
         activity.getMenuInflater().inflate(R.menu.main, menu);
-
-        SearchManager searchManager = (SearchManager) activity
-                .getSystemService(Context.SEARCH_SERVICE);
-        MenuItem item = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView) item.getActionView();
-
-        searchView.setQueryRefinementEnabled(true);
-
-        if (query != null) {
-            searchView.onActionViewExpanded();
-            searchView.setQuery(query, false);
-        }
-
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(activity,
-                SearchActivity.class)));
-
-        return searchView;
     }
 
     public boolean onOptionsItemSelected(Activity activity, MenuItem item) {
@@ -66,6 +51,10 @@ public class Ordboken {
                 NavUtils.navigateUpFromSameTask(activity);
             }
             return true;
+        } else if (item.getItemId() == R.id.search) {
+            Intent intent = new Intent(activity, SearchActivity.class);
+            activity.startActivity(intent);
+            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
 
         return false;

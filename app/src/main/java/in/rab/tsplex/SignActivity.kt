@@ -22,7 +22,7 @@ import android.view.View.GONE
 import java.util.*
 
 
-class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickListener, ItemListFragment.OnListFragmentInteractionListener {
+class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmentInteractionListener {
     private var mOrdboken: Ordboken? = null
     private var mStarred: Boolean = false
     private var mGotStarred: Boolean = false
@@ -97,24 +97,6 @@ class SignActivity : AppCompatActivity(), SignDescriptionFragment.OnTopicClickLi
         mExampleUrl = intent.getStringExtra("exampleUrl")
 
         SignLoadTask().execute(signId)
-    }
-
-    override fun onExampleLongClick(example: Example) {
-        val q = Uri.parse(example.video).lastPathSegment
-        val intent = Intent(this, SearchActivity::class.java)
-        intent.action = Intent.ACTION_SEARCH
-        intent.putExtra(Intent.EXTRA_TITLE, example.toString())
-        intent.putExtra(SearchManager.QUERY, "ex:" + q)
-
-        startActivity(intent)
-    }
-
-    override fun onTopicClick(topic: Int) {
-        val intent = Intent(this, SearchActivity::class.java)
-        intent.action = Intent.ACTION_SEARCH
-        intent.putExtra(Intent.EXTRA_TITLE, Topics.names[topic])
-        intent.putExtra(SearchManager.QUERY, "topic:" + topic.toString())
-        startActivity(intent)
     }
 
     override fun onListFragmentInteraction(item: Sign) {
