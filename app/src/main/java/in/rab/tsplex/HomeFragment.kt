@@ -22,11 +22,13 @@ class HomeFragment : ItemListFragment() {
 
         signs.add(Search())
 
-        val old = (((Date().time - mRandomTime.time) / 1000)) > (60 * 15)
+        val now = Date()
+        val diff = (now.time - mRandomTime.time) / 1000
+        val old = diff < 0 || diff > (60 * 15)
 
-        if (mRandomExamples.isEmpty() || old) {
+        if (mRandomExamples.size < 2 || old) {
             mRandomExamples = db.getRandomExamples()
-            mRandomTime = Date()
+            mRandomTime = now
         }
 
         signs.add(Header(getString(R.string.random_examples)))
@@ -39,7 +41,7 @@ class HomeFragment : ItemListFragment() {
             val favorites = db.getSignsByIds("favorites",
                     "RANDOM() LIMIT 2")
             mRandomFavorites = favorites.subList(0, min(2, favorites.size))
-            mRandomTime = Date()
+            mRandomTime = now
         }
 
         signs.add(Header(getString(R.string.random_favorites)))
