@@ -39,7 +39,7 @@
     <string name="fail_database">Databasuppgradering misslyckades</string>
     <string name="random_examples">Slumpmässiga exempel</string>
     <string name="recently_seen">Nyligen visade tecken</string>
-    <string name="random_favorites">Slumpmässiga bokmärken</string>
+    <string name="random_favorites">Slumpmässiga bokmärkta tecken</string>
 
 
     <string name="title_activity_home">Teckenspråkslexikon</string>
