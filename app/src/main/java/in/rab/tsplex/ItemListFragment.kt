@@ -171,5 +171,6 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
         fun onListFragmentInteraction(item: Sign)
         fun onListFragmentInteraction(item: Example)
         fun onListFragmentInteraction(item: Search)
+        fun onListFragmentInteraction(item: Topic)
     }
 }

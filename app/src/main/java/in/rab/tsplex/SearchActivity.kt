@@ -119,6 +119,12 @@ class SearchActivity : RoutingAppCompactActivity() {
         super.onListFragmentInteraction(item)
     }
 
+    override fun onListFragmentInteraction(item: Topic) {
+        mQuery?.let { saveRecent(it) }
+
+        super.onListFragmentInteraction(item)
+    }
+
     private inner class RecentTask : AsyncTask<Void, Void, List<String>>() {
         override fun doInBackground(vararg params: Void): List<String> {
             var cur = contentResolver.query(Uri.parse("content://in.rab.tsplex.SignRecentSuggestionsProvider/search_suggest_query"),

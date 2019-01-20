@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_signexample.*
 
 class TopicListFragment : FragmentVisibilityNotifier, ListFragment() {
     private var listener: OnTopicClickListener? = null
-    private val topics = Topics.names.values.toList()
+    private val topics = Topics.topics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topic_list, container, false)

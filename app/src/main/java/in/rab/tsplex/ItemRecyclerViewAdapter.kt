@@ -31,6 +31,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
             R.layout.fragment_sign -> SignViewHolder(view, viewType)
             R.layout.item_header -> HeaderViewHolder(view, viewType)
             R.layout.item_search -> SearchViewHolder(view, viewType)
+            R.layout.item_topic -> TopicViewHolder(view, viewType)
             else -> ExampleViewHolder(view, viewType)
         }
     }
@@ -125,6 +126,14 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         holder.mIdView.text = header.toString()
     }
 
+    private fun bindTopic(holder: TopicViewHolder, topic: Topic) {
+        holder.mIdView.text = topic.toString()
+
+        holder.mView.setOnClickListener {
+            mListener?.onListFragmentInteraction(topic)
+        }
+    }
+
     private fun bindSearch(holder: SearchViewHolder, search: Search) {
         holder.mView.findViewById<EditText>(R.id.homeSearchView)?.setOnClickListener {
             mListener?.onListFragmentInteraction(search)
@@ -138,6 +147,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
             R.layout.fragment_sign -> bindSign(holder as SignViewHolder, item as Sign)
             R.layout.item_example -> bindExample(holder as ExampleViewHolder, item as Example)
             R.layout.item_header -> bindHeader(holder as HeaderViewHolder, item as Header)
+            R.layout.item_topic -> bindTopic(holder as TopicViewHolder, item as Topic)
             R.layout.item_search -> bindSearch(holder as SearchViewHolder, item as Search)
         }
     }
@@ -153,6 +163,8 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
             R.layout.fragment_sign
         } else if (item is Example) {
             R.layout.item_example
+        } else if (item is Topic) {
+            R.layout.item_topic
         } else if (item is Search) {
             R.layout.item_search
         } else {
@@ -162,10 +174,8 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
 
     fun getSpanSize(position: Int): Int {
         return when (getItemViewType(position)) {
-            R.layout.item_example -> 2
-            R.layout.item_header -> 2
-            R.layout.item_search -> 2
-            else -> 1
+            R.layout.fragment_sign -> 1
+            else -> 2
         }
     }
 
@@ -185,6 +195,10 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
     }
 
     inner class HeaderViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
+        val mIdView: TextView = mView.findViewById(R.id.id)
+    }
+
+    inner class TopicViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
     }
 

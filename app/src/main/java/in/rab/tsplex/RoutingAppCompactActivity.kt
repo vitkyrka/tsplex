@@ -47,4 +47,15 @@ abstract class RoutingAppCompactActivity() : AppCompatActivity(),
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
+
+    override fun onListFragmentInteraction(item: Topic) {
+        val topic = item.toString()
+        val topicId = Topics.names.filterValues { it == topic }.keys.first()
+
+        val intent = Intent(this, SearchListActivity::class.java)
+        intent.action = Intent.ACTION_SEARCH
+        intent.putExtra(Intent.EXTRA_TITLE, topic)
+        intent.putExtra(SearchManager.QUERY, "topic:" + topicId.toString())
+        startActivity(intent)
+    }
 }
