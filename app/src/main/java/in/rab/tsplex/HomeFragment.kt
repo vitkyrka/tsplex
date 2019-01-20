@@ -1,5 +1,10 @@
 package `in`.rab.tsplex
 
+import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.Exception
@@ -49,6 +54,21 @@ class HomeFragment : ItemListFragment() {
 
 
         return signs
+    }
+
+    override fun onRefresh() {
+        mRandomTime = Date(0)
+        super.onRefresh()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+
+        view?.findViewById<SwipeRefreshLayout>(R.id.swipeLayout)?.apply {
+            isEnabled = true
+        }
+
+        return view
     }
 
     override fun onResume() {

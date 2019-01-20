@@ -4,7 +4,9 @@ import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.ContactsContract
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -14,9 +16,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.fragment_sign_list.*
 
 
-abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
+abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var mListener: OnListFragmentInteractionListener? = null
     private var recylerView: RecyclerView? = null
     private var mState: Parcelable? = null
@@ -27,15 +30,20 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
 
     protected abstract fun getSigns(): List<Item>
 
-    private inner class DatabaseTask : AsyncTask<Void, Void, List<Item>>() {
+    protected inner class DatabaseTask : AsyncTask<Void, Void, List<Item>>() {
         override fun doInBackground(vararg params: Void): List<Item> {
             return getSigns()
         }
 
         override fun onPostExecute(signs: List<Item>) {
             mSigns = signs
+            swipeLayout.isRefreshing = false
             loadList()
         }
+    }
+
+    override fun onRefresh() {
+        DatabaseTask().execute()
     }
 
     fun loadList() {
@@ -86,34 +94,39 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_sign_list, container, false)
 
-        if (view is RecyclerView) {
-            val context = view.getContext()
+        view?.findViewById<SwipeRefreshLayout>(R.id.swipeLayout)?.apply {
+            setOnRefreshListener(this@ItemListFragment)
+            isEnabled = false
+        }
 
-            val layoutManager = GridAutofitLayoutManager(context, 1)
-            val decoration = DividerItemDecoration(getContext(), layoutManager.orientation)
+        val recycler = view.findViewById<RecyclerView>(R.id.list)
+        val context = recycler.getContext()
 
-            // view.addItemDecoration(decoration)
-            view.layoutManager = layoutManager
-            recylerView = view
+        val layoutManager = GridAutofitLayoutManager(context, 1)
+        val decoration = DividerItemDecoration(getContext(), layoutManager.orientation)
 
-            val scaleGestureDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-                override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                    if (mSigns.size == 0) {
-                        return true
-                    }
+        // view.addItemDecoration(decoration)
+        recycler.layoutManager = layoutManager
+        recylerView = recycler
 
-                    mZoom *= detector!!.scaleFactor
-                    mZoom = Math.max(0.1f, Math.min(mZoom, 5.0f))
-                    loadList()
+        val scaleGestureDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector?): Boolean {
+                if (mSigns.isEmpty()) {
                     return true
                 }
-            })
 
-            view.setOnTouchListener { _, event ->
-                scaleGestureDetector.onTouchEvent(event)
-                false
+                mZoom *= detector!!.scaleFactor
+                mZoom = Math.max(0.1f, Math.min(mZoom, 5.0f))
+                loadList()
+                return true
             }
+        })
+
+        recycler.setOnTouchListener { _, event ->
+            scaleGestureDetector.onTouchEvent(event)
+            false
         }
+
         return view
     }
 
