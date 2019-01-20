@@ -157,13 +157,14 @@ def main():
     topicids = get_topic_ids(signs)
     with open('Topics.kt', 'w+') as f:
         f.write('// Auto-generated.  Do not edit.\n\n')
+        f.write('package `in`.rab.tsplex\n\n')
         f.write("object Topics {\n")
         f.write("    val names = mapOf(\n")
         _, lastid = topicids[-1]
         f.write('\n'.join(['        0x%08x to "%s"%s' % (id, topic, '' if id == lastid else ',') for topic, id in topicids]))
         f.write("\n    )\n")
         f.write("    val topics = arrayListOf(\n")
-        f.write(',\n'.join(['        "%s"' % (topic,) for topic, id in topicids]))
+        f.write(',\n'.join(['        Topic(0x%08x, "%s")' % (id, topic.split('» ')[-1]) for topic, id in topicids]))
         f.write("\n    )\n")
         f.write("}\n")
 

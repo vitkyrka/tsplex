@@ -34,19 +34,19 @@ class SearchFragment : ItemListFragment() {
             val signs = db.getSigns(query!!)
             val examples = db.getExamples(query!!)
             val topics = ArrayList<Item>(Topics.topics.filter {
-                it.contains(query!!, ignoreCase = true)
-            }.map { Topic(it) })
+                it.name.contains(query!!, ignoreCase = true)
+            })
 
             val combined = ArrayList<Item>(signs)
-
-            if (examples.size > 0) {
-                combined.add(Header(getString(R.string.examples)))
-                combined.addAll(examples)
-            }
 
             if (topics.size > 0) {
                 combined.add(Header(getString(R.string.topics)))
                 combined.addAll(topics)
+            }
+
+            if (examples.size > 0) {
+                combined.add(Header(getString(R.string.examples)))
+                combined.addAll(examples)
             }
 
             return combined

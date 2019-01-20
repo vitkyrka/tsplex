@@ -1,6 +1,5 @@
 package `in`.rab.tsplex
 
-import Topics
 import `in`.rab.tsplex.OrdbokenContract.FavoritesEntry
 import `in`.rab.tsplex.OrdbokenContract.HistoryEntry
 import android.app.SearchManager

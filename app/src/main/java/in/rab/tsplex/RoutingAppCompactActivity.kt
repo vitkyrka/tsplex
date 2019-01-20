@@ -1,6 +1,5 @@
 package `in`.rab.tsplex
 
-import Topics
 import android.app.SearchManager
 import android.content.Intent
 import android.net.Uri
@@ -49,13 +48,10 @@ abstract class RoutingAppCompactActivity() : AppCompatActivity(),
     }
 
     override fun onListFragmentInteraction(item: Topic) {
-        val topic = item.toString()
-        val topicId = Topics.names.filterValues { it == topic }.keys.first()
-
         val intent = Intent(this, SearchListActivity::class.java)
         intent.action = Intent.ACTION_SEARCH
-        intent.putExtra(Intent.EXTRA_TITLE, topic)
-        intent.putExtra(SearchManager.QUERY, "topic:" + topicId.toString())
+        intent.putExtra(Intent.EXTRA_TITLE, item.toString())
+        intent.putExtra(SearchManager.QUERY, "topic:" + item.id.toString())
         startActivity(intent)
     }
 }
