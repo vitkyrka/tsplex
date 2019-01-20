@@ -1,15 +1,15 @@
 package `in`.rab.tsplex
 
-import android.content.Intent
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.EditText
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.Exception
+import java.util.*
 import kotlin.math.min
 
 class HomeFragment : ItemListFragment() {
+    private var mRandomExamples: List<Example> = ArrayList()
+    private var mRandomFavorites: List<Sign> = ArrayList()
+    private var mRandomTime: Date = Date(0)
 
     override fun getSigns(): List<Item> {
         val act = activity ?: return java.util.ArrayList()
@@ -17,24 +17,78 @@ class HomeFragment : ItemListFragment() {
         val db = SignDatabase(act)
         val history = db.getSignsByIds("history",
                 "history.date DESC")
-        val favorites = db.getSignsByIds("favorites",
-                "RANDOM() LIMIT 2")
 
         val signs = ArrayList<Item>()
 
         signs.add(Search())
 
+        val old = (((Date().time - mRandomTime.time) / 1000)) > (60 * 15)
+
+        if (mRandomExamples.isEmpty() || old) {
+            mRandomExamples = db.getRandomExamples()
+            mRandomTime = Date()
+        }
+
         signs.add(Header(getString(R.string.random_examples)))
-        signs.addAll(db.getRandomExamples())
+        signs.addAll(mRandomExamples)
 
         signs.add(Header(getString(R.string.recently_seen)))
         signs.addAll(history.subList(0, min(2, history.size)))
 
+        if (mRandomFavorites.size < 2 || old) {
+            val favorites = db.getSignsByIds("favorites",
+                    "RANDOM() LIMIT 2")
+            mRandomFavorites = favorites.subList(0, min(2, favorites.size))
+            mRandomTime = Date()
+        }
+
         signs.add(Header(getString(R.string.random_favorites)))
-        signs.addAll(favorites.subList(0, min(2, favorites.size)))
+        signs.addAll(mRandomFavorites)
 
 
         return signs
+    }
+
+    override fun onResume() {
+        activity?.getSharedPreferences(PREFS_NAME, 0)?.apply {
+            var randomExamples: List<Example>? = null
+            var randomFavorites: List<Sign>? = null
+            val gson = Gson()
+
+            try {
+                val exampleListType = object : TypeToken<List<Example>>() {}.type
+                randomExamples = gson.fromJson<List<Example>>(getString("randomExamples", null),
+                        exampleListType)
+            } catch (e: Exception) {
+                throw(e)
+            }
+
+            try {
+                val signListType = object : TypeToken<List<Sign>>() {}.type
+                randomFavorites = gson.fromJson<List<Sign>>(getString("randomFavorites", null),
+                        signListType)
+            } catch (e: Exception) {
+            }
+
+            mRandomTime = Date(getLong("randomTime", 0))
+
+            randomExamples?.let { mRandomExamples = it }
+            randomFavorites?.let { mRandomFavorites = it }
+        }
+
+        super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        activity?.getSharedPreferences(PREFS_NAME, 0)?.edit()?.apply {
+            val gson = Gson()
+            putString("randomExamples", gson.toJson(mRandomExamples))
+            putString("randomFavorites", gson.toJson(mRandomFavorites))
+            putLong("randomTime", mRandomTime.time)
+            apply()
+        }
     }
 
     companion object {

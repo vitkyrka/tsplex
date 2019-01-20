@@ -23,6 +23,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
     private var mTask: AsyncTask<Void, Void, List<Item>>? = null
     private var mZoom = 1.0f
     private var mSigns: List<Item> = arrayListOf()
+    protected val PREFS_NAME = "in.rab.tsplex"
 
     protected abstract fun getSigns(): List<Item>
 
@@ -123,7 +124,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
         mTask = null
         mState = recylerView?.layoutManager?.onSaveInstanceState()
 
-        val settings = activity?.getSharedPreferences("in.rab.tsplex", 0)?.edit()
+        val settings = activity?.getSharedPreferences(PREFS_NAME, 0)?.edit()
         settings?.putFloat("imageZoom", mZoom)
         settings?.apply()
     }
@@ -131,7 +132,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val settings = activity?.getSharedPreferences("in.rab.tsplex", 0)
+        val settings = activity?.getSharedPreferences(PREFS_NAME, 0)
         if (settings != null) {
             mZoom = settings.getFloat("imageZoom", 1f)
         }
