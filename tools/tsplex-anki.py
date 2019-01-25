@@ -20,13 +20,6 @@ class SignNote(genanki.Note):
         return genanki.guid_for(self.fields[0])
 
 
-def get_video_url(id):
-    url = 'http://teckensprakslexikon.su.se/ord/%05d' % id
-    page = requests.get(url).content.decode('utf-8')
-    match = re.search(r'file: "(.*mp4)', page)
-    return 'http://teckensprakslexikon.su.se/' + match.groups()[0]
-
-
 def get_video_data(url):
     data = requests.get(url).content
     return 'data:video/mp4;base64,' + binascii.b2a_base64(data).decode('utf-8').rstrip()
@@ -132,8 +125,7 @@ window.onload = function() {
           if len(chars) != args.length:
             continue
 
-        video = get_video_url(id)
-        # video = get_video_data(video)
+        video = f'https://teckensprakslexikon.su.se/{video}'
 
         print(word, desc, category)
 
