@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Html
-import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -212,12 +211,14 @@ class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
         val player = playerParent
 
         grand.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            private var mHeight = 0
+
             override fun onGlobalLayout() {
                 val height = grand.measuredHeight
 
-                if (height > 0) {
+                if (height > mHeight) {
+                    mHeight = height
                     player.maxHeight = height * 2 / 3
-                    player.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
         })
