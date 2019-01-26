@@ -39,14 +39,19 @@ class SearchListActivity : RoutingAppCompactActivity() {
 
         if (Intent.ACTION_SEARCH == intent.action) {
             val query = intent.getStringExtra(SearchManager.QUERY)
-            val fragment: Fragment? = SearchFragment.newInstance(query)
 
             val title = intent.getStringExtra(Intent.EXTRA_TITLE) ?: query
             supportActionBar?.title = title
 
             mQuery = query
+
+            val fragment = supportFragmentManager.findFragmentByTag("foo")
             if (fragment != null) {
-                supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
+                (fragment as SearchFragment).setQuery(query)
+            } else {
+                SearchFragment.newInstance(query).let {
+                    supportFragmentManager.beginTransaction().replace(R.id.content, it, "foo").commit()
+                }
             }
         } else if (Intent.ACTION_VIEW == intent.action) {
             val url = intent.dataString
