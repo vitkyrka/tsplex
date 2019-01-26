@@ -18,7 +18,8 @@ import android.text.Spanned
 
 
 
-class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
+class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
+                              private val mSigns: List<Item>,
                               private val mListener: ItemListFragment.OnListFragmentInteractionListener?,
                               private val mGlide: RequestManager,
                               private val mLayoutParams: FrameLayout.LayoutParams) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -37,7 +38,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
     }
 
     @SuppressLint("SetTextI18n")
-    private fun bindSign(holder: SignViewHolder, sign: Sign) {
+    private fun bindSign(holder: SignViewHolder, sign: Sign, position: Int) {
         holder.mIdView.text = sign.word
 
         if (sign.examplesCount > 0) {
@@ -83,6 +84,10 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
             holder.mTranscriptionText.setOnClickListener(null)
         }
 
+        holder.mPlayButton.setOnClickListener {
+            mPlayHandler.onItemPlay(sign, position)
+        }
+
         for ((i, url) in urls.withIndex()) {
             if (i >= holder.imageViews.size) {
                 break
@@ -114,11 +119,15 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         }
     }
 
-    private fun bindExample(holder: ExampleViewHolder, example: Example) {
+    private fun bindExample(holder: ExampleViewHolder, example: Example, position: Int) {
         holder.mIdView.text = fromHtml("$example <em>(<strong>${example.signWord}</strong>)</em>")
 
-        holder.mView.setOnClickListener {
+        holder.mIdView.setOnClickListener {
             mListener?.onListFragmentInteraction(example)
+        }
+
+        holder.mPlayButton.setOnClickListener {
+            mPlayHandler.onItemPlay(example, position)
         }
     }
 
@@ -144,8 +153,8 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         val item = mSigns[position]
 
         when (getItemViewType(position)) {
-            R.layout.fragment_sign -> bindSign(holder as SignViewHolder, item as Sign)
-            R.layout.item_example -> bindExample(holder as ExampleViewHolder, item as Example)
+            R.layout.fragment_sign -> bindSign(holder as SignViewHolder, item as Sign, position)
+            R.layout.item_example -> bindExample(holder as ExampleViewHolder, item as Example, position)
             R.layout.item_header -> bindHeader(holder as HeaderViewHolder, item as Header)
             R.layout.item_topic -> bindTopic(holder as TopicViewHolder, item as Topic)
             R.layout.item_search -> bindSearch(holder as SearchViewHolder, item as Search)
@@ -188,6 +197,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
         val mImages: ViewFlipper = mView.findViewById(R.id.images)
         val mTranscriptionText: TextView = mView.findViewById(R.id.transcriptionText)
         val mExamplesCountText: TextView = mView.findViewById(R.id.examplesCountText)
+        val mPlayButton: ImageButton = mView.findViewById(R.id.playButton)
         private val imageViewIds = intArrayOf(R.id.image1, R.id.image2, R.id.image3, R.id.image4)
         val imageViews: Array<ImageView> = Array(imageViewIds.size) { i ->
             mView.findViewById<ImageView>(imageViewIds[i])
@@ -196,6 +206,7 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
 
     inner class ExampleViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
+        val mPlayButton: ImageButton = mView.findViewById(R.id.playButton)
     }
 
     inner class HeaderViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
@@ -207,4 +218,9 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
     }
 
     inner class SearchViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView)
+
+    interface OnItemPlayHandler {
+        fun onItemPlay(item: Sign, position: Int)
+        fun onItemPlay(item: Example, position: Int)
+    }
 }

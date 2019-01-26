@@ -13,110 +13,122 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:layoutDirection="ltr"
-    android:background="#1000"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    >
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="6">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_gravity="bottom"
+        android:layoutDirection="ltr"
+        android:background="#1000"
+        android:orientation="vertical">
 
-        <RadioGroup
-            android:layout_weight="1"
-            android:id="@+id/exo_speed"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="6">
+
+            <RadioGroup
+                android:layout_weight="1"
+                android:id="@+id/exo_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/exo_050x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#fff"
+                    android:text="0.5×" />
+
+                <RadioButton
+                    android:id="@+id/exo_075x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#fff"
+                    android:text="0.75×" />
+
+                <RadioButton
+                    android:id="@+id/exo_100x"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#fff"
+                    android:text="1×" />
+
+            </RadioGroup>
+
+            <ImageButton android:id="@id/exo_repeat_toggle"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ExoMediaButton"/>
+
+            <ImageButton android:id="@id/exo_prev"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ExoMediaButton.Previous"/>
+
+            <ImageButton android:id="@id/exo_play"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ExoMediaButton.Play"/>
+
+            <ImageButton android:id="@id/exo_pause"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ExoMediaButton.Pause"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/exo_050x"
+            <TextView android:id="@id/exo_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="#fff"
-                android:text="0.5×" />
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:includeFontPadding="false"
+                android:textColor="#FFBEBEBE"/>
 
-            <RadioButton
-                android:id="@+id/exo_075x"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.google.android.exoplayer2.ui.DefaultTimeBar
+                android:id="@id/exo_progress"
+                android:layout_width="0dp"
                 android:layout_weight="1"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#fff"
-                android:text="0.75×" />
+                android:layout_height="26dp"/>
 
-            <RadioButton
-                android:id="@+id/exo_100x"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#fff"
-                android:text="1×" />
-
-        </RadioGroup>
-
-        <ImageButton android:id="@id/exo_repeat_toggle"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ExoMediaButton"/>
-
-        <ImageButton android:id="@id/exo_prev"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ExoMediaButton.Previous"/>
-
-        <ImageButton android:id="@id/exo_play"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ExoMediaButton.Play"/>
-
-        <ImageButton android:id="@id/exo_pause"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/ExoMediaButton.Pause"/>
-
+        </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView android:id="@id/exo_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:includeFontPadding="false"
-            android:textColor="#FFBEBEBE"/>
-
-        <com.google.android.exoplayer2.ui.DefaultTimeBar
-            android:id="@id/exo_progress"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="26dp"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

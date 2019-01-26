@@ -83,4 +83,15 @@
         android:shadowDy="2"
         android:shadowRadius="5"/>
 
+    <ImageButton
+        android:id="@+id/playButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/images"
+        app:layout_constraintEnd_toEndOf="@id/images"
+        app:layout_constraintRight_toRightOf="@id/images"
+        android:src="@drawable/ic_play_white_24dp"
+        android:background="?android:attr/selectableItemBackground"/>
+
 </android.support.constraint.ConstraintLayout>
