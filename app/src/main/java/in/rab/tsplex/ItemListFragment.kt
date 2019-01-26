@@ -42,8 +42,13 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
         }
     }
 
+    protected fun update() {
+        mTask?.cancel(true)
+        mTask = DatabaseTask().execute()
+    }
+
     override fun onRefresh() {
-        DatabaseTask().execute()
+        update()
     }
 
     fun loadList() {

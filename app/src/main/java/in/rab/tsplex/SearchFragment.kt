@@ -3,38 +3,40 @@ package `in`.rab.tsplex
 import android.os.Bundle
 
 class SearchFragment : ItemListFragment() {
-    private var query: String? = null
+    private var mQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val args = arguments
         if (args != null) {
-            query = args.getString(ARG_QUERY)
+            mQuery = args.getString(ARG_QUERY)
         }
+    }
+
+    internal fun setQuery(query: String) {
+        mQuery = query
     }
 
     override fun getSigns(): List<Item> {
         val act = activity ?: return ArrayList()
+        val query = mQuery ?: return ArrayList()
         val db = SignDatabase(act)
 
-        if (query == null)
-            return ArrayList()
-
-        if (query!!.startsWith("topic:")) {
-            val topic = query!!.substring(6)
+        if (query.startsWith("topic:")) {
+            val topic = query.substring(6)
             val topicid = topic.toIntOrNull() ?: return arrayListOf()
 
             return ArrayList(db.getTopicSigns(topicid))
-        } else if (query!!.startsWith("ex:")) {
-            val ex = query!!.substring(3)
+        } else if (query.startsWith("ex:")) {
+            val ex = query.substring(3)
 
             return ArrayList(db.getExampleSigns(ex))
         } else {
-            val signs = db.getSigns(query!!)
-            val examples = db.getExamples(query!!)
+            val signs = db.getSigns(query)
+            val examples = db.getExamples(query)
             val topics = ArrayList<Item>(Topics.topics.filter {
-                it.name.contains(query!!, ignoreCase = true)
+                it.name.contains(query, ignoreCase = true)
             })
 
             val combined = ArrayList<Item>(signs)

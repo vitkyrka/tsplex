@@ -59,9 +59,13 @@ class SearchActivity : RoutingAppCompactActivity() {
                 } else {
                     recentList?.visibility = GONE
 
-                    val fragment: Fragment? = SearchFragment.newInstance(query)
+                    val fragment = supportFragmentManager.findFragmentByTag("foo")
                     if (fragment != null) {
-                        supportFragmentManager.beginTransaction().replace(R.id.content, fragment, "foo").commit()
+                        (fragment as SearchFragment).setQuery(query)
+                    } else {
+                        SearchFragment.newInstance(query).let {
+                            supportFragmentManager.beginTransaction().replace(R.id.content, it, "foo").commit()
+                        }
                     }
                 }
             }
