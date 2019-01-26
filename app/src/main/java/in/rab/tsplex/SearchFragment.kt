@@ -15,7 +15,12 @@ class SearchFragment : ItemListFragment() {
     }
 
     internal fun setQuery(query: String) {
+        if (query == mQuery) {
+            return
+        }
+
         mQuery = query
+        update()
     }
 
     override fun getSigns(): List<Item> {

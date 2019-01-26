@@ -6,8 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.SearchRecentSuggestions
-import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,9 +19,12 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import kotlinx.android.synthetic.main.activity_search.*
+import java.util.*
 
 
-class SearchActivity : RoutingAppCompactActivity() {
+class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
+    private var mHandler = Handler(Looper.getMainLooper())
+    private var mRunnable: Runnable? = null
     private var mOrdboken: Ordboken? = null
     private var mQuery: String? = null
 
@@ -37,40 +41,7 @@ class SearchActivity : RoutingAppCompactActivity() {
 
         mOrdboken = Ordboken.getInstance(this)
 
-        searchView.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val query = s.toString()
-
-                mQuery = query
-
-                if (query.isEmpty()) {
-                    recentList?.visibility = VISIBLE
-
-                    val fragment = supportFragmentManager.findFragmentByTag("foo")
-                    if (fragment != null) {
-                        supportFragmentManager.beginTransaction().remove(fragment).commit()
-                    }
-                } else {
-                    recentList?.visibility = GONE
-
-                    val fragment = supportFragmentManager.findFragmentByTag("foo")
-                    if (fragment != null) {
-                        (fragment as SearchFragment).setQuery(query)
-                    } else {
-                        SearchFragment.newInstance(query).let {
-                            supportFragmentManager.beginTransaction().replace(R.id.content, it, "foo").commit()
-                        }
-                    }
-                }
-            }
-
-        })
+        searchView.addTextChangedListener(this)
 
         searchView.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -96,6 +67,46 @@ class SearchActivity : RoutingAppCompactActivity() {
             RecentTask().execute()
         }
     }
+
+
+    override fun afterTextChanged(s: Editable?) = Unit
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        val query = s.toString()
+
+        if (query == mQuery) {
+            return
+        }
+
+        mRunnable?.let { mHandler.removeCallbacks(it) }
+
+        mQuery = query
+
+        mRunnable = Runnable {
+            if (query.isEmpty()) {
+                recentList?.visibility = VISIBLE
+
+                supportFragmentManager.findFragmentByTag("foo")?.let {
+                    supportFragmentManager.beginTransaction().remove(it).commit()
+                }
+            } else {
+                recentList?.visibility = GONE
+
+                val fragment = supportFragmentManager.findFragmentByTag("foo")
+                if (fragment != null) {
+                    (fragment as SearchFragment).setQuery(query)
+                } else {
+                    SearchFragment.newInstance(query).let {
+                        supportFragmentManager.beginTransaction().replace(R.id.content, it, "foo").commit()
+                    }
+                }
+            }
+        }
+
+        mHandler.postDelayed(mRunnable, 250)
+    }
+
 
     private fun saveRecent(query: String) {
         val suggestions = object : SearchRecentSuggestions(this@SearchActivity,
@@ -159,14 +170,19 @@ class SearchActivity : RoutingAppCompactActivity() {
 
         if (Intent.ACTION_SEARCH == intent.action) {
             val query = intent.getStringExtra(SearchManager.QUERY)
-            val fragment: Fragment? = SearchFragment.newInstance(query)
 
             val title = intent.getStringExtra(Intent.EXTRA_TITLE) ?: query
             supportActionBar?.title = title
 
             mQuery = query
+
+            val fragment = supportFragmentManager.findFragmentByTag("foo")
             if (fragment != null) {
-                supportFragmentManager.beginTransaction().replace(R.id.content, fragment).commit()
+                (fragment as SearchFragment).setQuery(query)
+            } else {
+                SearchFragment.newInstance(query).let {
+                    supportFragmentManager.beginTransaction().replace(R.id.content, it, "foo").commit()
+                }
             }
         } else if (Intent.ACTION_VIEW == intent.action) {
             val url = intent.dataString
