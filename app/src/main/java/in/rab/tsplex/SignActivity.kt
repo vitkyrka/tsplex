@@ -19,6 +19,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmentInteractionListener {
@@ -27,8 +28,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
     private var mGotStarred: Boolean = false
     private var mSign: Sign? = null
     private var mExampleUrl: String? = null
-    private var mSynonyms: ArrayList<Sign>? = null
-    private var mHomonyms: ArrayList<Sign>? = null
+    private var mSynonyms: ArrayList<Item>? = null
     private var mPosition = 0
     private var mViewPager: ViewPager? = null
     private var mTabLayout: TabLayout? = null
@@ -119,8 +119,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
 
             return when (adjpos) {
                 0 -> getText(R.string.sign)
-                1 -> getText(R.string.other_signs)
-                2 -> getText(R.string.other_meanings)
+                1 -> getText(R.string.relations)
                 else -> ""
             }
         }
@@ -137,7 +136,6 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
             return when (adjpos) {
                 0 -> SignDescriptionFragment.newInstance(mSign!!, mExampleUrl)
                 1 -> ArrayListFragment.newInstance(mSynonyms!!)
-                2 -> ArrayListFragment.newInstance(mHomonyms!!)
                 else -> null
             }
         }
@@ -146,10 +144,6 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
             var count = 1
 
             if (mSynonyms!!.size > 0) {
-                count += 1
-            }
-
-            if (mHomonyms!!.size > 0) {
                 count += 1
             }
 
@@ -173,8 +167,22 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
             val sign = database.getSign(id) ?: return null
 
             mSign = sign
-            mSynonyms = database.getSynonyms(sign.id)
-            mHomonyms = database.getHomonyms(sign.id)
+            val synonyms = database.getSynonyms(sign.id)
+            val homonoyms = database.getHomonyms(sign.id)
+
+            val combined = ArrayList<Item>()
+
+            if (synonyms.isNotEmpty()) {
+                combined.add(Header(getString(R.string.other_signs)))
+                combined.addAll(synonyms)
+            }
+
+            if (homonoyms.isNotEmpty()) {
+                combined.add(Header(getString(R.string.other_meanings)))
+                combined.addAll(homonoyms)
+            }
+
+            mSynonyms = combined
 
             return sign
         }

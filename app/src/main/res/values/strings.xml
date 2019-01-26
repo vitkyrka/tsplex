@@ -19,8 +19,9 @@
     <string name="sign">Tecken</string>
     <string name="signs">Tecken</string>
     <string name="examples">Exempel</string>
-    <string name="other_signs">Andra tecken</string>
-    <string name="other_meanings">Andra betydelser</string>
+    <string name="relations">Relaterat</string>
+    <string name="other_signs">Andra tecken med samma betydelse</string>
+    <string name="other_meanings">Tecknet kan också betyda</string>
     <string name="add_bookmark">Lägg till bokmärke</string>
     <string name="remove_bookmark">Radera bokmärke</string>
     <string name="delete">Ta bort</string>

@@ -3,28 +3,28 @@ package `in`.rab.tsplex
 import android.os.Bundle
 
 class ArrayListFragment : ItemListFragment() {
-    private var signs: ArrayList<Sign> = ArrayList()
+    private var items: List<Item> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val args = arguments
         if (args != null) {
-            signs = args.getParcelableArrayList(ARG_SIGNS)!!
+            items = args.getParcelableArrayList(ARG_ITEMS)!!
         }
     }
 
     override fun getSigns(): List<Item> {
-        return ArrayList(signs)
+        return items
     }
 
     companion object {
-        private const val ARG_SIGNS = "signs"
+        private const val ARG_ITEMS = "items"
 
-        fun newInstance(signs: ArrayList<Sign>): ArrayListFragment {
+        fun newInstance(items: ArrayList<Item>): ArrayListFragment {
             val fragment = ArrayListFragment()
             val args = Bundle()
-            args.putParcelableArrayList(ARG_SIGNS, signs)
+            args.putParcelableArrayList(ARG_ITEMS, items)
             fragment.arguments = args
             return fragment
         }
