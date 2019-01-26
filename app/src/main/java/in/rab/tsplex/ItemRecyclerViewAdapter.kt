@@ -173,6 +173,10 @@ class ItemRecyclerViewAdapter(private val mSigns: List<Item>,
     }
 
     fun getSpanSize(position: Int): Int {
+        if (position >= mSigns.size) {
+            return 1
+        }
+
         return when (getItemViewType(position)) {
             R.layout.fragment_sign -> 1
             else -> 2
