@@ -8,6 +8,8 @@ class Topic constructor (internal val id: Int, internal val name: String) : Item
             parcel.readInt(),
             parcel.readString()!!)
 
+    constructor(id: Int) : this(id, Topics.names[id]!!)
+
     override fun toString(): String {
         return Topics.names[id]!!
     }

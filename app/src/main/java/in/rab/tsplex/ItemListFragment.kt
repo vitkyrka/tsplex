@@ -2,11 +2,9 @@ package `in`.rab.tsplex
 
 import android.content.Context
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Parcelable
-import android.provider.ContactsContract
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
@@ -39,11 +37,11 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
     private var mState: Parcelable? = null
     private var mTask: AsyncTask<Void, Void, List<Item>>? = null
     private var mZoom = 1.0f
-    private var mSigns: List<Item> = arrayListOf()
+    protected var mItems: List<Item> = arrayListOf()
     protected val PREFS_NAME = "in.rab.tsplex"
     private var mSimpleExoPlayerView: SimpleExoPlayerView? = null
     private var mSimpleExoPlayer: SimpleExoPlayer? = null
-    private var mPreviewPosition: Int = -1
+    protected var mPreviewPosition: Int = -1
 
     protected abstract fun getSigns(): List<Item>
 
@@ -53,7 +51,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
         }
 
         override fun onPostExecute(signs: List<Item>) {
-            mSigns = signs
+            mItems = signs
             swipeLayout.isRefreshing = false
             loadList()
         }
@@ -124,7 +122,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
             mSimpleExoPlayer = exoPlayer
         }
 
-        exoPlayerNext.visibility = if (position + 1 < mSigns.size) {
+        exoPlayerNext.visibility = if (position + 1 < mItems.size) {
             VISIBLE
         } else {
             GONE
@@ -155,18 +153,20 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
     }
 
     private fun playItem(position: Int) {
-        if (position < 0 || position >= mSigns.size) {
+        if (position < 0 || position >= mItems.size) {
             return
         }
 
         val item = try {
-            mSigns[position]
+            mItems[position]
         } catch (e: Exception) {
             return
         }
 
         if (item is Sign) {
             onItemPlay(item, position)
+        } else if (item is Description) {
+            onItemPlay(item.mSign, position)
         } else if (item is Example) {
             onItemPlay(item, position)
         }
@@ -184,11 +184,11 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
         exoPlayerOpenNew.setOnClickListener {
             val position = mPreviewPosition
 
-            if (position < 0 || position >= mSigns.size) {
+            if (position < 0 || position >= mItems.size) {
                 return@setOnClickListener
             }
 
-            val item = mSigns[position]
+            val item = mItems[position]
 
             if (item is Sign) {
                 mListener!!.onListFragmentInteraction(item)
@@ -223,7 +223,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
             (layout as GridAutofitLayoutManager).setColumnWidth(width)
         }
 
-        val adapter = ItemRecyclerViewAdapter(this, mSigns, mListener,
+        val adapter = ItemRecyclerViewAdapter(this, mItems, mListener,
                 Glide.with(this@ItemListFragment), params)
 
         if (layout != null) {
@@ -272,7 +272,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
 
         val scaleGestureDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                if (mSigns.isEmpty()) {
+                if (mItems.isEmpty()) {
                     return true
                 }
 
@@ -317,7 +317,11 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
             mZoom = settings.getFloat("imageZoom", 1f)
         }
 
-        mTask = DatabaseTask().execute()
+        if (mItems.isEmpty()) {
+            mTask = DatabaseTask().execute()
+        } else {
+            loadList()
+        }
         playItem(mPreviewPosition)
     }
 

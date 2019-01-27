@@ -134,7 +134,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
             }
 
             return when (adjpos) {
-                0 -> SignDescriptionFragment.newInstance(mSign!!, mExampleUrl)
+                0 -> SignFragment.newInstance(mSign!!, mExampleUrl)
                 1 -> ArrayListFragment.newInstance(mSynonyms!!)
                 else -> null
             }

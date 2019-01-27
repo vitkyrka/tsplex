@@ -15,7 +15,7 @@ import com.bumptech.glide.request.RequestOptions
 import kotlin.math.min
 import android.os.Build
 import android.text.Spanned
-
+import kotlinx.android.synthetic.main.fragment_sign_description.*
 
 
 class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
@@ -30,6 +30,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
 
         return when (viewType) {
             R.layout.fragment_sign -> SignViewHolder(view, viewType)
+            R.layout.item_description -> DescriptionViewHolder(view, viewType)
             R.layout.item_header -> HeaderViewHolder(view, viewType)
             R.layout.item_search -> SearchViewHolder(view, viewType)
             R.layout.item_topic -> TopicViewHolder(view, viewType)
@@ -135,6 +136,38 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun bindDescription(holder: DescriptionViewHolder, description: Description, position: Int) {
+        val sign = description.mSign
+
+        with (holder) {
+            mWordText.text = sign.word
+            mTranscriptionText.text = sign.transcription
+            mTextView.text = Html.fromHtml(sign.description)
+
+            mWordWrapper.setOnClickListener {
+                mPlayHandler.onItemPlay(sign, position)
+            }
+
+            mTextView.setOnClickListener {
+                if (mTranscriptionText.visibility == VISIBLE) {
+                    mTranscriptionText.visibility = GONE
+                    mTextView.maxLines = 3
+                } else {
+                    mTranscriptionText.visibility = VISIBLE
+                    mTextView.maxLines = 100
+                }
+            }
+
+            if (sign.comment.isNotEmpty()) {
+                mCommentText.text = "${sign.comment}."
+                mCommentText.visibility = VISIBLE
+            } else {
+                mCommentText.visibility = GONE
+            }
+        }
+    }
+
     private fun bindHeader(holder: HeaderViewHolder, header: Header) {
         holder.mIdView.text = header.toString()
     }
@@ -159,6 +192,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         when (getItemViewType(position)) {
             R.layout.fragment_sign -> bindSign(holder as SignViewHolder, item as Sign, position)
             R.layout.item_example -> bindExample(holder as ExampleViewHolder, item as Example, position)
+            R.layout.item_description -> bindDescription(holder as DescriptionViewHolder, item as Description, position)
             R.layout.item_header -> bindHeader(holder as HeaderViewHolder, item as Header)
             R.layout.item_topic -> bindTopic(holder as TopicViewHolder, item as Topic)
             R.layout.item_search -> bindSearch(holder as SearchViewHolder, item as Search)
@@ -172,16 +206,13 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
     override fun getItemViewType(position: Int): Int {
         val item = mSigns[position]
 
-        return if (item is Sign) {
-            R.layout.fragment_sign
-        } else if (item is Example) {
-            R.layout.item_example
-        } else if (item is Topic) {
-            R.layout.item_topic
-        } else if (item is Search) {
-            R.layout.item_search
-        } else {
-            R.layout.item_header
+        return when (item) {
+            is Description -> R.layout.item_description
+            is Sign -> R.layout.fragment_sign
+            is Example -> R.layout.item_example
+            is Topic -> R.layout.item_topic
+            is Search -> R.layout.item_search
+            else -> R.layout.item_header
         }
     }
 
@@ -212,6 +243,15 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         val mIdView: TextView = mView.findViewById(R.id.id)
         val mPlayButton: ImageButton = mView.findViewById(R.id.playButton)
         val mExampleSearch: ImageButton = mView.findViewById(R.id.exampleSearch)
+    }
+
+
+    inner class DescriptionViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
+        val mWordText: TextView = mView.findViewById(R.id.wordText)
+        val mWordWrapper: LinearLayout = mView.findViewById(R.id.wordWrapper)
+        val mTranscriptionText: TextView = mView.findViewById(R.id.transcriptionText)
+        val mTextView: TextView = mView.findViewById(R.id.textView)
+        val mCommentText: TextView = mView.findViewById(R.id.commentText)
     }
 
     inner class HeaderViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
