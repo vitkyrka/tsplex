@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 
-abstract class RoutingAppCompactActivity() : AppCompatActivity(),
+abstract class RoutingAppCompactActivity : AppCompatActivity(),
         SignDescriptionFragment.OnTopicClickListener,
         TopicListFragment.OnTopicClickListener,
         ItemListFragment.OnListFragmentInteractionListener {
@@ -26,6 +26,10 @@ abstract class RoutingAppCompactActivity() : AppCompatActivity(),
         intent.putExtra(SearchManager.QUERY, "ex:" + q)
 
         startActivity(intent)
+    }
+
+    override fun onExampleSearchClick(example: Example) {
+        onExampleLongClick(example)
     }
 
     override fun onListFragmentInteraction(item: Sign) {

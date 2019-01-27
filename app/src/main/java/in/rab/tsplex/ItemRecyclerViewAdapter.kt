@@ -129,6 +129,10 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         holder.mPlayButton.setOnClickListener {
             mPlayHandler.onItemPlay(example, position)
         }
+
+        holder.mExampleSearch.setOnClickListener {
+            mListener?.onExampleSearchClick(example)
+        }
     }
 
     private fun bindHeader(holder: HeaderViewHolder, header: Header) {
@@ -207,6 +211,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
     inner class ExampleViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
         val mPlayButton: ImageButton = mView.findViewById(R.id.playButton)
+        val mExampleSearch: ImageButton = mView.findViewById(R.id.exampleSearch)
     }
 
     inner class HeaderViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {

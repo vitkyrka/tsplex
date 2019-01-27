@@ -5,31 +5,52 @@
     android:orientation="horizontal"
     android:layout_margin="3dp">
 
+    <TextView
+        android:id="@+id/id"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:visibility="visible"
+        android:layout_marginStart="4dp"
+        android:textColor="@android:color/black"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/exampleSearch"
+        android:drawableLeft="@drawable/ic_examples_black_24dp"
+        android:drawablePadding="5dp"
+        android:background="?android:attr/selectableItemBackground"/>
+
+    <ImageButton
+        android:id="@+id/exampleSearch"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="36dp"
+        android:minHeight="36dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/playButton"
+        android:background="?android:attr/selectableItemBackground"
+        android:src="@drawable/ic_example_signs_24dp" />
+
     <ImageButton
         android:id="@+id/playButton"
         android:gravity="center"
-        android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:minWidth="36dp"
+        android:minHeight="36dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/ic_play_black_24dp" />
-
-    <TextView
-        android:id="@+id/id"
-        android:layout_gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:layout_margin="4dp"
-        android:textAppearance="@android:style/TextAppearance.Holo"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/playButton"
-        android:background="?android:attr/selectableItemBackground"/>
 
 
 </RelativeLayout>
