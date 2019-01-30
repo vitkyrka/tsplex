@@ -155,7 +155,13 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         with (holder) {
             mWordText.text = sign.word
             mTranscriptionText.text = sign.transcription
-            mTextView.text = Html.fromHtml(sign.description)
+
+            val desc = sign.description.split("//").joinToString("//<br>")
+            mTextView.text = Html.fromHtml(if (!desc.endsWith('.')) {
+                "$desc."
+            } else {
+                desc
+            })
 
             mWordWrapper.setOnClickListener {
                 mPlayHandler.onItemPlay(sign, position)
