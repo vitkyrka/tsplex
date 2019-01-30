@@ -41,11 +41,15 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
     }
 
     internal fun setSelected(position: Int) {
+        if (selectedPosition >= 0 && selectedPosition < mSigns.size) {
+            notifyItemChanged(selectedPosition)
+        }
+
         if (position < 0 || position >= mSigns.size) {
+            selectedPosition = -1
             return
         }
 
-        notifyItemChanged(selectedPosition)
         selectedPosition = position
         notifyItemChanged(position)
     }

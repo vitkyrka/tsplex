@@ -218,6 +218,8 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, androidx.fragment.
             mPreviewPosition = -1
             mSimpleExoPlayer?.playWhenReady = false
             exoPlayerView?.visibility = GONE
+
+            (recylerView?.adapter as? ItemRecyclerViewAdapter)?.setSelected(-1)
         }
 
         exoPlayerOpenNew.setOnClickListener {
