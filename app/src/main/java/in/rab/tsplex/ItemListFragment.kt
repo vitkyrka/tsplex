@@ -10,12 +10,9 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.ScaleGestureDetector
-import android.view.View
+import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.*
@@ -226,6 +223,22 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
         savedInstanceState?.let {
             mPreviewPosition = it.getInt("videoPosition", mPreviewPosition)
         }
+
+        val grand = playerGrandParent
+        val player = playerParent
+
+        grand.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            private var mHeight = 0
+
+            override fun onGlobalLayout() {
+                val height = grand.measuredHeight
+
+                if (height > mHeight) {
+                    mHeight = height
+                    player.maxHeight = height * 2 / 3
+                }
+            }
+        })
     }
 
     fun loadList() {
