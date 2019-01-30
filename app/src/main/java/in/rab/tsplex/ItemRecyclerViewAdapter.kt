@@ -1,6 +1,7 @@
 package `in`.rab.tsplex
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
                               private val mListener: ItemListFragment.OnListFragmentInteractionListener?,
                               private val mGlide: RequestManager,
                               private val mLayoutParams: FrameLayout.LayoutParams) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var selectedPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -36,6 +38,16 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
             R.layout.item_topic -> TopicViewHolder(view, viewType)
             else -> ExampleViewHolder(view, viewType)
         }
+    }
+
+    internal fun setSelected(position: Int) {
+        if (position < 0 || position >= mSigns.size) {
+            return
+        }
+
+        notifyItemChanged(selectedPosition)
+        selectedPosition = position
+        notifyItemChanged(position)
     }
 
     @SuppressLint("SetTextI18n")
@@ -188,6 +200,13 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = mSigns[position]
+
+
+        holder.itemView.setBackgroundColor(if (position == selectedPosition) {
+            0x66FFCA28
+        } else {
+            Color.TRANSPARENT
+        })
 
         when (getItemViewType(position)) {
             R.layout.fragment_sign -> bindSign(holder as SignViewHolder, item as Sign, position)

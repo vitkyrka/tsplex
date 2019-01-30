@@ -66,8 +66,17 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
         update()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putInt("videoPosition", mPreviewPosition)
+    }
+
+
     fun playVideo(title: String, video: String, position: Int) {
         val lexikon = context?.let { Lexikon.getInstance(it) } ?: return
+
+        (recylerView?.adapter as? ItemRecyclerViewAdapter)?.setSelected(position)
 
         var exoPlayer = mSimpleExoPlayer
         if (exoPlayer == null) {
@@ -101,6 +110,12 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
                     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                         if (playbackState == Player.STATE_READY) {
                             exoPlayerView?.visibility = View.VISIBLE
+
+                            val position = mPreviewPosition
+                            if (position > 0) {
+                                (recylerView?.layoutManager as? GridAutofitLayoutManager?)?.scrollToPosition(mPreviewPosition)
+                            }
+
                             //loadingProgress.visibility = View.GONE
 
 //                            if (mScrollPos != 0) {
@@ -163,6 +178,9 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
             return
         }
 
+
+        (recylerView?.layoutManager as? GridAutofitLayoutManager?)?.scrollToPosition(position)
+
         if (item is Sign) {
             onItemPlay(item, position)
         } else if (item is Description) {
@@ -197,13 +215,16 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
             }
         }
 
-
         exoPlayerNext.setOnClickListener {
             playItem(mPreviewPosition + 1)
         }
 
         exoPlayerPrevious.setOnClickListener {
             playItem(mPreviewPosition - 1)
+        }
+
+        savedInstanceState?.let {
+            mPreviewPosition = it.getInt("videoPosition", mPreviewPosition)
         }
     }
 
