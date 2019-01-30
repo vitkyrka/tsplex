@@ -168,12 +168,10 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
             }
 
             mTextView.setOnClickListener {
-                if (mTranscriptionText.visibility == VISIBLE) {
-                    mTranscriptionText.visibility = GONE
-                    mTextView.maxLines = 3
-                } else {
-                    mTranscriptionText.visibility = VISIBLE
+                if (mTextView.maxLines < 100) {
                     mTextView.maxLines = 100
+                } else {
+                    mTextView.maxLines = 3
                 }
             }
 
