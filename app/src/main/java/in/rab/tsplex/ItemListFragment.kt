@@ -1,6 +1,7 @@
 package `in`.rab.tsplex
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -69,9 +71,31 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
         outState.putInt("videoPosition", mPreviewPosition)
     }
 
+    private fun isOnline(): Boolean {
+        val conman = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        val networkInfo = conman?.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
+    }
+
+    fun showVideoError() {
+        loadingProgress.visibility = GONE
+        exoPlayerView.visibility = GONE
+
+        val msg: String = if (isOnline()) {
+            getString(R.string.fail_video_play)
+        } else {
+            getString(R.string.fail_offline)
+        }
+
+        loadingError.text = msg
+        loadingError.visibility = VISIBLE
+    }
 
     fun playVideo(title: String, video: String, position: Int) {
         val lexikon = context?.let { Lexikon.getInstance(it) } ?: return
+
+        loadingProgress.visibility = VISIBLE
+        loadingError.visibility = GONE
 
         (recylerView?.adapter as? ItemRecyclerViewAdapter)?.setSelected(position)
 
@@ -95,7 +119,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
                     }
 
                     override fun onPlayerError(error: ExoPlaybackException?) {
-                        //showError()
+                        showVideoError()
                     }
 
                     override fun onTracksChanged(trackGroups: TrackGroupArray?, trackSelections: TrackSelectionArray?) {
@@ -113,7 +137,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
                                 (recylerView?.layoutManager as? GridAutofitLayoutManager?)?.scrollToPosition(mPreviewPosition)
                             }
 
-                            //loadingProgress.visibility = View.GONE
+                            loadingProgress.visibility = View.GONE
 
 //                            if (mScrollPos != 0) {
 //                                val scrollPos = mScrollPos
