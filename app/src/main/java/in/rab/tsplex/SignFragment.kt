@@ -31,7 +31,7 @@ class SignFragment : ItemListFragment() {
             }
 
             mItems = items
-            mPreviewPosition = 0
+            mPreviewPosition = mSelectedExample + 1
         }
     }
 
