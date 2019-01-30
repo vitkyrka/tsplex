@@ -2,7 +2,7 @@ package `in`.rab.tsplex
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.ListFragment
+import androidx.fragment.app.ListFragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import kotlinx.android.synthetic.main.fragment_signexample.*
 
-class TopicListFragment : FragmentVisibilityNotifier, ListFragment() {
+class TopicListFragment : FragmentVisibilityNotifier, androidx.fragment.app.ListFragment() {
     private var listener: OnTopicClickListener? = null
     private val topics = Topics.topics
 

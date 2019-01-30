@@ -2,7 +2,7 @@ package `in`.rab.tsplex
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
@@ -23,10 +23,10 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
                               private val mSigns: List<Item>,
                               private val mListener: ItemListFragment.OnListFragmentInteractionListener?,
                               private val mGlide: RequestManager,
-                              private val mLayoutParams: FrameLayout.LayoutParams) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                              private val mLayoutParams: FrameLayout.LayoutParams) : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
     private var selectedPosition = -1
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(viewType, parent, false)
 
@@ -202,7 +202,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
         val item = mSigns[position]
 
 
@@ -250,7 +250,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         }
     }
 
-    inner class SignViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
+    inner class SignViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
         val mImages: ViewFlipper = mView.findViewById(R.id.images)
         val mTranscriptionText: TextView = mView.findViewById(R.id.transcriptionText)
@@ -262,14 +262,14 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         }
     }
 
-    inner class ExampleViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
+    inner class ExampleViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
         val mPlayButton: ImageButton = mView.findViewById(R.id.playButton)
         val mExampleSearch: ImageButton = mView.findViewById(R.id.exampleSearch)
     }
 
 
-    inner class DescriptionViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
+    inner class DescriptionViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
         val mWordText: TextView = mView.findViewById(R.id.wordText)
         val mWordWrapper: LinearLayout = mView.findViewById(R.id.wordWrapper)
         val mTranscriptionText: TextView = mView.findViewById(R.id.transcriptionText)
@@ -277,15 +277,15 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         val mCommentText: TextView = mView.findViewById(R.id.commentText)
     }
 
-    inner class HeaderViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
+    inner class HeaderViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
     }
 
-    inner class TopicViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView) {
+    inner class TopicViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
     }
 
-    inner class SearchViewHolder(val mView: View, val mViewType: Int) : RecyclerView.ViewHolder(mView)
+    inner class SearchViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView)
 
     interface OnItemPlayHandler {
         fun onItemPlay(item: Sign, position: Int)

@@ -3,7 +3,7 @@ package `in`.rab.tsplex
 import android.app.SearchManager
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 
 abstract class RoutingAppCompactActivity : AppCompatActivity(),
         SignDescriptionFragment.OnTopicClickListener,

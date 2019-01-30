@@ -1,19 +1,15 @@
 package in.rab.tsplex;
 
 import android.app.Activity;
-import android.app.SearchManager;
 import android.app.TaskStackBuilder;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.app.NavUtils;
-import android.support.v7.widget.SearchView;
+import androidx.core.app.NavUtils;
+import androidx.appcompat.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import static android.content.Intent.ACTION_SEARCH;
 
 public class Ordboken {
     private static Ordboken sInstance = null;

@@ -1,13 +1,13 @@
 package `in`.rab.tsplex
 
 import android.content.Context
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.max
 
 
-class GridAutofitLayoutManager(context: Context?, spanCount: Int) : GridLayoutManager(context, spanCount) {
+class GridAutofitLayoutManager(context: Context?, spanCount: Int) : androidx.recyclerview.widget.GridLayoutManager(context, spanCount) {
     private var mColumnWidth: Int = 0
     private var mRefit = false
 
@@ -18,9 +18,9 @@ class GridAutofitLayoutManager(context: Context?, spanCount: Int) : GridLayoutMa
         }
     }
 
-    override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State) {
+    override fun onLayoutChildren(recycler: androidx.recyclerview.widget.RecyclerView.Recycler?, state: androidx.recyclerview.widget.RecyclerView.State) {
         if (mRefit && mColumnWidth > 0) {
-            val totalSpace: Int = if (orientation == LinearLayoutManager.VERTICAL) {
+            val totalSpace: Int = if (orientation == androidx.recyclerview.widget.LinearLayoutManager.VERTICAL) {
                 width - paddingRight - paddingLeft
             } else {
                 height - paddingTop - paddingBottom

@@ -9,12 +9,12 @@ import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import com.google.android.material.tabs.TabLayout
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
@@ -30,7 +30,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
     private var mExampleUrl: String? = null
     private var mSynonyms: ArrayList<Item>? = null
     private var mPosition = 0
-    private var mViewPager: ViewPager? = null
+    private var mViewPager: androidx.viewpager.widget.ViewPager? = null
     private var mTabLayout: TabLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,9 +49,9 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
 
         title = ""
 
-        val pager = findViewById<ViewPager>(R.id.viewPager)
+        val pager = findViewById<androidx.viewpager.widget.ViewPager>(R.id.viewPager)
         pager.addOnPageChangeListener(
-                object : ViewPager.SimpleOnPageChangeListener() {
+                object : androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener() {
                     override fun onPageSelected(position: Int) {
                         var fragment = pager.adapter?.instantiateItem(pager, mPosition) as FragmentVisibilityNotifier
                         fragment.onHide()
@@ -107,7 +107,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
     override fun onListFragmentInteraction(item: Example) {
     }
 
-    private inner class TabPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    private inner class TabPagerAdapter(fm: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentPagerAdapter(fm) {
         override fun getPageTitle(position: Int): CharSequence {
             var adjpos = position
 
@@ -124,7 +124,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
             }
         }
 
-        override fun getItem(pos: Int): android.support.v4.app.Fragment? {
+        override fun getItem(pos: Int): androidx.fragment.app.Fragment? {
             var adjpos = pos
 
             if (adjpos > 0) {

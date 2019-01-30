@@ -6,11 +6,11 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v4.app.Fragment
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -29,10 +29,10 @@ import kotlinx.android.synthetic.main.exoplayer_preview_control.*
 import kotlinx.android.synthetic.main.fragment_sign_list.*
 
 
-abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeRefreshLayout.OnRefreshListener,
+abstract class ItemListFragment : FragmentVisibilityNotifier, androidx.fragment.app.Fragment(), androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener,
         ItemRecyclerViewAdapter.OnItemPlayHandler {
     private var mListener: OnListFragmentInteractionListener? = null
-    private var recylerView: RecyclerView? = null
+    private var recylerView: androidx.recyclerview.widget.RecyclerView? = null
     private var mState: Parcelable? = null
     private var mTask: AsyncTask<Void, Void, List<Item>>? = null
     private var mZoom = 1.0f
@@ -286,7 +286,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
 
         if (layout != null) {
             val autoFitLayout = (layout as GridAutofitLayoutManager)
-            autoFitLayout.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            autoFitLayout.spanSizeLookup = object : androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     val size = adapter.getSpanSize(position)
 
@@ -313,16 +313,16 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, Fragment(), SwipeR
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_sign_list, container, false)
 
-        view?.findViewById<SwipeRefreshLayout>(R.id.swipeLayout)?.apply {
+        view?.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipeLayout)?.apply {
             setOnRefreshListener(this@ItemListFragment)
             isEnabled = false
         }
 
-        val recycler = view.findViewById<RecyclerView>(R.id.list)
+        val recycler = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.list)
         val context = recycler.getContext()
 
         val layoutManager = GridAutofitLayoutManager(context, 1)
-        val decoration = DividerItemDecoration(getContext(), layoutManager.orientation)
+        val decoration = androidx.recyclerview.widget.DividerItemDecoration(getContext(), layoutManager.orientation)
 
         // view.addItemDecoration(decoration)
         recycler.layoutManager = layoutManager

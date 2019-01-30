@@ -6,7 +6,7 @@ import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.Html
 import android.view.*
 import android.view.View.GONE
@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import kotlinx.android.synthetic.main.fragment_sign_description.*
 
 
-class SignDescriptionFragment : FragmentVisibilityNotifier, Fragment() {
+class SignDescriptionFragment : FragmentVisibilityNotifier, androidx.fragment.app.Fragment() {
     private var mListener: OnTopicClickListener? = null
     private var mWord: String? = null
     private var mVideo: String? = null

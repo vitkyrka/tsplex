@@ -2,9 +2,9 @@ package `in`.rab.tsplex
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.design.widget.NavigationView
-import android.support.v4.app.Fragment
-import android.support.v7.app.ActionBarDrawerToggle
+import com.google.android.material.navigation.NavigationView
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_home.*
@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_home.*
 class HomeActivity : RoutingAppCompactActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var mOrdboken: Ordboken? = null
     private var mDrawerToggle: ActionBarDrawerToggle? = null
-    private var mActionBar: android.support.v7.app.ActionBar? = null
+    private var mActionBar: androidx.appcompat.app.ActionBar? = null
     private var mTitle: String? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -62,25 +62,25 @@ class HomeActivity : RoutingAppCompactActivity(), NavigationView.OnNavigationIte
 
         when (it.itemId) {
             R.id.navigation_home -> {
-                val fragment: Fragment? = HomeFragment.newInstance()
+                val fragment: androidx.fragment.app.Fragment? = HomeFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
                 setAndSaveTitle(R.string.app_name)
                 return true
             }
             R.id.navigation_history -> {
-                val fragment: Fragment? = HistoryFragment.newInstance()
+                val fragment: androidx.fragment.app.Fragment? = HistoryFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
                 setAndSaveTitle(R.string.title_history)
                 return true
             }
             R.id.navigation_favorites -> {
-                val fragment: Fragment? = FavoritesFragment.newInstance()
+                val fragment: androidx.fragment.app.Fragment? = FavoritesFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
                 setAndSaveTitle(R.string.title_favorites)
                 return true
             }
             R.id.navigation_topics -> {
-                val fragment: Fragment? = TopicListFragment.newInstance()
+                val fragment: androidx.fragment.app.Fragment? = TopicListFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
                 setAndSaveTitle(R.string.title_topics)
                 return true
