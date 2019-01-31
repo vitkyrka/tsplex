@@ -42,6 +42,8 @@
     <string name="random_examples">Slumpmässiga exempel</string>
     <string name="recently_seen">Nyligen visade tecken</string>
     <string name="random_favorites">Slumpmässiga bokmärkta tecken</string>
+    <string name="clear_search_box">Rensa sökfältet</string>
+    <string name="clear_search_history">Rensa sökhistoriken</string>
 
 
     <string name="title_activity_home">Teckenspråkslexikon</string>

@@ -1,6 +1,8 @@
 package `in`.rab.tsplex
 
+import android.app.Activity
 import android.app.SearchManager
+import android.app.TaskStackBuilder
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
@@ -13,11 +15,13 @@ import androidx.appcompat.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import androidx.core.app.NavUtils
 import kotlinx.android.synthetic.main.activity_search.*
 import java.util.*
 
@@ -202,4 +206,20 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         menuInflater.inflate(R.menu.main_search, menu)
         return true
     }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.clearSearchBox) {
+            searchView.text.clear()
+            return true
+        } else if (item?.itemId == R.id.clearHistory) {
+            SearchRecentSuggestions(this@SearchActivity,
+                    SignRecentSuggestionsProvider.AUTHORITY, SignRecentSuggestionsProvider.MODE)
+                    .clearHistory()
+            RecentTask().execute()
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
 }
