@@ -22,7 +22,6 @@ class SignFragment : ItemListFragment() {
             items.addAll(sign.examples)
 
             if (sign.topic1 != 0 && !Topics.names[sign.topic1]!!.startsWith("Ospec")) {
-                items.add(Header(getString(R.string.topics)))
                 items.add(Topic(sign.topic1))
 
                 if (sign.topic2 != 0) {
