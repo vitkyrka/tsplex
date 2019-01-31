@@ -167,16 +167,8 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
                 desc
             })
 
-            mWordWrapper.setOnClickListener {
+            itemView.setOnClickListener {
                 mPlayHandler.onItemPlay(sign, position)
-            }
-
-            mTextView.setOnClickListener {
-                if (mTextView.maxLines < 100) {
-                    mTextView.maxLines = 100
-                } else {
-                    mTextView.maxLines = 3
-                }
             }
 
             if (sign.comment.isNotEmpty()) {
