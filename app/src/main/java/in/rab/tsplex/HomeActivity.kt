@@ -7,12 +7,11 @@ import androidx.fragment.app.Fragment
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_home.*
 
-class HomeActivity : RoutingAppCompactActivity(), NavigationView.OnNavigationItemSelectedListener {
+class HomeActivity : RoutingAppCompactActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     private var mOrdboken: Ordboken? = null
-    private var mDrawerToggle: ActionBarDrawerToggle? = null
-    private var mActionBar: androidx.appcompat.app.ActionBar? = null
     private var mTitle: String? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -30,15 +29,8 @@ class HomeActivity : RoutingAppCompactActivity(), NavigationView.OnNavigationIte
         setContentView(R.layout.activity_home)
         setSupportActionBar(toolbar)
 
-        mDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open,
-                R.string.drawer_close)
-        drawer_layout.addDrawerListener(mDrawerToggle!!)
+        navigation.setOnNavigationItemSelectedListener(this)
 
-        mActionBar = supportActionBar ?: return
-        mActionBar!!.setDisplayHomeAsUpEnabled(true)
-        mActionBar!!.setHomeButtonEnabled(true)
-
-        navigation.setNavigationItemSelectedListener(this)
 
         if (savedInstanceState != null) {
             mTitle = savedInstanceState.getString("title")
@@ -46,19 +38,15 @@ class HomeActivity : RoutingAppCompactActivity(), NavigationView.OnNavigationIte
 
         if (mTitle == null) {
             onNavigationItemSelected(navigation.menu.findItem(R.id.navigation_home))
-        } else {
-            mActionBar!!.setTitle(mTitle)
         }
     }
 
     private fun setAndSaveTitle(res: Int) {
         mTitle = getString(res)
-        mActionBar!!.setTitle(res)
     }
 
     override fun onNavigationItemSelected(it: MenuItem): Boolean {
         it.isChecked = true
-        drawer_layout.closeDrawers()
 
         when (it.itemId) {
             R.id.navigation_home -> {
@@ -91,28 +79,12 @@ class HomeActivity : RoutingAppCompactActivity(), NavigationView.OnNavigationIte
         }
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-
-        mDrawerToggle?.syncState()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-
-        mDrawerToggle?.syncState()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         mOrdboken!!.initSearchView(this, menu, null, true)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (mDrawerToggle?.onOptionsItemSelected(item)!!) {
-            return true
-        }
-
         if (mOrdboken!!.onOptionsItemSelected(this, item)) {
             return true
         }
