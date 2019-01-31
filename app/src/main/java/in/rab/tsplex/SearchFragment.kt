@@ -44,7 +44,14 @@ class SearchFragment : ItemListFragment() {
                 it.name.contains(query, ignoreCase = true)
             })
 
-            val combined = ArrayList<Item>(signs)
+            val combined = ArrayList<Item>()
+
+            if (signs.size > 0) {
+                if (signs.size > 10) {
+                    combined.add(Header(getString(R.string.signs) + " (${signs.size})"))
+                }
+                combined.addAll(signs)
+            }
 
             if (topics.size > 0) {
                 combined.add(Header(getString(R.string.topics)))
@@ -52,7 +59,7 @@ class SearchFragment : ItemListFragment() {
             }
 
             if (examples.size > 0) {
-                combined.add(Header(getString(R.string.examples)))
+                combined.add(Header(getString(R.string.examples) + " (${examples.size})"))
                 combined.addAll(examples)
             }
 
