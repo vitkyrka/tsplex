@@ -34,11 +34,11 @@ class HomeFragment : ItemListFragment() {
             mRandomTime = now
         }
 
-        signs.add(Header(getString(R.string.random_examples)))
-        signs.addAll(mRandomExamples)
-
         signs.add(Header(getString(R.string.recently_seen)))
         signs.addAll(history.subList(0, min(2, history.size)))
+
+        signs.add(Header(getString(R.string.random_examples)))
+        signs.addAll(mRandomExamples)
 
         if (mRandomFavorites.size < 2 || old) {
             val favorites = db.getSignsByIds("favorites",
