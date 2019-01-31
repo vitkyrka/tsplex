@@ -25,8 +25,6 @@ class HomeFragment : ItemListFragment() {
 
         val signs = ArrayList<Item>()
 
-        signs.add(Search())
-
         val now = Date()
         val diff = (now.time - mRandomTime.time) / 1000
         val old = diff < 0 || diff > (60 * 15)

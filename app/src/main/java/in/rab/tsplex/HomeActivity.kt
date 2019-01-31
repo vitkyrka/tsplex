@@ -1,5 +1,6 @@
 package `in`.rab.tsplex
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -31,6 +33,11 @@ class HomeActivity : RoutingAppCompactActivity(), BottomNavigationView.OnNavigat
 
         navigation.setOnNavigationItemSelectedListener(this)
 
+        homeSearchView.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
 
         if (savedInstanceState != null) {
             mTitle = savedInstanceState.getString("title")
@@ -77,11 +84,6 @@ class HomeActivity : RoutingAppCompactActivity(), BottomNavigationView.OnNavigat
                 return false
             }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        mOrdboken!!.initSearchView(this, menu, null, true)
-        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

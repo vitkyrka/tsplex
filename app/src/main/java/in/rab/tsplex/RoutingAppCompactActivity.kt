@@ -45,12 +45,6 @@ abstract class RoutingAppCompactActivity : AppCompatActivity(),
         startActivity(intent)
     }
 
-    override fun onListFragmentInteraction(item: Search) {
-        val intent = Intent(this, SearchActivity::class.java)
-        startActivity(intent)
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-    }
-
     override fun onListFragmentInteraction(item: Topic) {
         val intent = Intent(this, SearchListActivity::class.java)
         intent.action = Intent.ACTION_SEARCH

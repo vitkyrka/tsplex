@@ -20,7 +20,35 @@
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/homeSearchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="@android:color/black"
+                    android:background="@android:color/white"
+                    android:focusableInTouchMode="false"
+                    android:elevation="4dp"
+                    android:inputType="none"
+                    android:drawableLeft="@drawable/ic_logo_24dp"
+                    android:drawableRight="@drawable/ic_search_black_24dp"
+                    android:drawablePadding="5dp"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:text="@string/search_hint">
+
+                </EditText>
+
+            </FrameLayout>
+
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
