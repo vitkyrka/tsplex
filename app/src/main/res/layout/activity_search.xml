@@ -41,11 +41,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <FrameLayout
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp">
+        </FrameLayout>
+
         <LinearLayout
             android:id="@+id/emptyQueryInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/noResults"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_results"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@android:color/black"
+                android:padding="8dp"
+                android:visibility="gone" />
 
             <ListView
                 android:id="@+id/recentList"
@@ -59,15 +81,6 @@
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
-
-        <FrameLayout
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="0dp"
-            android:layout_marginStart="0dp">
-        </FrameLayout>
 
     </FrameLayout>
 

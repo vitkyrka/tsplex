@@ -67,7 +67,7 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
             (parent as ListView).adapter?.apply {
                 val item = this.getItem(position) as String
 
-                searchView?.append(item)
+                setSearch(item)
             }
         }
 
@@ -78,6 +78,14 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
             searchView.requestFocus()
             RecentTask().execute()
         }
+    }
+
+    private fun setSearch(string: String) {
+        searchView?.apply {
+            text.clear()
+            append(string)
+        }
+
     }
 
     private fun fromHtml(html: String): Spanned {
@@ -95,7 +103,7 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         for (span in builder.getSpans(0, html.length, URLSpan::class.java)) {
             builder.setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    searchView.append(span.url.toString())
+                    setSearch(span.url.toString())
                 }
 
             }, builder.getSpanStart(span), builder.getSpanEnd(span), builder.getSpanFlags(span))
@@ -105,6 +113,16 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
 
         textView.movementMethod = LinkMovementMethod.getInstance()
         textView.text = builder
+    }
+
+    override fun onLoadList(items: List<Item>) {
+        if (items.isEmpty()) {
+            emptyQueryInfo.visibility = VISIBLE
+            noResults.visibility = VISIBLE
+        } else {
+            emptyQueryInfo.visibility = GONE
+            noResults.visibility = GONE
+        }
     }
 
     override fun afterTextChanged(s: Editable?) = Unit
@@ -124,6 +142,7 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         mRunnable = Runnable {
             if (query.isEmpty()) {
                 emptyQueryInfo?.visibility = VISIBLE
+                noResults.visibility = GONE
 
                 supportFragmentManager.findFragmentByTag("foo")?.let {
                     supportFragmentManager.beginTransaction().remove(it).commit()

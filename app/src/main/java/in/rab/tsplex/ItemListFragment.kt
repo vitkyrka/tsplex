@@ -273,6 +273,8 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, androidx.fragment.
             return
         }
 
+        mListener?.onLoadList(mItems)
+
         val dpToPixels = context!!.resources.displayMetrics.density
         val width = (100 * mZoom * dpToPixels + 0.5f).toInt()
         val height = (90 * mZoom * dpToPixels + 0.5f).toInt()
@@ -400,6 +402,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, androidx.fragment.
     }
 
     interface OnListFragmentInteractionListener {
+        fun onLoadList(items: List<Item>)
         fun onListFragmentInteraction(item: Sign)
         fun onListFragmentInteraction(item: Example)
         fun onListFragmentInteraction(item: Topic)

@@ -52,4 +52,7 @@ abstract class RoutingAppCompactActivity : AppCompatActivity(),
         intent.putExtra(SearchManager.QUERY, "topic:" + item.id.toString())
         startActivity(intent)
     }
+
+    override fun onLoadList(items: List<Item>) {
+    }
 }
