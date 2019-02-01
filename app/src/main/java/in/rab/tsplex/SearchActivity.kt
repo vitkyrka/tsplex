@@ -30,6 +30,8 @@ import android.widget.TextView
 import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.View
+import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.idling.CountingIdlingResource
 
 
 class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
@@ -37,6 +39,8 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
     private var mRunnable: Runnable? = null
     private var mOrdboken: Ordboken? = null
     private var mQuery: String? = null
+    internal var mAutoSearch = true
+    internal val mIdleResource: CountingIdlingResource = CountingIdlingResource("search")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +59,11 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
 
         searchView.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                mQuery?.let { saveRecent(it) }
+                mQuery?.let {
+                    saveRecent(it)
+                    cancelDelayedSearch()
+                    performSearch(it)
+                }
             }
 
             false
@@ -84,6 +92,9 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         searchView?.apply {
             text.clear()
             append(string)
+
+            cancelDelayedSearch()
+            performSearch(string)
         }
 
     }
@@ -101,13 +112,12 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         val builder = SpannableStringBuilder(html)
 
         for (span in builder.getSpans(0, html.length, URLSpan::class.java)) {
-            builder.setSpan(object : ClickableSpan() {
+            builder.setSpan(object : URLSpan(span.url.toString()) {
                 override fun onClick(widget: View) {
-                    setSearch(span.url.toString())
+                    setSearch(url)
                 }
 
             }, builder.getSpanStart(span), builder.getSpanEnd(span), builder.getSpanFlags(span))
-
             builder.removeSpan(span)
         }
 
@@ -128,6 +138,38 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
     override fun afterTextChanged(s: Editable?) = Unit
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
+    private fun performSearch(query: String) {
+        if (query.isEmpty()) {
+            emptyQueryInfo?.visibility = VISIBLE
+            noResults.visibility = GONE
+
+            supportFragmentManager.findFragmentByTag("foo")?.let {
+                supportFragmentManager.beginTransaction().remove(it).commit()
+            }
+        } else {
+            emptyQueryInfo?.visibility = GONE
+
+            val fragment = supportFragmentManager.findFragmentByTag("foo")
+            if (fragment != null) {
+                (fragment as SearchFragment).setQuery(query)
+            } else {
+                SearchFragment.newInstance(query).let {
+                    supportFragmentManager.beginTransaction().replace(R.id.content, it, "foo").commit()
+                }
+            }
+        }
+    }
+
+    private fun cancelDelayedSearch() {
+        mRunnable?.let {
+            mHandler.removeCallbacks(it)
+
+            if (!mIdleResource.isIdleNow) {
+                mIdleResource.decrement()
+            }
+        }
+    }
+
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         val query = s.toString().trim()
 
@@ -135,32 +177,20 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
             return
         }
 
-        mRunnable?.let { mHandler.removeCallbacks(it) }
+        cancelDelayedSearch()
 
         mQuery = query
 
-        mRunnable = Runnable {
-            if (query.isEmpty()) {
-                emptyQueryInfo?.visibility = VISIBLE
-                noResults.visibility = GONE
-
-                supportFragmentManager.findFragmentByTag("foo")?.let {
-                    supportFragmentManager.beginTransaction().remove(it).commit()
-                }
-            } else {
-                emptyQueryInfo?.visibility = GONE
-
-                val fragment = supportFragmentManager.findFragmentByTag("foo")
-                if (fragment != null) {
-                    (fragment as SearchFragment).setQuery(query)
-                } else {
-                    SearchFragment.newInstance(query).let {
-                        supportFragmentManager.beginTransaction().replace(R.id.content, it, "foo").commit()
-                    }
-                }
-            }
+        if (!mAutoSearch) {
+            return
         }
 
+        mRunnable = Runnable {
+            performSearch(query)
+            mIdleResource.decrement()
+        }
+
+        mIdleResource.increment()
         mHandler.postDelayed(mRunnable, 250)
     }
 
@@ -263,6 +293,7 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.clearSearchBox) {
             searchView.text.clear()
+            RecentTask().execute()
             return true
         } else if (item?.itemId == R.id.clearHistory) {
             SearchRecentSuggestions(this@SearchActivity,
