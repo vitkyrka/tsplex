@@ -54,5 +54,18 @@
     <string name="title_examples">Exempel</string>
 
     <string name="action_settings">Settings</string>
+    <string name="search_help"><![CDATA[
+        <strong>Söktips</strong>
+
+        <p>Använd sökrutan ovan för att hitta tecken, exempelmeningar och ämnen.
+        Prova <a href="handalfabet">handalfabet</a>, <a href="chans">chans</a>
+        eller ett ID-nummer som <a href="3208">3208</a>.
+
+        <p>Det finns även begränsat stöd för att söka i transkriptionerna.  Prova
+        <a href="flyghänder vrids">flyghänder vrids</a> (som hittar bl.a. <em>fest</em> och <em>Algeriet</em>)
+        eller
+        <a href="tumh nedåtv brös">tumh nedåtv brös</a> (som hittar bl.a. <em>rolig</em> och <em>själv</em>).
+        ]]>
+    </string>
 
 </resources>

@@ -6,13 +6,12 @@ import android.app.TaskStackBuilder
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
-import android.os.AsyncTask
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.provider.SearchRecentSuggestions
 import androidx.appcompat.widget.Toolbar
 import android.text.Editable
+import android.text.Html
+import android.text.Spanned
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
@@ -24,6 +23,13 @@ import android.widget.ListView
 import androidx.core.app.NavUtils
 import kotlinx.android.synthetic.main.activity_search.*
 import java.util.*
+import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
+import android.text.SpannableStringBuilder
+import android.widget.TextView
+import android.text.style.ClickableSpan
+import android.util.Log
+import android.view.View
 
 
 class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
@@ -55,6 +61,8 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
             false
         }
 
+        initHelp(searchHelp, getString(R.string.search_help))
+
         recentList.setOnItemClickListener { parent, view, position, id ->
             (parent as ListView).adapter?.apply {
                 val item = this.getItem(position) as String
@@ -72,12 +80,38 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         }
     }
 
+    private fun fromHtml(html: String): Spanned {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(html)
+        }
+    }
+
+    private fun initHelp(textView: TextView, str: String) {
+        val html = fromHtml(str)
+        val builder = SpannableStringBuilder(html)
+
+        for (span in builder.getSpans(0, html.length, URLSpan::class.java)) {
+            builder.setSpan(object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    searchView.append(span.url.toString())
+                }
+
+            }, builder.getSpanStart(span), builder.getSpanEnd(span), builder.getSpanFlags(span))
+
+            builder.removeSpan(span)
+        }
+
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        textView.text = builder
+    }
 
     override fun afterTextChanged(s: Editable?) = Unit
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        val query = s.toString()
+        val query = s.toString().trim()
 
         if (query == mQuery) {
             return
@@ -89,13 +123,13 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
 
         mRunnable = Runnable {
             if (query.isEmpty()) {
-                recentList?.visibility = VISIBLE
+                emptyQueryInfo?.visibility = VISIBLE
 
                 supportFragmentManager.findFragmentByTag("foo")?.let {
                     supportFragmentManager.beginTransaction().remove(it).commit()
                 }
             } else {
-                recentList?.visibility = GONE
+                emptyQueryInfo?.visibility = GONE
 
                 val fragment = supportFragmentManager.findFragmentByTag("foo")
                 if (fragment != null) {
