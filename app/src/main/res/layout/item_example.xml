@@ -19,7 +19,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/exampleSearch"
+        android:layout_toStartOf="@id/exampleSearch"
         android:drawableLeft="@drawable/ic_examples_black_24dp"
         android:drawablePadding="5dp"
         android:background="?android:attr/selectableItemBackground"/>

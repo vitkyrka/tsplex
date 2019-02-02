@@ -1,33 +1,31 @@
 package `in`.rab.tsplex
 
-import android.util.Log
-import android.view.KeyEvent
-import android.widget.AbsListView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerViewAccessibilityDelegate
 import androidx.test.InstrumentationRegistry
-import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import org.hamcrest.Matchers.*
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import androidx.test.espresso.matcher.BoundedMatcher
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import org.hamcrest.TypeSafeMatcher
 
 
 @RunWith(AndroidJUnit4::class)
@@ -125,6 +123,42 @@ class SearchTest {
         onView(withSubstring("populär restaurang"))
                 .check(matches(isDisplayed()))
     }
+
+    @Test
+    fun exampleActions() {
+        val exampleString = "tycker att vlogg"
+        onView(withId(R.id.searchView))
+                .perform(typeText("teckenspr"), pressImeActionButton())
+        onView(withId(R.id.list))
+                .perform(RecyclerViewActions.scrollToHolder(
+                        withExample(containsString(exampleString))))
+
+        onView(withSubstring(exampleString))
+                .perform(click())
+        onView(withSubstring("individuell idrott"))
+                .check(matches(isDisplayed()))
+        onView(withId(R.id.list))
+                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
+        onView(withId(R.id.wordText))
+                .check(matches(withText("vara ute efter")))
+        Espresso.pressBack()
+        onView(withSubstring(exampleString))
+                .check(matches(isDisplayed()))
+
+        onView(allOf(withId(R.id.exampleSearch),
+                hasSibling(withSubstring(exampleString))))
+                .perform(click())
+        onView(withText("information"))
+                .check(matches(isDisplayed()))
+        onView(withText("sprida"))
+                .check(matches(isDisplayed()))
+        onView(withText("vlogg"))
+                .check(matches(isDisplayed()))
+        Espresso.pressBack()
+        onView(withSubstring(exampleString))
+                .check(matches(isDisplayed()))
+    }
+
 
     private fun withExample(matcher: Matcher<String>): Matcher<ItemRecyclerViewAdapter.ExampleViewHolder> {
         return object : TypeSafeMatcher<ItemRecyclerViewAdapter.ExampleViewHolder>() {
