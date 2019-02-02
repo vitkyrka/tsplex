@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.exoplayer_preview_control.*
 import kotlinx.android.synthetic.main.fragment_sign_list.*
 
 
-abstract class ItemListFragment : FragmentVisibilityNotifier, androidx.fragment.app.Fragment(), androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener,
+abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVisibilityNotifier, androidx.fragment.app.Fragment(), androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener,
         ItemRecyclerViewAdapter.OnItemPlayHandler {
     private var mListener: OnListFragmentInteractionListener? = null
     private var recylerView: androidx.recyclerview.widget.RecyclerView? = null
@@ -379,7 +379,7 @@ abstract class ItemListFragment : FragmentVisibilityNotifier, androidx.fragment.
             mZoom = settings.getFloat("imageZoom", 1f)
         }
 
-        if (mItems.isEmpty()) {
+        if (!mCache || mItems.isEmpty()) {
             mTask = DatabaseTask().execute()
         } else {
             loadList()

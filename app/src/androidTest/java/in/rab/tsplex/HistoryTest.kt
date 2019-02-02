@@ -5,24 +5,15 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.containsString
-import org.hamcrest.TypeSafeMatcher
-import org.junit.After
-import org.junit.Before
+import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,8 +34,19 @@ class HistoryTest {
                         click()))
     }
 
+    private fun clearHistory() {
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
+        onView(withText(R.string.settings))
+                .perform(click())
+        onView(withText(R.string.clear_sign_history))
+                .perform((click()))
+        Espresso.pressBack()
+    }
+
     @Test
     fun historyTest() {
+        clearHistory()
+
         onView(withId(R.id.homeSearchView))
                 .perform(click())
 
@@ -78,6 +80,10 @@ class HistoryTest {
         onView(withText("mössa")).check(matches(isDisplayed()))
         onView(withText("dop, döpa")).check(matches(isDisplayed()))
         onView(withText("taxi")).check(matches(isDisplayed()))
-    }
 
+        clearHistory()
+
+        onView(withText("Indien")).check(doesNotExist())
+        onView(withText("taxi")).check(doesNotExist())
+    }
 }

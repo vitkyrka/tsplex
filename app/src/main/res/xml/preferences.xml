@@ -3,8 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
-        app:key="clearHistory"
+        app:key="clearSearchHistory"
         app:title="@string/clear_search_history" />
+
+    <Preference
+        app:key="clearSignHistory"
+        app:title="@string/clear_sign_history" />
 
     <PreferenceCategory
         android:title="@string/about"

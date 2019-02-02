@@ -44,7 +44,8 @@
     <string name="recently_seen">Nyligen visade tecken</string>
     <string name="random_favorites">Slumpmässiga bokmärkta tecken</string>
     <string name="clear_search_box">Rensa sökfältet</string>
-    <string name="clear_search_history">Rensa sökhistoriken</string>
+    <string name="clear_search_history">Rensa sökhistorik</string>
+    <string name="clear_sign_history">Rensa visningshistorik</string>
     <string name="open_in_browser">Öppna i webbläsare</string>
     <string name="open_source_licenses">Licens för öppen källkod</string>
     <string name="about">Om</string>

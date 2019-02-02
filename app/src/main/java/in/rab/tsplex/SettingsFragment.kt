@@ -2,10 +2,12 @@ package `in`.rab.tsplex
 
 import android.content.Intent
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.SearchRecentSuggestions
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import kotlinx.android.synthetic.main.fragment_sign_list.*
 
 class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -17,10 +19,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
-        findPreference("clearHistory").setOnPreferenceClickListener {
+        findPreference("clearSearchHistory").setOnPreferenceClickListener {
             SearchRecentSuggestions(context,
                     SignRecentSuggestionsProvider.AUTHORITY, SignRecentSuggestionsProvider.MODE)
                     .clearHistory()
+            return@setOnPreferenceClickListener true
+        }
+
+        findPreference("clearSignHistory").setOnPreferenceClickListener {
+            ClearSignHistoryTask().execute()
             return@setOnPreferenceClickListener true
         }
 
@@ -33,6 +40,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             startActivity(intent)
             return@setOnPreferenceClickListener true
+        }
+    }
+
+    private inner class ClearSignHistoryTask : AsyncTask<Void, Void, Void>() {
+        override fun doInBackground(vararg params: Void): Void? {
+            activity?.let {
+                SignDatabase(it).clearHistory()
+            }
+            return null
         }
     }
 }
