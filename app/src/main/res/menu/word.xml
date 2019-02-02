@@ -9,4 +9,8 @@
         app:showAsAction="ifRoom"
         android:title="@string/add_bookmark" />
 
+    <item android:id="@+id/openInBrowser"
+        android:title="@string/open_in_browser"
+        app:showAsAction="never" />
+
 </menu>

@@ -313,8 +313,17 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
             return true
         }
 
+        if (item.itemId == R.id.openInBrowser) {
+            mSign?.let {
+                val url = "https://teckensprakslexikon.su.se/ord/%05d/".format(it.id)
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            }
+            return true
+        }
+
         if (item.itemId == R.id.menu_star) {
             StarToggleTask().execute()
+            return true
         }
 
         return super.onOptionsItemSelected(item)
