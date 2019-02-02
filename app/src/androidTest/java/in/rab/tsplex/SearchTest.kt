@@ -1,12 +1,12 @@
 package `in`.rab.tsplex
 
+import android.view.View
+import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.InstrumentationRegistry
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.*
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -16,10 +16,11 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView
+import kotlinx.android.synthetic.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.*
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -40,15 +41,32 @@ class SearchTest {
     @get:Rule
     var activityScenarioRule = ActivityScenarioRule<SearchActivity>(SearchActivity::class.java)
 
-    lateinit var mIdlingResource: IdlingResource
+    lateinit var mSearchResource: IdlingResource
+    lateinit var mVideoResource: IdlingResource
 
     @Before
     fun registerIdlingResource() {
         activityScenarioRule.scenario.onActivity {
-            mIdlingResource = it.mIdleResource
-            IdlingRegistry.getInstance().register(mIdlingResource)
+            mSearchResource = it.mIdleResource
+            mVideoResource = it.mVideoFetchResource
+
+            IdlingRegistry.getInstance().register(mSearchResource)
+            IdlingRegistry.getInstance().register(mVideoResource)
 
             it.mAutoSearch = false
+        }
+    }
+
+
+
+    @After
+    fun unregisterIdlingResource() {
+        mSearchResource?.let {
+            IdlingRegistry.getInstance().unregister(it)
+        }
+
+        mVideoResource?.let {
+            IdlingRegistry.getInstance().unregister(it)
         }
     }
 
@@ -178,6 +196,60 @@ class SearchTest {
                 .check(matches(isDisplayed()))
     }
 
+    private fun clickPreview(): ViewAction {
+        return object : ViewAction {
+            override fun getDescription(): String {
+                return "click preview button"
+            }
+
+            override fun getConstraints(): Matcher<View> {
+                return isEnabled()
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                view?.findViewById<ImageButton>(R.id.playButton)?.let {
+                    it.performClick()
+                }
+            }
+
+        }
+    }
+
+    private fun assertIsCurrentVideo(video: String) {
+        activityScenarioRule.scenario.onActivity {
+            assertThat(it.mCurrentVideo, containsString(video))
+        }
+    }
+
+    @Test
+    fun videoPreview() {
+        onView(withId(R.id.searchView))
+                .perform(typeText("handalfabet"), pressImeActionButton())
+
+        onView(withId(R.id.list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
+                        clickPreview()))
+        assertIsCurrentVideo("04843-tecken")
+
+        onView(withId(R.id.exoPlayerPrevious)).perform(click())
+        assertIsCurrentVideo("01557-tecken")
+
+        onView(withId(R.id.exoPlayerPrevious)).check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.exoPlayerNext)).perform(click())
+        assertIsCurrentVideo("04843-tecken")
+
+        onView(withId(R.id.exoPlayerNext)).perform(click())
+        assertIsCurrentVideo("11352-tecken")
+
+        onView(withId(R.id.exoPlayerNext)).perform(click())
+        assertIsCurrentVideo("04603-fras")
+
+        onView(withId(R.id.exoPlayerNext)).check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.exoPlayerPrevious)).perform(click())
+        assertIsCurrentVideo("11352-tecken")
+    }
 
     private fun withExample(matcher: Matcher<String>): Matcher<ItemRecyclerViewAdapter.ExampleViewHolder> {
         return object : TypeSafeMatcher<ItemRecyclerViewAdapter.ExampleViewHolder>() {
@@ -189,13 +261,6 @@ class SearchTest {
                 description.appendText("with text: ")
                 matcher.describeTo(description)
             }
-        }
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        mIdlingResource?.let {
-            IdlingRegistry.getInstance().unregister(it)
         }
     }
 }

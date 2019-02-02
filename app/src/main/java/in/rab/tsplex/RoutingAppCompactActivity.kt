@@ -4,11 +4,14 @@ import android.app.SearchManager
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.espresso.idling.CountingIdlingResource
 
 abstract class RoutingAppCompactActivity : AppCompatActivity(),
         SignDescriptionFragment.OnTopicClickListener,
         TopicListFragment.OnTopicClickListener,
         ItemListFragment.OnListFragmentInteractionListener {
+    internal val mVideoFetchResource: CountingIdlingResource = CountingIdlingResource("fetch")
+    internal lateinit var mCurrentVideo: String
 
     override fun onTopicClick(topic: Int) {
         val intent = Intent(this, SearchListActivity::class.java)
@@ -36,6 +39,17 @@ abstract class RoutingAppCompactActivity : AppCompatActivity(),
         val intent = Intent(this, SignActivity::class.java)
         intent.putExtra("url", item.id.toString())
         startActivity(intent)
+    }
+
+    override fun onVideoFetchStart(video: String) {
+        mCurrentVideo = video
+        mVideoFetchResource.increment()
+    }
+
+    override fun onVideoFetchEnd() {
+        if (!mVideoFetchResource.isIdleNow) {
+            mVideoFetchResource.decrement()
+        }
     }
 
     override fun onListFragmentInteraction(item: Example) {

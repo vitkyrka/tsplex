@@ -6,16 +6,10 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Parcelable
-import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -119,6 +113,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
                     }
 
                     override fun onPlayerError(error: ExoPlaybackException?) {
+                        mListener?.onVideoFetchEnd()
                         showVideoError()
                     }
 
@@ -131,6 +126,8 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
                     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                         if (playbackState == Player.STATE_READY) {
                             exoPlayerView?.visibility = View.VISIBLE
+
+                            mListener?.onVideoFetchEnd()
 
                             val position = mPreviewPosition
                             if (position > 0) {
@@ -158,20 +155,23 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
             mSimpleExoPlayer = exoPlayer
         }
 
-        exoPlayerNext.visibility = if (position + 1 < mItems.size) {
+        exoPlayerNext.visibility = if (nextPlayablePosition(position, mItems) < mItems.size) {
             VISIBLE
         } else {
             GONE
         }
-        exoPlayerPrevious.visibility = if (position - 1 >= 0) {
+        exoPlayerPrevious.visibility = if (prevPlayablePosition(position, mItems) >= 0) {
             VISIBLE
         } else {
             GONE
         }
 
         mPreviewPosition = position
+        val video = "https://teckensprakslexikon.su.se/$video"
 
-        val videoSource = ExtractorMediaSource(Uri.parse("https://teckensprakslexikon.su.se/$video"),
+        mListener?.onVideoFetchStart(video)
+
+        val videoSource = ExtractorMediaSource(Uri.parse(video),
                 lexikon.dataSourceFactory, lexikon.extractorsFactory,
                 null, null)
         exoPlayer.playWhenReady = true
@@ -186,6 +186,45 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
 
     override fun onItemPlay(item: Example, position: Int) {
         playVideo(item.toString(), item.video, position)
+    }
+
+    private fun nextPlayablePosition(position: Int, items: List<Item>) : Int {
+        val baseIndex = position + 1
+
+        if (baseIndex >= items.size) {
+            return items.size
+        }
+
+        for ((index, item) in items.subList(baseIndex, items.size).withIndex()) {
+            if (isPlayable(item))
+                return baseIndex + index
+        }
+
+        return items.size
+    }
+
+    private fun prevPlayablePosition(position: Int, items: List<Item>) : Int {
+        val baseIndex = position - 1
+
+        if (baseIndex < 0) {
+            return baseIndex
+        }
+
+        for ((index, item) in items.subList(0, baseIndex + 1).reversed().withIndex()) {
+            if (isPlayable(item))
+                return baseIndex - index
+        }
+
+        return -1
+    }
+
+    private fun isPlayable(item: Item) : Boolean {
+        return when (item) {
+            is Sign -> true
+            is Description -> true
+            is Example -> true
+            else -> false
+        }
     }
 
     private fun playItem(position: Int) {
@@ -239,11 +278,11 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         }
 
         exoPlayerNext.setOnClickListener {
-            playItem(mPreviewPosition + 1)
+            playItem(nextPlayablePosition(mPreviewPosition, mItems))
         }
 
         exoPlayerPrevious.setOnClickListener {
-            playItem(mPreviewPosition - 1)
+            playItem(prevPlayablePosition(mPreviewPosition, mItems))
         }
 
         savedInstanceState?.let {
@@ -402,6 +441,8 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
     }
 
     interface OnListFragmentInteractionListener {
+        fun onVideoFetchStart(video: String)
+        fun onVideoFetchEnd()
         fun onLoadList(items: List<Item>)
         fun onListFragmentInteraction(item: Sign)
         fun onListFragmentInteraction(item: Example)

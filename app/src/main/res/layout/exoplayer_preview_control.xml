@@ -64,7 +64,7 @@
         android:layout_height="36dp"
         android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/exoPlayerNext"
+        app:layout_constraintTop_toTopOf="@id/exoPlayerNext"
         android:src="@drawable/ic_previous_white_24px"
         android:background="@android:color/transparent"
         android:layout_margin="4dp"
