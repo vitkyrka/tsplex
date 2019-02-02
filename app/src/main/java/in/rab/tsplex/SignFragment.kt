@@ -1,6 +1,8 @@
 package `in`.rab.tsplex
 
 import android.os.Bundle
+import android.view.View
+import kotlinx.android.synthetic.main.exoplayer_preview_control.*
 
 class SignFragment : ItemListFragment() {
     private lateinit var mSign: Sign
@@ -36,6 +38,13 @@ class SignFragment : ItemListFragment() {
 
     override fun getSigns(): List<Item> {
         return mItems
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        exoPlayerClose.visibility = View.INVISIBLE
+        exoPlayerOpenNew.visibility = View.INVISIBLE
     }
 
     companion object {

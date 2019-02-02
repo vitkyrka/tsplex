@@ -7,8 +7,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.*
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.FrameLayout
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.*
@@ -158,12 +157,12 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         exoPlayerNext.visibility = if (nextPlayablePosition(position, mItems) < mItems.size) {
             VISIBLE
         } else {
-            GONE
+            INVISIBLE
         }
         exoPlayerPrevious.visibility = if (prevPlayablePosition(position, mItems) >= 0) {
             VISIBLE
         } else {
-            GONE
+            INVISIBLE
         }
 
         mPreviewPosition = position
@@ -259,6 +258,21 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
             exoPlayerView?.visibility = GONE
 
             (recylerView?.adapter as? ItemRecyclerViewAdapter)?.setSelected(-1)
+        }
+
+        exoPlayerView.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                val visible = exoPlayerExtraControls.visibility
+
+                exoPlayerExtraControls.visibility = if (visible == VISIBLE) {
+                    INVISIBLE
+                } else {
+                    VISIBLE
+                }
+
+                exoPlayerTitle.visibility = visible
+            }
+            true
         }
 
         exoPlayerOpenNew.setOnClickListener {
