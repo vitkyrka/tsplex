@@ -1,5 +1,7 @@
 package `in`.rab.tsplex
 
+import `in`.rab.tsplex.TestHelper.Companion.assertIsCurrentVideo
+import `in`.rab.tsplex.TestHelper.Companion.clickPreview
 import android.view.View
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +18,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
-import kotlinx.android.synthetic.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.*
@@ -33,11 +35,6 @@ import org.junit.runner.RunWith
 @LargeTest
 class SearchTest {
 
-    /**
-     * Use [ActivityScenarioRule] to create and launch the activity under test before each test,
-     * and close it after each test. This is a replacement for
-     * [androidx.test.rule.ActivityTestRule].
-     */
     @get:Rule
     var activityScenarioRule = ActivityScenarioRule<SearchActivity>(SearchActivity::class.java)
 
@@ -56,7 +53,6 @@ class SearchTest {
             it.mAutoSearch = false
         }
     }
-
 
 
     @After
@@ -196,29 +192,143 @@ class SearchTest {
                 .check(matches(isDisplayed()))
     }
 
-    private fun clickPreview(): ViewAction {
-        return object : ViewAction {
-            override fun getDescription(): String {
-                return "click preview button"
+    private fun withPlaybackSpeed(speed: Float): Matcher<View> {
+        return object : BoundedMatcher<View, SimpleExoPlayerView>(SimpleExoPlayerView::class.java) {
+            override fun matchesSafely(view: SimpleExoPlayerView): Boolean {
+                return view.player.playbackParameters.speed == speed
             }
 
-            override fun getConstraints(): Matcher<View> {
-                return isEnabled()
+            override fun describeTo(description: Description) {
+                description.appendText("with playback speed: ")
+                description.appendValue(speed)
             }
-
-            override fun perform(uiController: UiController?, view: View?) {
-                view?.findViewById<ImageButton>(R.id.playButton)?.let {
-                    it.performClick()
-                }
-            }
-
         }
     }
 
-    private fun assertIsCurrentVideo(video: String) {
-        activityScenarioRule.scenario.onActivity {
-            assertThat(it.mCurrentVideo, containsString(video))
+    private fun withRepeatMode(repeatMode: Int): Matcher<View> {
+        return object : BoundedMatcher<View, SimpleExoPlayerView>(SimpleExoPlayerView::class.java) {
+            override fun matchesSafely(view: SimpleExoPlayerView): Boolean {
+                return view.player.repeatMode == repeatMode
+            }
+
+            override fun describeTo(description: Description) {
+                description.appendText("with repeat mode: ")
+                description.appendValue(repeatMode)
+            }
         }
+    }
+
+    @Test
+    fun videoPlaybackSpeed() {
+        // This needs signs without a related tab, otherwise there will be two exoPlayerViews
+
+        onView(withId(R.id.searchView))
+                .perform(typeText("straffk"), pressImeActionButton())
+        onView(withId(R.id.list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                        click()))
+
+        onView(withId(R.id.exoPlayerExtraControls)).check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.exoPlayerView)).perform(click())
+        onView(withId(R.id.exoPlayerExtraControls)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.exo_050x)).perform(click())
+        onView(withId(R.id.exoPlayerView)).check(matches(withPlaybackSpeed(0.50f)))
+
+        onView(withId(R.id.exo_075x)).perform(click())
+        onView(withId(R.id.exoPlayerView)).check(matches(withPlaybackSpeed(0.75f)))
+
+        Espresso.pressBack()
+
+        onView(withId(R.id.list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
+                        click()))
+
+        onView(withId(R.id.exoPlayerView)).check(matches(withPlaybackSpeed(0.75f)))
+
+        onView(withId(R.id.exoPlayerView)).perform(click())
+        onView(withId(R.id.exo_100x)).perform(click())
+        onView(withId(R.id.exoPlayerView)).check(matches(withPlaybackSpeed(1.0f)))
+
+        Espresso.pressBack()
+
+        onView(withId(R.id.list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                        click()))
+
+        onView(withId(R.id.exoPlayerView)).check(matches(withPlaybackSpeed(1.0f)))
+        onView(withId(R.id.exoPlayerView)).perform(click())
+        onView(withId(R.id.exo_050x)).perform(click())
+
+        Espresso.pressBack()
+
+        onView(withId(R.id.list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2,
+                        clickPreview()))
+
+        onView(withId(R.id.exoPlayerExtraControls)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.exoPlayerView)).check(matches(withPlaybackSpeed(0.5f)))
+    }
+
+    fun enableRepeat(): ViewAction {
+        return object : ViewAction {
+            override fun getDescription(): String {
+                return "set selected"
+            }
+
+            override fun getConstraints(): Matcher<View> {
+                return isAssignableFrom(ImageButton::class.java)
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                if (view is ImageButton) {
+                    if (view.contentDescription.contains("none"))
+                        view.performClick()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun videoRepeatMode() {
+        // This needs signs without a related tab, otherwise there will be two exoPlayerViews
+
+        onView(withId(R.id.searchView))
+                .perform(typeText("straffk"), pressImeActionButton())
+        onView(withId(R.id.list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                        click()))
+
+        onView(withId(R.id.exoPlayerView)).perform(click())
+
+        onView(withId(R.id.exoPlayerExtraControls)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.exo_repeat_toggle)).perform(enableRepeat())
+        onView(withId(R.id.exoPlayerView)).check(matches(withRepeatMode(Player.REPEAT_MODE_ALL)))
+
+        onView(withId(R.id.exo_repeat_toggle)).perform(click())
+        onView(withId(R.id.exoPlayerView)).check(matches(withRepeatMode(Player.REPEAT_MODE_OFF)))
+
+        Espresso.pressBack()
+
+        onView(withId(R.id.list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
+                        click()))
+
+        onView(withId(R.id.exoPlayerView)).check(matches(withRepeatMode(Player.REPEAT_MODE_OFF)))
+
+        onView(withId(R.id.exoPlayerView)).perform(click())
+        onView(withId(R.id.exo_repeat_toggle)).perform(click())
+        onView(withId(R.id.exoPlayerView)).check(matches(withRepeatMode(Player.REPEAT_MODE_ALL)))
+
+        Espresso.pressBack()
+
+        onView(withId(R.id.list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2,
+                        clickPreview()))
+
+        onView(withId(R.id.exoPlayerView)).check(matches(withRepeatMode(Player.REPEAT_MODE_ALL)))
     }
 
     @Test
@@ -229,26 +339,27 @@ class SearchTest {
         onView(withId(R.id.list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         clickPreview()))
-        assertIsCurrentVideo("04843-tecken")
+
+        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "04843-tecken") }
 
         onView(withId(R.id.exoPlayerPrevious)).perform(click())
-        assertIsCurrentVideo("01557-tecken")
+        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "01557-tecken") }
 
         onView(withId(R.id.exoPlayerPrevious)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.exoPlayerNext)).perform(click())
-        assertIsCurrentVideo("04843-tecken")
+        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "04843-tecken") }
 
         onView(withId(R.id.exoPlayerNext)).perform(click())
-        assertIsCurrentVideo("11352-tecken")
+        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "11352-tecken") }
 
         onView(withId(R.id.exoPlayerNext)).perform(click())
-        assertIsCurrentVideo("04603-fras")
+        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "04603-fras") }
 
         onView(withId(R.id.exoPlayerNext)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.exoPlayerPrevious)).perform(click())
-        assertIsCurrentVideo("11352-tecken")
+        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "11352-tecken") }
     }
 
     private fun withExample(matcher: Matcher<String>): Matcher<ItemRecyclerViewAdapter.ExampleViewHolder> {

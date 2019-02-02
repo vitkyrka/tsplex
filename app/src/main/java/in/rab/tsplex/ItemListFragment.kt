@@ -1,11 +1,13 @@
 package `in`.rab.tsplex
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.*
 import android.view.View.*
 import android.widget.FrameLayout
@@ -34,6 +36,8 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
     private var mSimpleExoPlayerView: SimpleExoPlayerView? = null
     private var mSimpleExoPlayer: SimpleExoPlayer? = null
     protected var mPreviewPosition: Int = -1
+    private var mRepeatMode: Int = Player.REPEAT_MODE_ALL
+    private var mSpeed: Float = 0.75f
 
     protected abstract fun getSigns(): List<Item>
 
@@ -103,6 +107,14 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
                     }
 
                     override fun onRepeatModeChanged(repeatMode: Int) {
+                        if (repeatMode != mRepeatMode) {
+                            mRepeatMode = repeatMode
+
+                            getSharedPreferences()?.edit()?.apply() {
+                                putInt("signRepeatMode", repeatMode)
+                                apply()
+                            }
+                        }
                     }
 
                     override fun onLoadingChanged(isLoading: Boolean) {
@@ -173,8 +185,13 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         val videoSource = ExtractorMediaSource(Uri.parse(video),
                 lexikon.dataSourceFactory, lexikon.extractorsFactory,
                 null, null)
-        exoPlayer.playWhenReady = true
-        exoPlayer.prepare(videoSource)
+
+        exoPlayer.apply {
+            playbackParameters = PlaybackParameters(mSpeed, 1f)
+            repeatMode = mRepeatMode
+            playWhenReady = true
+            prepare(videoSource)
+        }
 
         exoPlayerTitle.text = title
     }
@@ -249,8 +266,32 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         }
     }
 
+    fun getSharedPreferences() : SharedPreferences? {
+        return activity?.getSharedPreferences("in.rab.tsplex", 0)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val listener = View.OnClickListener {
+            val speed = when (it.id) {
+                R.id.exo_050x -> 0.50f
+                R.id.exo_075x -> 0.75f
+                else -> 1.0f
+            }
+
+            mSpeed = speed
+            mSimpleExoPlayer?.playbackParameters = PlaybackParameters(speed, 1f)
+
+            getSharedPreferences()?.edit()?.apply {
+                putFloat("signPlaybackSpeed", speed)
+                apply()
+            }
+        }
+
+        exo_050x.setOnClickListener(listener)
+        exo_075x.setOnClickListener(listener)
+        exo_100x.setOnClickListener(listener)
 
         exoPlayerClose.setOnClickListener {
             mPreviewPosition = -1
@@ -427,9 +468,19 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
     override fun onResume() {
         super.onResume()
 
-        val settings = activity?.getSharedPreferences(PREFS_NAME, 0)
-        if (settings != null) {
-            mZoom = settings.getFloat("imageZoom", 1f)
+        getSharedPreferences()?.let {
+            mZoom = it.getFloat("imageZoom", 1f)
+            mRepeatMode = it.getInt("signRepeatMode", mRepeatMode)
+            mSpeed = it.getFloat("signPlaybackSpeed", mSpeed)
+
+            exo_speed.clearCheck()
+
+            when (mSpeed) {
+                0.50f -> exo_050x.isChecked = true
+                0.75f -> exo_075x.isChecked = true
+                else -> exo_100x.isChecked = true
+            }
+
         }
 
         if (!mCache || mItems.isEmpty()) {
