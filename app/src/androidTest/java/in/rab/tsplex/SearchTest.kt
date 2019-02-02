@@ -79,6 +79,18 @@ class SearchTest {
 
         onView(withContentDescription(R.string.abc_action_bar_up_description))
                 .perform(click())
+        onView(withId(R.id.homeSearchView))
+                .perform(click())
+        onView(withText("a")).check(matches(isDisplayed()))
+        onView(withText("b")).check(matches(isDisplayed()))
+
+        onView(withText("a"))
+                .perform(click())
+        onView(withId(R.id.searchView))
+                .check(matches(withText("a")))
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description))
+                .perform(click())
         openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
         onView(withText(R.string.settings))
                 .perform(click())
