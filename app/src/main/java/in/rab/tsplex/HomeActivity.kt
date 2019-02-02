@@ -86,8 +86,19 @@ class HomeActivity : RoutingAppCompactActivity(), BottomNavigationView.OnNavigat
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.home, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (mOrdboken!!.onOptionsItemSelected(this, item)) {
+            return true
+        }
+
+        if (item?.itemId == R.id.settings) {
+            startActivity(Intent(this, SettingsActivity::class.java))
             return true
         }
 

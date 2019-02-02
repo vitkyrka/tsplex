@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        app:key="clearHistory"
+        app:title="@string/clear_search_history" />
+
+    <PreferenceCategory
+        android:title="@string/about"
+        >
+
+        <Preference
+            app:key="licenses"
+            app:title="@string/open_source_licenses" />
+        <Preference
+            app:key="about"
+            app:title="@string/about_the_app" />
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

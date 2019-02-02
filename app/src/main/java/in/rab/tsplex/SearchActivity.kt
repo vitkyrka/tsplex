@@ -280,12 +280,6 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val query = if (mQuery != null && mQuery!!.startsWith("topic:")) {
-            null
-        } else {
-            mQuery
-        }
-
         menuInflater.inflate(R.menu.main_search, menu)
         return true
     }
@@ -293,12 +287,6 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.clearSearchBox) {
             searchView.text.clear()
-            RecentTask().execute()
-            return true
-        } else if (item?.itemId == R.id.clearHistory) {
-            SearchRecentSuggestions(this@SearchActivity,
-                    SignRecentSuggestionsProvider.AUTHORITY, SignRecentSuggestionsProvider.MODE)
-                    .clearHistory()
             RecentTask().execute()
             return true
         }

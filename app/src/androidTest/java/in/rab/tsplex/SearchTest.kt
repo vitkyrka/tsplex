@@ -77,8 +77,15 @@ class SearchTest {
         onView(withText("a")).check(matches(isDisplayed()))
         onView(withText("b")).check(matches(isDisplayed()))
 
+        onView(withContentDescription(R.string.abc_action_bar_up_description))
+                .perform(click())
         openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext())
+        onView(withText(R.string.settings))
+                .perform(click())
         onView(withText(R.string.clear_search_history))
+                .perform((click()))
+        Espresso.pressBack()
+        onView(withId(R.id.homeSearchView))
                 .perform(click())
 
         onView(withText("a")).check(doesNotExist())

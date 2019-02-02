@@ -8,6 +8,7 @@
     <string name="search_hint">Sök i teckenspråkslexikonet</string>
     <string name="loading">Laddar…</string>
     <string name="empty"></string>
+    <string name="settings">Inställningar</string>
     <string name="tryagain">Försök igen</string>
     <string name="error_offline">Ingen anslutning.</string>
     <string name="error_results">Hämtningen misslyckades.</string>
@@ -45,6 +46,9 @@
     <string name="clear_search_box">Rensa sökfältet</string>
     <string name="clear_search_history">Rensa sökhistoriken</string>
     <string name="open_in_browser">Öppna i webbläsare</string>
+    <string name="open_source_licenses">Licens för öppen källkod</string>
+    <string name="about">Om</string>
+    <string name="about_the_app">Om appen</string>
 
 
     <string name="title_activity_home">Teckenspråkslexikon</string>
