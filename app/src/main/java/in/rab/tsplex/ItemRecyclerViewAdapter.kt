@@ -2,8 +2,9 @@ package `in`.rab.tsplex
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import androidx.recyclerview.widget.RecyclerView
+import android.os.Build
 import android.text.Html
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -14,9 +15,6 @@ import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import kotlin.math.min
-import android.os.Build
-import android.text.Spanned
-import kotlinx.android.synthetic.main.fragment_sign_description.*
 
 
 class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
@@ -139,7 +137,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         holder.mIdView.text = fromHtml("$example <em>(<strong>${example.signWord}</strong>)</em>")
 
         holder.mIdView.setOnClickListener {
-            mListener?.onListFragmentInteraction(example)
+            mPlayHandler.onExampleClick(example, position)
         }
 
         holder.mPlayButton.setOnClickListener {
@@ -155,7 +153,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
     private fun bindDescription(holder: DescriptionViewHolder, description: Description, position: Int) {
         val sign = description.mSign
 
-        with (holder) {
+        with(holder) {
             mWordText.text = sign.word
             mTranscriptionText.text = sign.transcription
 
@@ -275,5 +273,6 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
     interface OnItemPlayHandler {
         fun onItemPlay(item: Sign, position: Int)
         fun onItemPlay(item: Example, position: Int)
+        fun onExampleClick(item: Example, position: Int)
     }
 }

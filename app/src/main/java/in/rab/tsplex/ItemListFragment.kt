@@ -204,6 +204,10 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         playVideo(item.toString(), item.video, position)
     }
 
+    override fun onExampleClick(item: Example, position: Int) {
+        mListener?.onListFragmentInteraction(item)
+    }
+
     private fun nextPlayablePosition(position: Int, items: List<Item>) : Int {
         val baseIndex = position + 1
 

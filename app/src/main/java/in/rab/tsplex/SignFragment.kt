@@ -36,6 +36,10 @@ class SignFragment : ItemListFragment() {
         }
     }
 
+    override fun onExampleClick(item: Example, position: Int) {
+        onItemPlay(item, position)
+    }
+
     override fun getSigns(): List<Item> {
         return mItems
     }
