@@ -126,6 +126,8 @@ abstract class ShippedSQLiteOpenHelper @JvmOverloads constructor(private val mCo
         values.put("id", 5382)
         values.put("date", 1)
 
+        new.insertOrThrow("history", null, values)
+
         // lexikon
         values.put("id", 4999)
         values.put("date", 0)
