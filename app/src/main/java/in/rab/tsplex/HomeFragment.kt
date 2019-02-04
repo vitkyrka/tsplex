@@ -18,6 +18,7 @@ class HomeFragment : ItemListFragment() {
 
     override fun getSigns(): List<Item> {
         val act = activity ?: return java.util.ArrayList()
+        var signCount = getNumSignColumns()
 
         val db = SignDatabase(act)
         val history = db.getSignsByIds("history",
@@ -29,21 +30,21 @@ class HomeFragment : ItemListFragment() {
         val diff = (now.time - mRandomTime.time) / 1000
         val old = diff < 0 || diff > (60 * 15)
 
-        if (mRandomExamples.size < 2 || old) {
+        if (mRandomExamples.size < signCount || old) {
             mRandomExamples = db.getRandomExamples()
             mRandomTime = now
         }
 
         signs.add(Header(getString(R.string.recently_seen)))
-        signs.addAll(history.subList(0, min(2, history.size)))
+        signs.addAll(history.subList(0, min(signCount, history.size)))
 
         signs.add(Header(getString(R.string.random_examples)))
         signs.addAll(mRandomExamples)
 
-        if (mRandomFavorites.size < 2 || old) {
+        if (mRandomFavorites.size < signCount || old) {
             val favorites = db.getSignsByIds("favorites",
                     "RANDOM() LIMIT 2")
-            mRandomFavorites = favorites.subList(0, min(2, favorites.size))
+            mRandomFavorites = favorites.subList(0, min(signCount, favorites.size))
             mRandomTime = now
         }
 

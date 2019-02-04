@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.*
 import android.view.View.*
 import android.widget.FrameLayout
@@ -30,7 +29,6 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
     private var recylerView: androidx.recyclerview.widget.RecyclerView? = null
     private var mState: Parcelable? = null
     private var mTask: AsyncTask<Void, Void, List<Item>>? = null
-    private var mZoom = 1.0f
     protected var mItems: List<Item> = arrayListOf()
     protected val PREFS_NAME = "in.rab.tsplex"
     private var mSimpleExoPlayerView: SimpleExoPlayerView? = null
@@ -38,7 +36,8 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
     protected var mPreviewPosition: Int = -1
     private var mRepeatMode: Int = Player.REPEAT_MODE_ALL
     private var mSpeed: Float = 0.75f
-
+    private var mScreenWidthDp = 320f
+    private var mZoom = 1.5f
     protected abstract fun getSigns(): List<Item>
 
     protected inner class DatabaseTask : AsyncTask<Void, Void, List<Item>>() {
@@ -210,7 +209,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         mListener?.onListFragmentInteraction(item)
     }
 
-    private fun nextPlayablePosition(position: Int, items: List<Item>) : Int {
+    private fun nextPlayablePosition(position: Int, items: List<Item>): Int {
         val baseIndex = position + 1
 
         if (baseIndex >= items.size) {
@@ -225,7 +224,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         return items.size
     }
 
-    private fun prevPlayablePosition(position: Int, items: List<Item>) : Int {
+    private fun prevPlayablePosition(position: Int, items: List<Item>): Int {
         val baseIndex = position - 1
 
         if (baseIndex < 0) {
@@ -240,7 +239,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         return -1
     }
 
-    private fun isPlayable(item: Item) : Boolean {
+    private fun isPlayable(item: Item): Boolean {
         return when (item) {
             is Sign -> true
             is Description -> true
@@ -272,7 +271,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         }
     }
 
-    fun getSharedPreferences() : SharedPreferences? {
+    fun getSharedPreferences(): SharedPreferences? {
         return activity?.getSharedPreferences("in.rab.tsplex", 0)
     }
 
@@ -365,6 +364,15 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
                 }
             }
         })
+
+        context?.resources?.displayMetrics?.let {
+            mScreenWidthDp = (it.widthPixels / it.density)
+            mZoom = Math.min(mScreenWidthDp / (SIGN_WIDTH_DP * 2), 2f)
+        }
+    }
+
+    protected fun getNumSignColumns(): Int {
+        return Math.max(1, Math.floor((mScreenWidthDp / (SIGN_WIDTH_DP * mZoom)).toDouble()).toInt())
     }
 
     fun loadList() {
@@ -434,13 +442,19 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
 
         val scaleGestureDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                if (mItems.isEmpty()) {
+                if (mItems.isEmpty() || detector == null) {
                     return true
                 }
 
-                mZoom *= detector!!.scaleFactor
-                mZoom = Math.max(0.1f, Math.min(mZoom, 5.0f))
+                mZoom *= detector.scaleFactor
+                mZoom = Math.max(MIN_ZOOM, Math.min(mZoom, MAX_ZOOM))
                 loadList()
+
+                activity?.getSharedPreferences(PREFS_NAME, 0)?.edit()?.apply {
+                    putFloat(ZOOM_PREF, mZoom)
+                    apply()
+                }
+
                 return true
             }
         })
@@ -466,16 +480,13 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
             mSimpleExoPlayer = null
         }
 
-        val settings = activity?.getSharedPreferences(PREFS_NAME, 0)?.edit()
-        settings?.putFloat("imageZoom", mZoom)
-        settings?.apply()
     }
 
     override fun onResume() {
         super.onResume()
 
         getSharedPreferences()?.let {
-            mZoom = it.getFloat("imageZoom", 1f)
+            mZoom = it.getFloat(ZOOM_PREF, mZoom)
             mRepeatMode = it.getInt("signRepeatMode", mRepeatMode)
             mSpeed = it.getFloat("signPlaybackSpeed", mSpeed)
 
@@ -520,5 +531,12 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         fun onListFragmentInteraction(item: Example)
         fun onListFragmentInteraction(item: Topic)
         fun onExampleSearchClick(example: Example)
+    }
+
+    companion object {
+        private const val MIN_ZOOM = 1f
+        private const val MAX_ZOOM = 5f
+        private const val SIGN_WIDTH_DP = 100f + 5
+        private const val ZOOM_PREF = "imageZoom2"
     }
 }
