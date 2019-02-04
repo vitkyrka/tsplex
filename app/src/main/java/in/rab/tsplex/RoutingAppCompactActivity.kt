@@ -52,6 +52,9 @@ abstract class RoutingAppCompactActivity : AppCompatActivity(),
         }
     }
 
+    override fun onItemPlay(item: Item) {
+    }
+
     override fun onListFragmentInteraction(item: Example) {
         val intent = Intent(this, SignActivity::class.java)
         intent.putExtra("url", item.signId.toString())

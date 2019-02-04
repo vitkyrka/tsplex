@@ -197,10 +197,12 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
     }
 
     override fun onItemPlay(item: Sign, position: Int) {
+        mListener?.onItemPlay(item)
         playVideo(item.word, item.video, position)
     }
 
     override fun onItemPlay(item: Example, position: Int) {
+        mListener?.onItemPlay(item)
         playVideo(item.toString(), item.video, position)
     }
 
@@ -510,6 +512,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
     }
 
     interface OnListFragmentInteractionListener {
+        fun onItemPlay(item: Item)
         fun onVideoFetchStart(video: String)
         fun onVideoFetchEnd()
         fun onLoadList(items: List<Item>)

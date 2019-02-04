@@ -227,6 +227,18 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         super.onListFragmentInteraction(item)
     }
 
+    override fun onExampleSearchClick(example   : Example) {
+        mQuery?.let { saveRecent(it) }
+
+        super.onExampleSearchClick(example)
+    }
+
+    override fun onItemPlay(item: Item) {
+        mQuery?.let { saveRecent(it) }
+
+        super.onItemPlay(item)
+    }
+
     private inner class RecentTask : AsyncTask<Void, Void, List<String>>() {
         override fun doInBackground(vararg params: Void): List<String> {
             var cur = contentResolver.query(Uri.parse("content://in.rab.tsplex.SignRecentSuggestionsProvider/search_suggest_query"),

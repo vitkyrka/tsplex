@@ -38,8 +38,8 @@ class SearchTest {
     @get:Rule
     var activityScenarioRule = ActivityScenarioRule<SearchActivity>(SearchActivity::class.java)
 
-    lateinit var mSearchResource: IdlingResource
-    lateinit var mVideoResource: IdlingResource
+    private lateinit var mSearchResource: IdlingResource
+    private lateinit var mVideoResource: IdlingResource
 
     @Before
     fun registerIdlingResource() {

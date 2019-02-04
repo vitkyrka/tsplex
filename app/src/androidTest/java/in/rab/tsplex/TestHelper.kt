@@ -30,6 +30,25 @@ class TestHelper {
             }
         }
 
+        fun clickExampleSearch(): ViewAction {
+            return object : ViewAction {
+                override fun getDescription(): String {
+                    return "click preview button"
+                }
+
+                override fun getConstraints(): Matcher<View> {
+                    return ViewMatchers.isEnabled()
+                }
+
+                override fun perform(uiController: UiController?, view: View?) {
+                    view?.findViewById<ImageButton>(R.id.exampleSearch)?.let {
+                        it.performClick()
+                    }
+                }
+
+            }
+        }
+
         fun assertIsCurrentVideo(activity: RoutingAppCompactActivity, video: String) {
             ViewMatchers.assertThat(activity.mCurrentVideo, Matchers.containsString(video))
         }
