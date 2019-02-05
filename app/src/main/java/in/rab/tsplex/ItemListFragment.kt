@@ -38,6 +38,10 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
     private var mSpeed: Float = 0.75f
     private var mScreenWidthDp = 320f
     private var mZoom = 1.5f
+    private var mPreviousVisible = INVISIBLE
+    private var mNextVisible = INVISIBLE
+    protected var mCloseVisible = VISIBLE
+    protected var mOpenNewVisible = VISIBLE
     protected abstract fun getSigns(): List<Item>
 
     protected inner class DatabaseTask : AsyncTask<Void, Void, List<Item>>() {
@@ -165,15 +169,20 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
             mSimpleExoPlayer = exoPlayer
         }
 
-        exoPlayerNext.visibility = if (nextPlayablePosition(position, mItems) < mItems.size) {
+        mNextVisible = if (nextPlayablePosition(position, mItems) < mItems.size) {
             VISIBLE
         } else {
             INVISIBLE
         }
-        exoPlayerPrevious.visibility = if (prevPlayablePosition(position, mItems) >= 0) {
+        mPreviousVisible = if (prevPlayablePosition(position, mItems) >= 0) {
             VISIBLE
         } else {
             INVISIBLE
+        }
+
+        if (exoPlayerExtraControls.visibility != VISIBLE) {
+            exoPlayerNext.visibility = mNextVisible
+            exoPlayerPrevious.visibility = mPreviousVisible
         }
 
         mPreviewPosition = position
@@ -311,12 +320,24 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
                 val visible = exoPlayerExtraControls.visibility
 
                 exoPlayerExtraControls.visibility = if (visible == VISIBLE) {
-                    INVISIBLE
+                    GONE
                 } else {
                     VISIBLE
                 }
 
-                exoPlayerTitle.visibility = visible
+                if (visible == VISIBLE) {
+                    exoPlayerTitle.visibility = visible
+                    exoPlayerNext.visibility = mNextVisible
+                    exoPlayerPrevious.visibility = mPreviousVisible
+                    exoPlayerClose.visibility = mCloseVisible
+                    exoPlayerOpenNew.visibility = mOpenNewVisible
+                } else {
+                    exoPlayerTitle.visibility = GONE
+                    exoPlayerNext.visibility = GONE
+                    exoPlayerPrevious.visibility = GONE
+                    exoPlayerClose.visibility = GONE
+                    exoPlayerOpenNew.visibility = GONE
+                }
             }
             true
         }

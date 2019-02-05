@@ -47,8 +47,11 @@ class SignFragment : ItemListFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        exoPlayerClose.visibility = View.INVISIBLE
-        exoPlayerOpenNew.visibility = View.INVISIBLE
+        mCloseVisible = View.GONE
+        mOpenNewVisible = View.GONE
+
+        exoPlayerClose.visibility = View.GONE
+        exoPlayerOpenNew.visibility = View.GONE
     }
 
     companion object {
