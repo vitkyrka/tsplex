@@ -50,19 +50,23 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         }
 
         override fun onPostExecute(signs: List<Item>) {
+            loadingProgress.hide()
             mItems = signs
             swipeLayout.isRefreshing = false
             loadList()
         }
     }
 
-    protected fun update() {
+    protected fun update(showProgress: Boolean = true) {
         mTask?.cancel(true)
+        if (showProgress) {
+            loadingProgress.show()
+        }
         mTask = DatabaseTask().execute()
     }
 
     override fun onRefresh() {
-        update()
+        update(false)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -78,7 +82,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
     }
 
     fun showVideoError() {
-        loadingProgress.visibility = GONE
+        loadingProgress.hide()
         exoPlayerView.visibility = GONE
 
         val msg: String = if (isOnline()) {
@@ -94,7 +98,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
     fun playVideo(title: String, video: String, position: Int) {
         val lexikon = context?.let { Lexikon.getInstance(it) } ?: return
 
-        loadingProgress.visibility = VISIBLE
+        loadingProgress.show()
         loadingError.visibility = GONE
 
         (recylerView?.adapter as? ItemRecyclerViewAdapter)?.setSelected(position)
@@ -148,7 +152,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
                                 (recylerView?.layoutManager as? GridAutofitLayoutManager?)?.scrollToPosition(mPreviewPosition)
                             }
 
-                            loadingProgress.visibility = View.GONE
+                            loadingProgress.hide()
 
 //                            if (mScrollPos != 0) {
 //                                val scrollPos = mScrollPos
@@ -522,7 +526,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
         }
 
         if (!mCache || mItems.isEmpty()) {
-            mTask = DatabaseTask().execute()
+            update()
         } else {
             loadList()
         }
