@@ -18,11 +18,11 @@ class HomeFragment : ItemListFragment() {
 
     override fun getSigns(): List<Item> {
         val act = activity ?: return java.util.ArrayList()
-        var signCount = getNumSignColumns()
+        val signCount = getNumSignColumns()
 
         val db = SignDatabase(act)
         val history = db.getSignsByIds("history",
-                "history.date DESC")
+                "history.date DESC LIMIT $signCount")
 
         val signs = ArrayList<Item>()
 
