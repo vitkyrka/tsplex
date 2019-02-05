@@ -10,6 +10,10 @@
         app:key="clearSignHistory"
         app:title="@string/clear_sign_history" />
 
+    <Preference
+        app:key="removeAllBookmarks"
+        app:title="@string/remove_all_bookmarks" />
+
     <PreferenceCategory
         android:title="@string/about"
         >

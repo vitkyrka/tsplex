@@ -46,6 +46,7 @@
     <string name="clear_search_box">Rensa sökfältet</string>
     <string name="clear_search_history">Rensa sökhistorik</string>
     <string name="clear_sign_history">Rensa visningshistorik</string>
+    <string name="remove_all_bookmarks">Ta bort alla bokmärken</string>
     <string name="open_in_browser">Öppna i webbläsare</string>
     <string name="open_source_licenses">Licens för öppen källkod</string>
     <string name="about">Om</string>

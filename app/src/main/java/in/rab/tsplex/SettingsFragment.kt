@@ -31,6 +31,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             return@setOnPreferenceClickListener true
         }
 
+        findPreference("removeAllBookmarks").setOnPreferenceClickListener {
+            RemoveAllBookmarksTask().execute()
+            return@setOnPreferenceClickListener true
+        }
+
         findPreference("about").setOnPreferenceClickListener {
             val pack = activity?.packageName ?: return@setOnPreferenceClickListener true
             val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -47,6 +52,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
         override fun doInBackground(vararg params: Void): Void? {
             activity?.let {
                 SignDatabase(it).clearHistory()
+            }
+            return null
+        }
+    }
+
+    private inner class RemoveAllBookmarksTask : AsyncTask<Void, Void, Void>() {
+        override fun doInBackground(vararg params: Void): Void? {
+            activity?.let {
+                SignDatabase(it).removeAllBookmarks()
             }
             return null
         }

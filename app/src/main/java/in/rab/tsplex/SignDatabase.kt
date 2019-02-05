@@ -250,6 +250,10 @@ class SignDatabase(context: Context) {
         mOpenHelper.database?.execSQL("DELETE from history")
     }
 
+    fun removeAllBookmarks() {
+        mOpenHelper.database?.execSQL("DELETE from favorites")
+    }
+
     fun getExampleSigns(keyword: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val selection = "examples.desc LIKE ? OR examples.video LIKE ?"
