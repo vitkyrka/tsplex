@@ -31,11 +31,11 @@ class DatabaseTest {
 
     @Test
     fun getSign() {
-        val sign = db.getSign(1)
-        assertThat(sign?.word, equalTo("taxi"))
+        val sign = db.getSign(5705)
+        assertThat(sign?.word, equalTo("hejare på, strong, kan, en baddare på"))
         assertThat(sign?.examples,
-                hasItems(withExampleVideo(containsString("Igår åkte")),
-                        withExampleVideo(containsString("Färdtjänst är bättre"))))
+                hasItems(withExampleVideo(containsString("Zlatan är riktigt bra")),
+                        withExampleVideo(containsString("Min kusin är"))))
     }
 
     @Test
@@ -72,8 +72,17 @@ class DatabaseTest {
         assertThat(db.getExamples("publi"),
                 hasItem(withExampleVideo(containsString("Zlatan har publicerat"))))
 
-        // assertThat(db.getExamples("lat"),
-        //        not(hasItem(withExampleVideo(containsString("Zlatan har publicerat")))))
+        assertThat(db.getExamples("lat"),
+                not(hasItem(withExampleVideo(containsString("Zlatan har publicerat")))))
+    }
+
+    @Test
+    fun getRandomExamples() {
+        val one = db.getRandomExamples()
+        val two = db.getRandomExamples()
+
+        assertThat(one, not(empty()))
+        assertThat(one, not(equalTo(two)))
     }
 
     @Test

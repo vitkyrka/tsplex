@@ -14,6 +14,7 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -159,21 +160,19 @@ class SearchTest {
 
     @Test
     fun exampleActions() {
-        val exampleString = "tycker att vlogg"
+        val exampleString = "nyss åkt till"
         onView(withId(R.id.searchView))
-                .perform(typeText("teckenspr"), pressImeActionButton())
+                .perform(typeText("Kanarie"), pressImeActionButton())
         onView(withId(R.id.list))
                 .perform(RecyclerViewActions.scrollToHolder(
                         withExample(containsString(exampleString))))
 
         onView(withSubstring(exampleString))
                 .perform(click())
-        onView(withSubstring("individuell idrott"))
+        onView(withSubstring("Hen stannar i"))
                 .check(matches(isDisplayed()))
-        onView(withId(R.id.list))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
         onView(withId(R.id.wordText))
-                .check(matches(withText("vara ute efter")))
+                .check(matches(withText("fyra veckor")))
         Espresso.pressBack()
         onView(withSubstring(exampleString))
                 .check(matches(isDisplayed()))
@@ -181,11 +180,11 @@ class SearchTest {
         onView(allOf(withId(R.id.exampleSearch),
                 hasSibling(withSubstring(exampleString))))
                 .perform(click())
-        onView(withText("information"))
+        onView(withText("fyra veckor"))
                 .check(matches(isDisplayed()))
-        onView(withText("sprida"))
+        onView(withText("Kanarieöarna, Gran Canaria"))
                 .check(matches(isDisplayed()))
-        onView(withText("vlogg"))
+        onView(withText("stanna kvar, uppehålla sig"))
                 .check(matches(isDisplayed()))
         Espresso.pressBack()
         onView(withSubstring(exampleString))

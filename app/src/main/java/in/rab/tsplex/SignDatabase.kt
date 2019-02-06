@@ -11,8 +11,7 @@ import java.util.*
 class SignDatabase(context: Context) {
 
     private val mSignColumns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples")
-    private val mExampleColumns = arrayOf("examples.video", "examples.desc", "examples.id", "signs.sv")
-    private val mExampleTables = "examples JOIN signs on examples.id == signs.id"
+    private val mExampleColumns = arrayOf("examples.video", "examples.desc", "examples.signid", "signs.sv")
     private val mOpenHelper: SignDatabaseOpenHelper
 
     init {
@@ -59,16 +58,19 @@ class SignDatabase(context: Context) {
         cursor.close()
 
         builder = SQLiteQueryBuilder()
-        builder.tables = mExampleTables
-        val columns = mExampleColumns
-        cursor = builder.query(mOpenHelper.database, columns, "examples.id = ?", selectionArgs,
+        builder.tables = "examples JOIN examples_signs ON examples.rowid == examples_signs.exampleid"
+        val columns = arrayOf("examples.video", "examples.desc", "examples.signid")
+        cursor = builder.query(mOpenHelper.database, columns, "examples_signs.signid = ?", selectionArgs,
                 null, null, null)
         if (cursor == null) {
             return sign
         }
 
         while (cursor.moveToNext()) {
-            sign.examples.add(makeExample(cursor))
+            sign.examples.add(Example(cursor.getString(0),
+                    cursor.getString(1),
+                    cursor.getInt(2),
+                    sign.word))
         }
 
         cursor.close()
@@ -202,7 +204,7 @@ class SignDatabase(context: Context) {
     fun getRandomExamples(): ArrayList<Example> {
         var examples = ArrayList<Example>()
         val builder = SQLiteQueryBuilder()
-        builder.tables = mExampleTables
+        builder.tables = "examples JOIN signs WHERE examples.signid == signs.id"
 
         val columns = mExampleColumns
         val cursor = builder.query(mOpenHelper.database, columns, null, null,
@@ -244,14 +246,16 @@ class SignDatabase(context: Context) {
     fun getExamples(query: String): ArrayList<Example> {
         val examples = ArrayList<Example>()
         val builder = SQLiteQueryBuilder()
-        val selection = "examples.desc LIKE ?"
-        val selectionArgs = arrayOf("%$query%")
+        val fixedQuery = query.trim().toLowerCase()
+        val selection = "sentences_examples.rowid IN (SELECT docid FROM sentences WHERE sentences.content MATCH ?)"
+        val selectionArgs = arrayOf("$fixedQuery*")
+        val groupBy = "examples.rowid"
+        val sortOrder = "examples.desc"
 
-        builder.tables = mExampleTables
+        builder.tables = "examples JOIN sentences_examples ON sentences_examples.exampleid == examples.rowid JOIN signs on signs.id == examples.signid"
 
-        val columns = mExampleColumns
-        val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
-                "examples.video", null, "examples.desc") ?: return examples
+        val cursor = builder.query(mOpenHelper.database, mExampleColumns, selection, selectionArgs,
+                groupBy, null, sortOrder) ?: return examples
 
         while (cursor.moveToNext()) {
             examples.add(makeExample(cursor))
@@ -271,16 +275,15 @@ class SignDatabase(context: Context) {
 
     fun getExampleSigns(keyword: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
-        val selection = "examples.video LIKE ?"
+        val selection = "examples_signs.exampleid IN (SELECT examples.rowid FROM examples WHERE examples.video LIKE ?)"
         val like = "%$keyword%"
         val selectionArgs = arrayOf(like)
-        val groupBy = "signs.id"
 
         val builder = SQLiteQueryBuilder()
-        builder.tables = "signs JOIN examples ON examples.id == signs.id"
+        builder.tables = "signs JOIN examples_signs ON signs.id == examples_signs.signid"
 
         val cursor: Cursor = builder.query(mOpenHelper.database, mSignColumns, selection, selectionArgs,
-                groupBy, null, "sv") ?: return signs
+                null, null, "sv") ?: return signs
 
         while (cursor.moveToNext()) {
             signs.add(makeSign(cursor))
@@ -332,7 +335,7 @@ class SignDatabase(context: Context) {
 
     companion object {
         private const val DATABASE_NAME = "signs.jet"
-        const val DATABASE_VERSION = 31
+        const val DATABASE_VERSION = 33
 
         private fun buildColumnMap(): HashMap<String, String> {
             val map = HashMap<String, String>()

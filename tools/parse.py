@@ -177,15 +177,20 @@ def main():
     except:
         pass
 
-    version = 31
+    version = 33
 
     conn = sqlite3.connect(args.db)
 
     conn.execute("PRAGMA user_version = %d" % version)
     conn.execute("CREATE TABLE signs (id INTEGER, sv TEXT, video TEXT, slug TEXT, transcription TEXT, images INT, desc TEXT, topic1 INT, topic2 INT, comment TEXT, num_examples INT)")
-    conn.execute("CREATE TABLE examples (id INTEGER, video TEXT, desc TEXT)")
+    conn.execute("CREATE TABLE examples (video TEXT UNIQUE, desc TEXT, signid INTEGER)")
     conn.execute("CREATE TABLE synonyms (id INTEGER, otherid INTEGER)")
     conn.execute("CREATE TABLE homonyms (id INTEGER, otherid INTEGER)")
+
+    conn.execute("CREATE TABLE examples_signs (exampleid INTEGER, signid INTEGER)")
+
+    conn.execute("CREATE TABLE sentences_examples (exampleid INTEGER)")
+    conn.execute("CREATE VIRTUAL TABLE sentences USING fts4()")
 
     conn.execute("CREATE TABLE words_signs (signid INTEGER, len INTEGER)")
     conn.execute("CREATE VIRTUAL TABLE words USING fts4()")
@@ -227,8 +232,23 @@ def main():
             conn.execute("insert into descsegs values (?)", (segment.lower(),))
             conn.execute("insert into descsegs_signs values (?, ?, ?)", (thisid, pos, len(segment)))
 
-        conn.executemany("insert into examples values (?, ?, ?)",
-                         ((thisid, vid, desc) for vid, desc in sign['examples']))
+        if sign['examples']:
+            for vid, desc in sign['examples']:
+                newex = True
+
+                try:
+                    conn.execute("insert into examples values (?, ?, ?)",
+                                 (vid, desc, thisid))
+                except sqlite3.IntegrityError:
+                    newex = False
+
+                cursor = conn.execute("select rowid from examples where video = ?", (vid,))
+                exampleid = cursor.fetchone()[0]
+                conn.execute("insert into examples_signs values (?, ?)", (exampleid, thisid))
+
+                if newex:
+                    conn.execute("insert into sentences values (?)", (desc.lower(),))
+                    conn.execute("insert into sentences_examples values (?)", (exampleid,))
 
         conn.executemany("insert into synonyms values (?, ?)",
                          ((thisid, otherid) for otherid in sign['samma-betydelse']))
@@ -242,11 +262,14 @@ def main():
                          ((thisid, otherid) for otherid in sign['kan-aven-betyda']))
 
     conn.execute("CREATE INDEX signs_index ON signs(id)")
-    conn.execute("CREATE INDEX examples_index ON examples(id)")
+    conn.execute("CREATE INDEX examples_example_index ON examples_signs(exampleid)")
+    conn.execute("CREATE INDEX examples_sign_index ON examples_signs(signid)")
     conn.execute("CREATE INDEX synonyms_index ON synonyms(id)")
     conn.execute("CREATE INDEX homonyms_index ON homonyms(id)")
 
     conn.execute("INSERT INTO words(words) VALUES (?)", ('optimize',))
+    conn.execute("INSERT INTO sentences(sentences) VALUES (?)", ('optimize',))
+    conn.execute("INSERT INTO descsegs(descsegs) VALUES (?)", ('optimize',))
     conn.execute("ANALYZE")
 
     conn.commit()
