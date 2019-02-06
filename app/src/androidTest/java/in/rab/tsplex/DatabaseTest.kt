@@ -92,12 +92,15 @@ class DatabaseTest {
         db.addToFavorites(2)
         db.addToFavorites(3)
 
+        assertThat(db.isFavorite(2), equalTo(true))
+
         assertThat(db.getFavorites(),
                 contains(withWord("dop, döpa"),
                         withWord("mössa"),
                         withWord("taxi")))
 
         db.removeFromFavorites(2)
+        assertThat(db.isFavorite(2), equalTo(false))
 
         assertThat(db.getFavorites(),
                 contains(withWord("mössa"),
@@ -105,6 +108,8 @@ class DatabaseTest {
 
         db.removeAllBookmarks()
         assertThat(db.getFavorites(), empty())
+
+        assertThat(db.isFavorite(1), equalTo(false))
     }
 
     @Test
