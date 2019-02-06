@@ -262,11 +262,11 @@ class SignDatabase(context: Context) {
     }
 
     fun clearHistory() {
-        mOpenHelper.database?.execSQL("DELETE from history")
+        mOpenHelper.database?.delete("history", null, null)
     }
 
     fun removeAllBookmarks() {
-        mOpenHelper.database?.execSQL("DELETE from favorites")
+        mOpenHelper.database?.delete("favorites", null, null)
     }
 
     fun getExampleSigns(keyword: String): ArrayList<Sign> {
