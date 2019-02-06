@@ -157,24 +157,6 @@ class SignDatabase(context: Context) {
         return getSigns(query, columns, builder)
     }
 
-    fun getRandomSigns(): ArrayList<Sign> {
-        val signs = ArrayList<Sign>()
-        val builder = SQLiteQueryBuilder()
-
-        builder.tables = "signs"
-
-        val cursor = builder.query(mOpenHelper.database, mSignColumns,
-                null, null,
-                null, null, "RANDOM() LIMIT 2") ?: return signs
-
-        while (cursor.moveToNext()) {
-            signs.add(makeSign(cursor))
-        }
-
-        cursor.close()
-        return signs
-    }
-
     fun getRandomExamples(): ArrayList<Example> {
         var examples = ArrayList<Example>()
         val builder = SQLiteQueryBuilder()
@@ -240,10 +222,6 @@ class SignDatabase(context: Context) {
 
         cursor.close()
         return examples
-    }
-
-    fun getExamples(): ArrayList<Example> {
-        return getExamples(null)
     }
 
     fun clearHistory() {
