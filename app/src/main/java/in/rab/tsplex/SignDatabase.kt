@@ -307,6 +307,10 @@ class SignDatabase(context: Context) {
                 null, null, "sv")
     }
 
+    fun close() {
+        mOpenHelper.database?.let { it.close() }
+    }
+
     fun getDatabase() = mOpenHelper.database
 
     private class SignDatabaseOpenHelper internal constructor(context: Context) : ShippedSQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION)
