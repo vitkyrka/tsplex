@@ -53,6 +53,45 @@ class DatabaseTest {
         assertThat(db.getHomonyms(1), empty())
     }
 
+    @Test
+    fun favorites() {
+        db.removeAllBookmarks()
+        assertThat(db.getFavorites(), empty())
+
+        db.addToFavorites(1)
+        db.addToFavorites(2)
+        db.addToFavorites(3)
+
+        assertThat(db.getFavorites(),
+                contains(withWord("dop, döpa"),
+                        withWord("mössa"),
+                        withWord("taxi")))
+
+        db.removeFromFavorites(2)
+
+        assertThat(db.getFavorites(),
+                contains(withWord("mössa"),
+                        withWord("taxi")))
+
+        db.removeAllBookmarks()
+        assertThat(db.getFavorites(), empty())
+    }
+
+    private fun withWord(matcher: Matcher<String>): Matcher<Sign> {
+        return object : TypeSafeMatcher<Sign>() {
+            override fun matchesSafely(sign: Sign): Boolean {
+                return matcher.matches(sign.word)
+            }
+
+            override fun describeTo(description: Description) {
+                description.appendText("with word: ")
+                matcher.describeTo(description)
+            }
+        }
+    }
+
+    private fun withWord(word: String) = withWord(equalTo(word))
+
     private fun withId(id: Int): Matcher<Sign> {
         return object : TypeSafeMatcher<Sign>() {
             override fun matchesSafely(sign: Sign): Boolean {

@@ -1,6 +1,7 @@
 package `in`.rab.tsplex
 
 import android.app.SearchManager
+import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteQueryBuilder
@@ -113,6 +114,35 @@ class SignDatabase(context: Context) {
 
     fun getHistory(): ArrayList<Sign> = getSignsByIds("history", "history.date DESC")
     fun getFavorites(): ArrayList<Sign> = getSignsByIds("favorites", "signs.sv ASC")
+
+    fun isFavorite(id: Int): Boolean {
+        val builder = SQLiteQueryBuilder()
+        val selection = "id = ?"
+        val selectionArgs = arrayOf(id.toString())
+
+        builder.tables = "favorites"
+
+        val cursor = builder.query(getDatabase(), null, selection, selectionArgs,
+                null, null, null, "1") ?: return false
+
+        val count = cursor.count
+        cursor.close()
+
+        return count > 0
+    }
+
+    fun addToFavorites(id: Int) {
+        val values = ContentValues()
+
+        values.put("id", id)
+        values.put("date", Date().time)
+
+        getDatabase()?.insert("favorites", "null", values)
+    }
+
+    fun removeFromFavorites(id: Int) {
+        getDatabase()?.delete("favorites", "id = ?",  arrayOf(id.toString()))
+    }
 
     private fun getSignsByDescription(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {
         val selection = "descsegs_signs.rowid IN (SELECT docid FROM descsegs WHERE descsegs.content MATCH ?)"

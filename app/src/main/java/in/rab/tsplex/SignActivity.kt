@@ -1,6 +1,5 @@
 package `in`.rab.tsplex
 
-import `in`.rab.tsplex.OrdbokenContract.FavoritesEntry
 import `in`.rab.tsplex.OrdbokenContract.HistoryEntry
 import android.app.SearchManager
 import android.content.ContentValues
@@ -233,23 +232,12 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
     }
 
     private abstract inner class StarTask : AsyncTask<Void, Void, Boolean>() {
-        protected val db: SQLiteDatabase?
-            get() {
-                return SignDatabase(this@SignActivity).getDatabase()
+        override fun onPostExecute(starred: Boolean?) {
+            if (starred == null) {
+                return
             }
 
-        protected fun isStarred(db: SQLiteDatabase?): Boolean {
-            val cursor = db!!.query(FavoritesEntry.TABLE_NAME, null,
-                    FavoritesEntry.COLUMN_NAME_ID + "=?",
-                    arrayOf(mSign!!.id.toString()), null, null, null, "1")
-            val count = cursor.count
-
-            cursor.close()
-            return count > 0
-        }
-
-        override fun onPostExecute(starred: Boolean?) {
-            mStarred = starred!!
+            mStarred = starred
             mGotStarred = true
             // updateStar();
             invalidateOptionsMenu()
@@ -258,31 +246,30 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
 
     private inner class StarUpdateTask : StarTask() {
         override fun doInBackground(vararg params: Void): Boolean? {
-            val db = db
+            mSign?.let {
+                return SignDatabase(this@SignActivity).isFavorite(it.id)
+            }
 
-            return isStarred(db)
+            return null
         }
     }
 
     private inner class StarToggleTask : StarTask() {
         override fun doInBackground(vararg params: Void): Boolean? {
-            val db = db
-            val starred = isStarred(db)
+            mSign?.let {
+                val db = SignDatabase(this@SignActivity)
+                val starred = db.isFavorite(it.id)
 
-            if (starred) {
-                db!!.delete(FavoritesEntry.TABLE_NAME,
-                        FavoritesEntry.COLUMN_NAME_ID + "=?",
-                        arrayOf(mSign!!.id.toString()))
-            } else {
-                val values = ContentValues()
+                if (starred) {
+                    db.removeFromFavorites(it.id)
+                } else {
+                    db.addToFavorites(it.id)
+                }
 
-                values.put(FavoritesEntry.COLUMN_NAME_ID, mSign!!.id)
-                values.put(FavoritesEntry.COLUMN_NAME_DATE, Date().time)
-
-                db!!.insert(FavoritesEntry.TABLE_NAME, "null", values)
+                return !starred
             }
 
-            return !starred
+            return null
         }
     }
 

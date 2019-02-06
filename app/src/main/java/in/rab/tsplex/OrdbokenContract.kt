@@ -12,11 +12,4 @@ class OrdbokenContract {
         }
     }
 
-    abstract class FavoritesEntry : BaseColumns {
-        companion object {
-            const val TABLE_NAME = "favorites"
-            const val COLUMN_NAME_ID = "id"
-            const val COLUMN_NAME_DATE = "date"
-        }
-    }
 }
