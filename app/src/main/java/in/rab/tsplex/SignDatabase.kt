@@ -74,11 +74,16 @@ class SignDatabase(context: Context) {
         return sign
     }
 
-    internal fun getSynonyms(id: Int): ArrayList<Sign> {
+    private fun getRelatedSigns(id: Int, table: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
-        val cursor = mOpenHelper.database!!.rawQuery(
-                "SELECT id, sv, video, desc, transcription, comment, slug, images, topic1, topic2, num_examples FROM signs WHERE id in (SELECT otherid FROM synonyms WHERE id = ?)",
-                arrayOf(id.toString())) ?: return signs
+        val builder = SQLiteQueryBuilder()
+        val selection = "id in (SELECT otherid FROM $table WHERE id = ?)"
+        val selectionArgs = arrayOf(id.toString())
+
+        builder.tables = "signs"
+
+        val cursor = builder.query(getDatabase(), mSignColumns, selection, selectionArgs, null, null, null)
+                ?: return signs
 
         while (cursor.moveToNext()) {
             signs.add(makeSign(cursor))
@@ -88,19 +93,8 @@ class SignDatabase(context: Context) {
         return signs
     }
 
-    internal fun getHomonyms(id: Int): ArrayList<Sign> {
-        val signs = ArrayList<Sign>()
-        val cursor = mOpenHelper.database!!.rawQuery(
-                "SELECT id, sv, video, desc, transcription, comment, slug, images, topic1, topic2, num_examples FROM signs WHERE id in (SELECT otherid FROM homonyms WHERE id = ?)",
-                arrayOf(id.toString())) ?: return signs
-
-        while (cursor.moveToNext()) {
-            signs.add(makeSign(cursor))
-        }
-
-        cursor.close()
-        return signs
-    }
+    internal fun getSynonyms(id: Int): ArrayList<Sign> = getRelatedSigns(id, "synonyms")
+    internal fun getHomonyms(id: Int): ArrayList<Sign> = getRelatedSigns(id, "homonyms")
 
     fun getSignsByIds(idTable: String, orderBy: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
