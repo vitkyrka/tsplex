@@ -1,5 +1,6 @@
 package `in`.rab.tsplex
 
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers.*
@@ -32,6 +33,9 @@ class DatabaseTest {
     fun getSign() {
         val sign = db.getSign(1)
         assertThat(sign?.word, equalTo("taxi"))
+        assertThat(sign?.examples,
+                hasItems(withExampleVideo(containsString("Igår åkte")),
+                        withExampleVideo(containsString("Färdtjänst är bättre"))))
     }
 
     @Test
@@ -51,6 +55,32 @@ class DatabaseTest {
                         withId(13144)))
 
         assertThat(db.getHomonyms(1), empty())
+    }
+
+    @Test
+    fun getExamples() {
+        assertThat(db.getExamples("zlatan"),
+                containsInAnyOrder(
+                        withExampleVideo(containsString("Zlatan har publicerat")),
+                        withExampleVideo(containsString("Zlatan är riktigt bra"))))
+
+        assertThat(db.getExamples("zLaT"),
+                containsInAnyOrder(
+                        withExampleVideo(containsString("Zlatan har publicerat")),
+                        withExampleVideo(containsString("Zlatan är riktigt bra"))))
+
+        assertThat(db.getExamples("publi"),
+                hasItem(withExampleVideo(containsString("Zlatan har publicerat"))))
+
+        // assertThat(db.getExamples("lat"),
+        //        not(hasItem(withExampleVideo(containsString("Zlatan har publicerat")))))
+    }
+
+    @Test
+    fun getExamplesSigns() {
+        assertThat(db.getExampleSigns("00001-fras-2"),
+                contains(withWord("beställa, beställning"),
+                        withWord("taxi")))
     }
 
     @Test
@@ -131,6 +161,21 @@ class DatabaseTest {
     }
 
     private fun withWord(word: String) = withWord(equalTo(word))
+
+    private fun withExampleVideo(matcher: Matcher<String>): Matcher<Example> {
+        return object : TypeSafeMatcher<Example>() {
+            override fun matchesSafely(example: Example): Boolean {
+                return matcher.matches(example.toString())
+            }
+
+            override fun describeTo(description: Description) {
+                description.appendText("with video: ")
+                matcher.describeTo(description)
+            }
+        }
+    }
+
+    private fun withExampleVideo(video: String) = withExampleVideo(equalTo(video))
 
     private fun withId(id: Int): Matcher<Sign> {
         return object : TypeSafeMatcher<Sign>() {
