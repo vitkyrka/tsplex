@@ -141,7 +141,22 @@ class SignDatabase(context: Context) {
     }
 
     fun removeFromFavorites(id: Int) {
-        getDatabase()?.delete("favorites", "id = ?",  arrayOf(id.toString()))
+        getDatabase()?.delete("favorites", "id = ?", arrayOf(id.toString()))
+    }
+
+    fun addToHistory(id: Int) {
+        val values = ContentValues()
+
+        values.put("id", id)
+        values.put("date", Date().time)
+
+        getDatabase()?.apply {
+            insert("history", "null", values)
+
+            delete("history",
+                    "id IN (SELECT id FROM history ORDER BY date DESC LIMIT -1 OFFSET 50)",
+                    null)
+        }
     }
 
     private fun getSignsByDescription(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {

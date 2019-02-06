@@ -77,6 +77,46 @@ class DatabaseTest {
         assertThat(db.getFavorites(), empty())
     }
 
+    @Test
+    fun history() {
+        db.clearHistory()
+        assertThat(db.getHistory(), empty())
+
+        db.addToHistory(3)
+        db.addToHistory(1)
+
+        assertThat(db.getHistory(),
+                contains(withId(1),
+                        withId(3)))
+
+        db.addToHistory(2)
+
+        assertThat(db.getHistory(),
+                contains(withId(2),
+                        withId(1),
+                        withId(3)))
+
+        db.addToHistory(1)
+
+        assertThat(db.getHistory(),
+                contains(withId(1),
+                        withId(2),
+                        withId(3)))
+
+
+        for (i in 100..150) {
+            db.addToHistory(i)
+        }
+
+        val history = db.getHistory()
+        assertThat(history, hasSize(50))
+        assertThat(history, hasItem((withId(150))))
+        assertThat(history, not(hasItem((withId(1)))))
+
+        db.clearHistory()
+        assertThat(db.getHistory(), empty())
+    }
+
     private fun withWord(matcher: Matcher<String>): Matcher<Sign> {
         return object : TypeSafeMatcher<Sign>() {
             override fun matchesSafely(sign: Sign): Boolean {

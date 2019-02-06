@@ -1,24 +1,14 @@
 package `in`.rab.tsplex
 
-import `in`.rab.tsplex.OrdbokenContract.HistoryEntry
-import android.app.SearchManager
-import android.content.ContentValues
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
-import java.util.*
-import kotlin.collections.ArrayList
+import androidx.appcompat.widget.Toolbar
+import com.google.android.material.tabs.TabLayout
 
 
 class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmentInteractionListener {
@@ -212,20 +202,9 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
 
     private inner class HistorySaveTask : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void): Void? {
-            val db = SignDatabase(this@SignActivity).getDatabase() ?: return null
-            val values = ContentValues()
-
-            values.put(HistoryEntry.COLUMN_NAME_ID, mSign!!.id)
-            values.put(HistoryEntry.COLUMN_NAME_DATE, Date().time)
-
-            db.insert(HistoryEntry.TABLE_NAME, "null", values)
-
-            db.delete(HistoryEntry.TABLE_NAME,
-                    String.format("%s IN (SELECT %s FROM %s ORDER BY %s DESC LIMIT -1 OFFSET 50)",
-                            HistoryEntry.COLUMN_NAME_ID,
-                            HistoryEntry.COLUMN_NAME_ID,
-                            HistoryEntry.TABLE_NAME,
-                            HistoryEntry.COLUMN_NAME_DATE), null)
+            mSign?.let {
+                SignDatabase(this@SignActivity).addToHistory(it.id)
+            }
 
             return null
         }
