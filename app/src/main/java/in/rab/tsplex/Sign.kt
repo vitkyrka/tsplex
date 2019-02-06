@@ -32,6 +32,10 @@ class Sign internal constructor(internal val id: Int,
         parcel.readList(examples, Example::class.java.classLoader)
     }
 
+    override fun toString(): String {
+        return "$word ($id)"
+    }
+
     internal fun getImageUrls(): Array<String> {
         return Array(images) {
             val number = "%05d".format(id)
