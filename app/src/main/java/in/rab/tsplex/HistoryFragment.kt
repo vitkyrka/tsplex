@@ -1,6 +1,11 @@
 package `in`.rab.tsplex
 
-class HistoryFragment : DatabaseListFragment("history", "history.date DESC") {
+class HistoryFragment : ItemListFragment(mCache = false) {
+    override fun getSigns(): List<Item> {
+        val act = activity ?: return java.util.ArrayList()
+        return ArrayList(SignDatabase(act).getHistory())
+    }
+
     companion object {
         fun newInstance() = HistoryFragment()
     }

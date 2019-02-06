@@ -111,6 +111,9 @@ class SignDatabase(context: Context) {
         return signs
     }
 
+    fun getHistory(): ArrayList<Sign> = getSignsByIds("history", "history.date DESC")
+    fun getFavorites(): ArrayList<Sign> = getSignsByIds("favorites", "signs.sv ASC")
+
     private fun getSignsByDescription(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {
         val selection = "descsegs_signs.rowid IN (SELECT docid FROM descsegs WHERE descsegs.content MATCH ?)"
         val terms = query.split(" ").map { v -> "$v*" }
