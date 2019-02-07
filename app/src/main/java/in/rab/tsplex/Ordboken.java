@@ -44,7 +44,7 @@ public class Ordboken {
                         .addNextIntentWithParentStack(upIntent)
                         .startActivities();
             } else {
-                NavUtils.navigateUpFromSameTask(activity);
+                NavUtils.navigateUpTo(activity, upIntent);
             }
             return true;
         } else if (item.getItemId() == R.id.search) {
