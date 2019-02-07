@@ -69,7 +69,11 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
             false
         }
 
-        initHelp(searchHelp, getString(R.string.search_help))
+        layoutInflater.inflate(R.layout.item_searchtips, null).let {
+            val searchHelp = it.findViewById<TextView>(R.id.searchHelp)
+            initHelp(searchHelp, getString(R.string.search_help))
+            recentList.addFooterView(it)
+        }
 
         recentList.setOnItemClickListener { parent, view, position, id ->
             (parent as ListView).adapter?.apply {
@@ -297,6 +301,10 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (mOrdboken!!.onOptionsItemSelected(this, item)) {
+            return true
+        }
+
         if (item?.itemId == R.id.clearSearchBox) {
             searchView.text.clear()
             RecentTask().execute()
