@@ -21,7 +21,7 @@
     <string name="bookmarks">Bokmärken</string>
     <string name="sign">Tecken</string>
     <string name="signs">Tecken</string>
-    <string name="examples">Exempel</string>
+    <string name="examples">Exempelmeningar</string>
     <string name="relations">Relaterat</string>
     <string name="other_signs">Andra tecken med samma betydelse</string>
     <string name="other_meanings">Tecknet kan också betyda</string>
@@ -60,13 +60,13 @@
     <string name="title_history">Historik</string>
     <string name="title_favorites">Bokmärken</string>
     <string name="title_topics">Ämnen</string>
-    <string name="title_examples">Exempel</string>
+    <string name="title_examples">Exempelmeningar</string>
 
     <string name="action_settings">Settings</string>
     <string name="search_help"><![CDATA[
         <strong>Söktips</strong>
 
-        <p>Använd sökrutan ovan för att hitta tecken, exempelmeningar och ämnen.
+        <p>Använd sökrutan för att hitta tecken, exempelmeningar och ämnen.
         Prova <a href="handalfabet">handalfabet</a>, <a href="chans">chans</a>
         eller ett ID-nummer som <a href="3208">3208</a>.
 
