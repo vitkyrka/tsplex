@@ -1,13 +1,11 @@
 package `in`.rab.tsplex
 
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.lang.Exception
 import java.util.*
 import kotlin.math.min
 
@@ -31,26 +29,28 @@ class HomeFragment : ItemListFragment() {
         val old = diff < 0 || diff > (60 * 15)
 
         if (mRandomExamples.size < signCount || old) {
-            mRandomExamples = db.getRandomExamples()
+            val examples = db.getRandomExamples()
+
+            if (examples.size < 1) {
+                return signs
+            }
+
+            val favorites = db.getExampleSigns(examples[0].video)
+            if (favorites.size < 2) {
+                return signs
+            }
+
+            mRandomExamples = examples
+            mRandomFavorites = favorites.subList(0, 2)
             mRandomTime = now
         }
 
         signs.add(Header(getString(R.string.recently_seen)))
         signs.addAll(history.subList(0, min(signCount, history.size)))
 
-        signs.add(Header(getString(R.string.random_examples)))
+        signs.add(Header(getString(R.string.random_signs)))
         signs.addAll(mRandomExamples)
-
-        if (mRandomFavorites.size < signCount || old) {
-            val favorites = db.getSignsByIds("favorites",
-                    "RANDOM() LIMIT 2")
-            mRandomFavorites = favorites.subList(0, min(signCount, favorites.size))
-            mRandomTime = now
-        }
-
-        signs.add(Header(getString(R.string.random_favorites)))
         signs.addAll(mRandomFavorites)
-
 
         return signs
     }

@@ -81,6 +81,9 @@ class DatabaseTest {
         val one = db.getRandomExamples()
         val two = db.getRandomExamples()
 
+        assertThat(db.getExampleSigns(one[0].video),
+                hasSize(greaterThanOrEqualTo(2)))
+
         assertThat(one, not(empty()))
         assertThat(one, not(equalTo(two)))
     }

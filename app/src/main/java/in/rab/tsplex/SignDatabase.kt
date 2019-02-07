@@ -204,12 +204,12 @@ class SignDatabase(context: Context) {
     fun getRandomExamples(): ArrayList<Example> {
         var examples = ArrayList<Example>()
         val builder = SQLiteQueryBuilder()
-        builder.tables = "examples JOIN signs WHERE examples.signid == signs.id"
+        builder.tables = "examples JOIN signs ON examples.signid == signs.id JOIN examples_signs ON examples_signs.exampleid == examples.rowid"
 
         val columns = mExampleColumns
         val cursor = builder.query(mOpenHelper.database, columns, null, null,
-                "examples.video", null,
-                "RANDOM() LIMIT 2") ?: return examples
+                "examples.rowid", "COUNT(*) > 1",
+                "RANDOM() LIMIT 1") ?: return examples
 
         while (cursor.moveToNext()) {
             examples.add(makeExample(cursor))
