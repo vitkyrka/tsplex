@@ -66,9 +66,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:menu="@menu/navigation"
-        android:background="@color/primary_dark"
+        android:background="@android:color/white"
         app:itemIconTint="@color/drawer_item"
         app:itemTextColor="@color/drawer_item"
+        app:labelVisibilityMode="selected"
+        android:elevation="4dp"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
