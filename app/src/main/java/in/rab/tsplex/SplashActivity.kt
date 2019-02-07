@@ -1,11 +1,10 @@
 package `in`.rab.tsplex
 
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
 
 class SplashActivity : AppCompatActivity() {
@@ -14,14 +13,6 @@ class SplashActivity : AppCompatActivity() {
         DatabaseTask().execute()
 
         super.onCreate(savedInstanceState)
-
-        val drawable = window.decorView.background
-        ObjectAnimator.ofInt(drawable, "level", 0, 10000).apply {
-            repeatCount = ObjectAnimator.INFINITE
-            repeatMode = ObjectAnimator.REVERSE
-            duration = 2000
-            start()
-        }
     }
 
     private fun launchHome() {
