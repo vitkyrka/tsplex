@@ -17,11 +17,6 @@
             android:icon="@drawable/ic_bookmarks_24dp"
             android:title="@string/title_favorites" />
 
-        <item
-            android:id="@+id/navigation_topics"
-            android:icon="@drawable/ic_tags_black_24dp"
-            android:title="@string/title_topics"
-            android:visible="false" />
     </group>
 
 </menu>

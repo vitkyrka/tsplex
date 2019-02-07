@@ -74,12 +74,6 @@ class HomeActivity : RoutingAppCompactActivity(), BottomNavigationView.OnNavigat
                 setAndSaveTitle(R.string.title_favorites)
                 return true
             }
-            R.id.navigation_topics -> {
-                val fragment: androidx.fragment.app.Fragment? = TopicListFragment.newInstance()
-                supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
-                setAndSaveTitle(R.string.title_topics)
-                return true
-            }
             else -> {
                 return false
             }
