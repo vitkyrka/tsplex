@@ -45,8 +45,10 @@ class HomeFragment : ItemListFragment() {
             mRandomTime = now
         }
 
-        signs.add(Header(getString(R.string.recently_seen)))
-        signs.addAll(history.subList(0, min(signCount, history.size)))
+        if (history.isNotEmpty()) {
+            signs.add(Header(getString(R.string.recently_seen)))
+            signs.addAll(history.subList(0, min(signCount, history.size)))
+        }
 
         signs.add(Header(getString(R.string.random_signs)))
         signs.addAll(mRandomExamples)

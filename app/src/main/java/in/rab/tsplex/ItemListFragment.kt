@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.exoplayer_preview_control.*
 import kotlinx.android.synthetic.main.fragment_sign_list.*
 
 
-abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVisibilityNotifier, androidx.fragment.app.Fragment(), androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener,
+abstract class ItemListFragment(private val mCache: Boolean = true, private val mEmptyText: Int = 0) : FragmentVisibilityNotifier, androidx.fragment.app.Fragment(), androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener,
         ItemRecyclerViewAdapter.OnItemPlayHandler {
     private var mListener: OnListFragmentInteractionListener? = null
     private var recylerView: androidx.recyclerview.widget.RecyclerView? = null
@@ -53,6 +53,16 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
             loadingProgress.hide()
             mItems = signs
             swipeLayout.isRefreshing = false
+
+
+            if (mEmptyText != 0) {
+                if (signs.isEmpty()) {
+                    emptyList.visibility = VISIBLE
+                } else {
+                    emptyList.visibility = GONE
+                }
+            }
+
             loadList()
         }
     }
@@ -290,6 +300,10 @@ abstract class ItemListFragment(private val mCache: Boolean = true) : FragmentVi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (mEmptyText != 0) {
+            emptyListText.text = getString(mEmptyText)
+        }
 
         val listener = View.OnClickListener {
             val speed = when (it.id) {

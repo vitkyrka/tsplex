@@ -15,6 +15,8 @@
     <string name="error_word">Hämtningen misslyckades.</string>
     <string name="error_audio">Ljuduppspelningen misslyckades.</string>
     <string name="no_results">Din sökning gav tyvärr inga resultat.</string>
+    <string name="no_bookmarks">Du har inga bokmärkta tecken.</string>
+    <string name="no_history">Du har inte öppnat några tecken.</string>
     <string name="history">Historik</string>
     <string name="bookmarks">Bokmärken</string>
     <string name="sign">Tecken</string>
@@ -41,7 +43,7 @@
     <string name="fail_offline">Ingen anslutning.</string>
     <string name="fail_database">Databasuppgradering misslyckades</string>
     <string name="random_signs">Slumpmässigt utvalda tecken</string>
-    <string name="recently_seen">Nyligen visade tecken</string>
+    <string name="recently_seen">Nyligen öppnade tecken</string>
     <string name="random_favorites">Slumpmässiga bokmärkta tecken</string>
     <string name="clear_search_box">Rensa sökfältet</string>
     <string name="clear_search_history">Rensa sökhistorik</string>
