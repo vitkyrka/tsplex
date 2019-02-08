@@ -65,16 +65,14 @@ class SearchFragment : ItemListFragment() {
 
             val combined = ArrayList<Item>()
 
-            if (signs.isNotEmpty()) {
-                if (signs.size > 10) {
-                    combined.add(Header(getString(R.string.signs) + " (${signs.size})"))
-                }
-                combined.addAll(signs)
-            }
-
             if (topics.isNotEmpty()) {
                 combined.add(Header(getString(R.string.topics) + " (${topics.size})"))
                 combined.addAll(topics)
+            }
+
+            if (signs.isNotEmpty()) {
+                combined.add(Header(getString(R.string.signs) + " (${signs.size})"))
+                combined.addAll(signs)
             }
 
             if (examples.isNotEmpty()) {

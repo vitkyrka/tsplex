@@ -30,12 +30,12 @@ class HomeTest {
         onView(withId(R.id.searchView))
                 .perform(typeText("%02d".format(signId)), pressImeActionButton())
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         click()))
     }
 
     @Test
-    fun historyTest() {
+    fun homeTest() {
         onView(withId(R.id.homeSearchView))
                 .perform(click())
 

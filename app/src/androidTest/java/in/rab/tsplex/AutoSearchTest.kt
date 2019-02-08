@@ -59,7 +59,7 @@ class AutoSearchTest {
         onView(withId(R.id.searchView))
                 .perform(typeText("444"), closeSoftKeyboard())
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         clickPreview()))
         onView(withId(R.id.clearSearchBox))
                 .perform(click())
@@ -71,7 +71,7 @@ class AutoSearchTest {
         onView(withId(R.id.searchView))
                 .perform(typeText("445"), closeSoftKeyboard())
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         click()))
 
         Espresso.pressBack()

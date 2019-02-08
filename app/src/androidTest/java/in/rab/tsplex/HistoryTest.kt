@@ -30,7 +30,7 @@ class HistoryTest {
         onView(withId(R.id.searchView))
                 .perform(typeText("%02d".format(signId)), pressImeActionButton())
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         click()))
     }
 

@@ -296,7 +296,7 @@ class SearchTest {
         onView(withId(R.id.searchView))
                 .perform(typeText("straffk"), pressImeActionButton())
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         click()))
 
         onView(withId(R.id.exoPlayerView)).perform(click())
@@ -312,7 +312,7 @@ class SearchTest {
         Espresso.pressBack()
 
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2,
                         click()))
 
         onView(withId(R.id.exoPlayerView)).check(matches(withRepeatMode(Player.REPEAT_MODE_OFF)))
@@ -324,7 +324,7 @@ class SearchTest {
         Espresso.pressBack()
 
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(3,
                         clickPreview()))
 
         onView(withId(R.id.exoPlayerView)).check(matches(withRepeatMode(Player.REPEAT_MODE_ALL)))
@@ -336,7 +336,7 @@ class SearchTest {
                 .perform(typeText("handalfabet"), pressImeActionButton())
 
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(4,
                         clickPreview()))
 
         activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "04843-tecken") }
