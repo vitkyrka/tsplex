@@ -9,7 +9,7 @@ import com.google.gson.reflect.TypeToken
 import java.util.*
 import kotlin.math.min
 
-class HomeFragment : ItemListFragment() {
+class HomeFragment : ItemListFragment(mCache = false) {
     private var mRandomExamples: List<Example> = ArrayList()
     private var mRandomFavorites: List<Sign> = ArrayList()
     private var mRandomTime: Date = Date(0)
@@ -28,7 +28,7 @@ class HomeFragment : ItemListFragment() {
         val diff = (now.time - mRandomTime.time) / 1000
         val old = diff < 0 || diff > (60 * 15)
 
-        if (mRandomExamples.size < signCount || old) {
+        if (old) {
             val examples = db.getRandomExamples()
 
             if (examples.size < 1) {
