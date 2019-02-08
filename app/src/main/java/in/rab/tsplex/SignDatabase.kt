@@ -161,7 +161,7 @@ class SignDatabase(context: Context) {
         }
     }
 
-    private fun getSignsByDescription(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {
+    private fun getSignsByDescription(query: String, columns: Array<String>, builder: SQLiteQueryBuilder, limit: String?): Cursor {
         val selection = "descsegs_signs.rowid IN (SELECT docid FROM descsegs WHERE descsegs.content MATCH ?)"
         val terms = query.split(" ").map { v -> "$v*" }
         val selectionArgs = arrayOf(terms.joinToString(" "))
@@ -170,10 +170,10 @@ class SignDatabase(context: Context) {
         builder.tables = "signs JOIN descsegs_signs ON descsegs_signs.signid == signs.id"
 
         return builder.query(mOpenHelper.database, columns, selection, selectionArgs,
-                null, null, sortOrder)
+                null, null, sortOrder, limit)
     }
 
-    private fun getSigns(query: String, columns: Array<String>, builder: SQLiteQueryBuilder): Cursor {
+    private fun getSigns(query: String, columns: Array<String>, builder: SQLiteQueryBuilder, limit: String?): Cursor {
         val fixedQuery = query.trim().toLowerCase()
         val selection = "words_signs.rowid IN (SELECT docid FROM words WHERE words.content MATCH ?) OR signs.id == ?"
         val selectionArgs = arrayOf(fixedQuery.trim() + "*", fixedQuery)
@@ -187,18 +187,18 @@ class SignDatabase(context: Context) {
         builder.tables = "signs JOIN words_signs ON words_signs.signid == signs.id"
 
         val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
-                groupBy, null, sortOrder)
+                groupBy, null, sortOrder, limit)
         if (cursor.count > 0) {
             return cursor
         }
 
-        return getSignsByDescription(fixedQuery, columns, builder)
+        return getSignsByDescription(fixedQuery, columns, builder, limit)
     }
 
     fun search(query: String, columns: Array<String>): Cursor {
         val builder = SQLiteQueryBuilder()
         builder.setProjectionMap(buildColumnMap())
-        return getSigns(query, columns, builder)
+        return getSigns(query, columns, builder, RESULTS_LIMIT)
     }
 
     fun getRandomExamples(): ArrayList<Example> {
@@ -219,9 +219,9 @@ class SignDatabase(context: Context) {
         return examples
     }
 
-    fun getSigns(query: String): ArrayList<Sign> {
+    fun getSigns(query: String, limit: String? = RESULTS_LIMIT): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
-        val cursor = getSigns(query, mSignColumns, SQLiteQueryBuilder())
+        val cursor = getSigns(query, mSignColumns, SQLiteQueryBuilder(), limit)
 
         while (cursor.moveToNext()) {
             signs.add(makeSign(cursor))
@@ -243,7 +243,7 @@ class SignDatabase(context: Context) {
         return mask
     }
 
-    fun getExamples(query: String): ArrayList<Example> {
+    fun getExamples(query: String, limit: String? = RESULTS_LIMIT): ArrayList<Example> {
         val examples = ArrayList<Example>()
         val builder = SQLiteQueryBuilder()
         val fixedQuery = query.trim().toLowerCase()
@@ -255,7 +255,7 @@ class SignDatabase(context: Context) {
         builder.tables = "examples JOIN sentences_examples ON sentences_examples.exampleid == examples.rowid JOIN signs on signs.id == examples.signid"
 
         val cursor = builder.query(mOpenHelper.database, mExampleColumns, selection, selectionArgs,
-                groupBy, null, sortOrder) ?: return examples
+                groupBy, null, sortOrder, limit) ?: return examples
 
         while (cursor.moveToNext()) {
             examples.add(makeExample(cursor))
@@ -334,6 +334,7 @@ class SignDatabase(context: Context) {
     private class SignDatabaseOpenHelper internal constructor(context: Context) : ShippedSQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION)
 
     companion object {
+        private const val RESULTS_LIMIT = "100"
         private const val DATABASE_NAME = "signs.jet"
         const val DATABASE_VERSION = 33
 

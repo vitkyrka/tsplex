@@ -54,7 +54,7 @@ class SearchFragment : ItemListFragment() {
             }
 
             if (topics.size > 0) {
-                combined.add(Header(getString(R.string.topics)))
+                combined.add(Header(getString(R.string.topics) + " (${topics.size})") )
                 combined.addAll(topics)
             }
 
