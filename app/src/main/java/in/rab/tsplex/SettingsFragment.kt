@@ -37,13 +37,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference("about").setOnPreferenceClickListener {
-            val pack = activity?.packageName ?: return@setOnPreferenceClickListener true
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(
-                        "https://play.google.com/store/apps/details?id=$pack")
-                setPackage("com.android.vending")
-            }
+            val intent = Intent(activity, AboutActivity::class.java)
             startActivity(intent)
+
             return@setOnPreferenceClickListener true
         }
     }

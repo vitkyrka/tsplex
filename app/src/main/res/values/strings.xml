@@ -77,4 +77,37 @@
         ]]>
     </string>
 
+    <string name="about_html"><![CDATA[
+        <h1>Teckenspråkslexikon</h1>
+
+        <strong>Allt innehåll</strong> i appen är hämtat från
+        <a href="https://www.ling.su.se/teckenspr%C3%A5ksresurser/teckenspr%C3%A5kslexikon/">Svenskt teckenspråkslexikon</a>
+        som tillhandahålls av
+      <a href="https://www.ling.su.se/teckenspr%C3%A5k">Avdelningen för teckenspråk, Institutionen för lingvistik, Stockholms universitet</a>
+        under licensen
+        <a href="http://creativecommons.org/licenses/by-nc-sa/2.5/se/">Creative Commons Erkännande-IckeKommersiell-DelaLika 2.5 Sverige</a>.
+
+        <p>Själva appen är inte utgiven av Stockholms universitet, och databasen uppdateras något oregelbundet,
+        så kolla gärna <a href="http://teckensprakslexikon.su.se/">webbversionen</a> först innan
+        du rapporterar eventuella fel i innehållet till institutionen.</p>
+
+        <hr/>
+
+        <strong>Typsnittet</strong> som används i teckentranskriptionerna är <a href="https://zrajm.github.io/freesans-swl/">FreeSans-SWL</a>,
+        som är tillgängligt under licensen <a href="https://github.com/zrajm/freesans-swl/blob/master/LICENSE">GNU General Public License</a>.
+
+        <p>Är du nyfiken på vad transkriptionssymbolerna betyder?  Läs artikeln <em><a href="https://zrajm.github.io/teckentranskription/intro.html">
+        Att transkribera teckenspråk</a></em> som skrivits av typsnittskonstruktören.
+
+        <hr/>
+
+        Har du <strong>förbättringsförslag eller andra synpunkter</strong> på appen?
+        <a href="mailto:vincent@whitchurch.se?subject=Teckenspråkslexikon">Kontakta apputvecklaren.</a>
+
+        <p>Gillar du appen?  Betygsätt gärna den på <a href="https://play.google.com/store/apps/details?id=in.rab.tsplex">Google Play</a>.
+        Tack!
+    ]]>
+    </string>
+
+
 </resources>
