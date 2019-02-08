@@ -225,7 +225,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true, private val 
 
     override fun onItemPlay(item: Example, position: Int) {
         mListener?.onItemPlay(item)
-        playVideo(item.toString(), item.video, position)
+        playVideo("", item.video, position)
     }
 
     override fun onExampleClick(item: Example, position: Int) {
