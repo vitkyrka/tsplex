@@ -1,6 +1,7 @@
 package `in`.rab.tsplex
 
 import android.os.Bundle
+import java.util.regex.Pattern
 
 class SearchFragment : ItemListFragment() {
     private var mQuery: String? = null
@@ -32,7 +33,27 @@ class SearchFragment : ItemListFragment() {
             val topic = query.substring(6)
             val topicid = topic.toIntOrNull() ?: return arrayListOf()
 
-            return ArrayList(db.getTopicSigns(topicid))
+            val signs = db.getTopicSigns(topicid)
+            val topics = db.getSubTopics(topicid)
+            val parent = db.getParentTopic(topicid)
+            val combined = ArrayList<Item>()
+
+            if (parent.isNotEmpty()) {
+                combined.add(Header(getString(R.string.parent_topic)))
+                combined.addAll(parent)
+            }
+
+            if (topics.isNotEmpty()) {
+                combined.add(Header(getString(R.string.subtopics) + " (${topics.size})"))
+                combined.addAll(topics)
+            }
+
+            if (signs.isNotEmpty()) {
+                combined.add(Header(getString(R.string.signs) + " (${signs.size})"))
+                combined.addAll(signs)
+            }
+
+            return combined
         } else if (query.startsWith("ex:")) {
             val ex = query.substring(3)
 
@@ -40,25 +61,23 @@ class SearchFragment : ItemListFragment() {
         } else {
             val signs = db.getSigns(query)
             val examples = db.getExamples(query)
-            val topics = ArrayList<Item>(Topics.topics.filter {
-                it.name.contains(query, ignoreCase = true)
-            })
+            val topics = db.getTopics(query)
 
             val combined = ArrayList<Item>()
 
-            if (signs.size > 0) {
+            if (signs.isNotEmpty()) {
                 if (signs.size > 10) {
                     combined.add(Header(getString(R.string.signs) + " (${signs.size})"))
                 }
                 combined.addAll(signs)
             }
 
-            if (topics.size > 0) {
-                combined.add(Header(getString(R.string.topics) + " (${topics.size})") )
+            if (topics.isNotEmpty()) {
+                combined.add(Header(getString(R.string.topics) + " (${topics.size})"))
                 combined.addAll(topics)
             }
 
-            if (examples.size > 0) {
+            if (examples.isNotEmpty()) {
                 combined.add(Header(getString(R.string.examples) + " (${examples.size})"))
                 combined.addAll(examples)
             }

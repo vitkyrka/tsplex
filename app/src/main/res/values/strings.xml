@@ -37,6 +37,8 @@
     <string name="transcription">Transkription</string>
     <string name="topic">Ämne</string>
     <string name="topics">Ämnen</string>
+    <string name="subtopics">Underordnade ämnen</string>
+    <string name="parent_topic">Överordnat ämne</string>
     <string name="id">ID-nummer</string>
     <string name="filter_list">Sök i listan</string>
     <string name="fail_video_play">Videouppspelning misslyckades.</string>

@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteQueryBuilder
 import android.provider.BaseColumns
 import java.util.*
+import java.util.regex.Pattern
 
 class SignDatabase(context: Context) {
 
@@ -241,6 +242,36 @@ class SignDatabase(context: Context) {
         }
 
         return mask
+    }
+
+    fun getTopics(query: String): List<Topic> {
+        val literal = Pattern.quote(query)
+        val pattern = Pattern.compile(".*?\\b$literal.*", Pattern.UNICODE_CASE or Pattern.CASE_INSENSITIVE)
+        return Topics.topics.filter {
+            pattern.matcher(it.name).matches()
+        }
+    }
+
+    fun getSubTopics(topicId: Int): List<Topic> {
+        val mask = getMask(topicId)
+        val levelMask = ((mask shl 8) or 0xff).inv()
+
+        return Topics.topics.filter {
+            it.id != topicId && ((it.id and mask) == topicId) && ((it.id and levelMask) == 0)
+        }
+    }
+
+    fun getParentTopic(topicId: Int): List<Topic> {
+        val mask = getMask(topicId) shr 8
+        val levelMask = mask.inv()
+
+        if (mask == 0) {
+            return ArrayList()
+        }
+
+        return Topics.topics.filter {
+            it.id != topicId && ((it.id and mask) == (topicId and mask)) && ((it.id and levelMask) == 0)
+        }
     }
 
     fun getExamples(query: String, limit: String? = RESULTS_LIMIT): ArrayList<Example> {

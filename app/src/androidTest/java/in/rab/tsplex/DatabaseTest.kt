@@ -96,6 +96,34 @@ class DatabaseTest {
     }
 
     @Test
+    fun getTopics() {
+        assertThat(db.getTopics("jurid"),
+                contains(withName("Juridik"),
+                withName("Vad är juridik")))
+
+        assertThat(db.getTopics("harry po"),
+                contains(withName("Harry Potter")))
+    }
+
+    @Test
+    fun getSubTopics() {
+        assertThat(db.getSubTopics(0x00000001),
+                hasItem(withName("Film & Böcker")))
+        assertThat(db.getSubTopics(0x00000001),
+                not(hasItem(withTopicId(0x00000001))))
+        assertThat(db.getSubTopics(0x00000001),
+                not(hasItem(withName(("Harry Potter")))))
+    }
+
+    @Test
+    fun getParentTopic() {
+        assertThat(db.getParentTopic(0x00000001),
+                hasSize(0))
+        assertThat(db.getParentTopic(0x00000101),
+                contains(withTopicId(0x00000001)))
+    }
+
+    @Test
     fun favorites() {
         db.removeAllBookmarks()
         assertThat(db.getFavorites(), empty())
@@ -163,6 +191,34 @@ class DatabaseTest {
         db.clearHistory()
         assertThat(db.getHistory(), empty())
     }
+
+    private fun withTopicId(id: Int): Matcher<Topic> {
+        return object : TypeSafeMatcher<Topic>() {
+            override fun matchesSafely(topic: Topic): Boolean {
+                return topic.id == id
+            }
+
+            override fun describeTo(description: Description) {
+                description.appendText("with id: ")
+                description.appendValue(id)
+            }
+        }
+    }
+
+    private fun withName(matcher: Matcher<String>): Matcher<Topic> {
+        return object : TypeSafeMatcher<Topic>() {
+            override fun matchesSafely(topic: Topic): Boolean {
+                return matcher.matches(topic.name)
+            }
+
+            override fun describeTo(description: Description) {
+                description.appendText("with name: ")
+                matcher.describeTo(description)
+            }
+        }
+    }
+
+    private fun withName(name: String) = withName(equalTo(name))
 
     private fun withWord(matcher: Matcher<String>): Matcher<Sign> {
         return object : TypeSafeMatcher<Sign>() {
