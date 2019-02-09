@@ -193,7 +193,11 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         }
 
         mIdleResource.increment()
-        mHandler.postDelayed(mRunnable, 250)
+        mHandler.postDelayed(mRunnable, if (query.isEmpty() || query.length > 1) {
+            300
+        } else {
+            1000
+        })
     }
 
 
