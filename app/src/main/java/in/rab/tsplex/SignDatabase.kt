@@ -59,8 +59,8 @@ class SignDatabase(context: Context) {
         cursor.close()
 
         builder = SQLiteQueryBuilder()
-        builder.tables = "examples JOIN examples_signs ON examples.rowid == examples_signs.exampleid"
-        val columns = arrayOf("examples.video", "examples.desc", "examples.signid")
+        builder.tables = "examples JOIN examples_signs ON examples.rowid == examples_signs.exampleid JOIN signs ON signs.id == examples.signid"
+        val columns = arrayOf("examples.video", "examples.desc", "examples.signid", "signs.sv")
         cursor = builder.query(mOpenHelper.database, columns, "examples_signs.signid = ?", selectionArgs,
                 null, null, null)
         if (cursor == null) {
@@ -71,7 +71,7 @@ class SignDatabase(context: Context) {
             sign.examples.add(Example(cursor.getString(0),
                     cursor.getString(1),
                     cursor.getInt(2),
-                    sign.word))
+                    cursor.getString(3)))
         }
 
         cursor.close()
