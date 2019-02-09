@@ -224,7 +224,7 @@ class SearchTest {
         onView(withId(R.id.searchView))
                 .perform(typeText("straffk"), pressImeActionButton())
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         click()))
 
         onView(withId(R.id.exoPlayerExtraControls)).check(matches(not(isDisplayed())))
@@ -241,7 +241,7 @@ class SearchTest {
         Espresso.pressBack()
 
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2,
                         click()))
 
         onView(withId(R.id.exoPlayerView)).check(matches(withPlaybackSpeed(0.75f)))
@@ -253,7 +253,7 @@ class SearchTest {
         Espresso.pressBack()
 
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(3,
                         click()))
 
         onView(withId(R.id.exoPlayerView)).check(matches(withPlaybackSpeed(1.0f)))
@@ -263,7 +263,7 @@ class SearchTest {
         Espresso.pressBack()
 
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(3,
                         clickPreview()))
 
         onView(withId(R.id.exoPlayerExtraControls)).check(matches(not(isDisplayed())))
