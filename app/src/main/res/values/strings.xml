@@ -4,7 +4,7 @@
     <string name="app_name">Teckenspråkslexikon</string>
     <string name="search_hint">Sök i lexikonet</string>
     <string name="settings">Inställningar</string>
-    <string name="no_results">Din sökning gav tyvärr inga resultat.</string>
+    <string name="no_results">Din sökning gav tyvärr inga träffar.</string>
     <string name="no_bookmarks">Du har inga bokmärkta tecken.</string>
     <string name="no_history">Du har inte öppnat några tecken.</string>
     <string name="sign">Tecken</string>
@@ -18,9 +18,9 @@
     <string name="topics">Ämnen</string>
     <string name="subtopics">Underordnade ämnen</string>
     <string name="parent_topic">Överordnat ämne</string>
-    <string name="fail_video_play">Videouppspelning misslyckades.</string>
-    <string name="fail_offline">Ingen anslutning.</string>
-    <string name="fail_database">Databasuppgradering misslyckades</string>
+    <string name="fail_video_play">Det gick inte att spela upp videon.</string>
+    <string name="fail_offline">Internetåtkomst saknas.</string>
+    <string name="fail_database">Det gick inte att uppdatera databasen.</string>
     <string name="random_signs">Slumpmässigt utvalda tecken</string>
     <string name="recently_seen">Nyligen öppnade tecken</string>
     <string name="clear_search_box">Rensa sökfältet</string>
@@ -28,7 +28,7 @@
     <string name="clear_sign_history">Rensa visningshistorik</string>
     <string name="remove_all_bookmarks">Ta bort alla bokmärken</string>
     <string name="open_in_browser">Öppna i webbläsare</string>
-    <string name="open_source_licenses">Licens för öppen källkod</string>
+    <string name="open_source_licenses">Licenser för öppen källkod</string>
     <string name="about">Om</string>
     <string name="about_the_app">Om appen</string>
 
@@ -41,10 +41,10 @@
         <strong>Söktips</strong>
 
         <p>Använd sökrutan för att hitta tecken, exempelmeningar och ämnen.
-        Prova <a href="handalfabet">handalfabet</a>, <a href="chans">chans</a>
-        eller ett ID-nummer som <a href="3208">3208</a>.
+        Prova att söka på t.ex. <a href="handalfabet">handalfabet</a>, <a href="chans">chans</a>,
+        <a href="har inte">har inte</a> eller <a href="igelkott">igelkott</a>.
 
-        <p>Det finns även begränsat stöd för att söka i transkriptionerna.  Prova
+        <p>Det finns även begränsat stöd för att söka i transkriptionerna.  Prova t.ex.
         <a href="flyghänder vrids">flyghänder vrids</a> (som hittar bl.a. <em>fest</em> och <em>Algeriet</em>)
         eller
         <a href="tumh nedåtv brös">tumh nedåtv brös</a> (som hittar bl.a. <em>rolig</em> och <em>själv</em>).
