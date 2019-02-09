@@ -177,7 +177,7 @@ def main():
     except:
         pass
 
-    version = 33
+    version = 34
 
     conn = sqlite3.connect(args.db)
 
@@ -236,9 +236,11 @@ def main():
             for vid, desc in sign['examples']:
                 newex = True
 
+                mainsignid = int(re.search('-([0-9]{5})-', vid).group(1))
+
                 try:
                     conn.execute("insert into examples values (?, ?, ?)",
-                                 (vid, desc, thisid))
+                                 (vid, desc, mainsignid))
                 except sqlite3.IntegrityError:
                     newex = False
 
