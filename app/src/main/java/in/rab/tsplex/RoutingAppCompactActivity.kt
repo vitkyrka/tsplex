@@ -51,7 +51,7 @@ abstract class RoutingAppCompactActivity : AppCompatActivity(),
     override fun onListFragmentInteraction(item: Topic) {
         val intent = Intent(this, SearchListActivity::class.java)
         intent.action = Intent.ACTION_SEARCH
-        intent.putExtra(Intent.EXTRA_TITLE, item.toString())
+        intent.putExtra(Intent.EXTRA_TITLE, item.name)
         intent.putExtra(SearchManager.QUERY, "topic:" + item.id.toString())
         startActivity(intent)
     }
