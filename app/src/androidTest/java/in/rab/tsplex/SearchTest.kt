@@ -287,7 +287,8 @@ class SearchTest {
 
             override fun perform(uiController: UiController?, view: View?) {
                 if (view is ImageButton) {
-                    if (view.contentDescription.contains("none"))
+                    if (view.contentDescription.contains("none") ||
+                            view.contentDescription.contains("inga") )
                         view.performClick()
                 }
             }
