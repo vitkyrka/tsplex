@@ -125,6 +125,11 @@ class SearchTest {
                 .perform(typeText("x1"), pressImeActionButton())
         onView(withText(R.string.no_results))
                 .check(matches(isDisplayed()))
+
+        onView(withId(R.id.searchView))
+                .perform(pressImeActionButton())
+        onView(withText(R.string.no_results))
+                .check(matches(isDisplayed()))
     }
 
     fun withSignId(id: Int): Matcher<Any> {

@@ -151,8 +151,6 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
                 supportFragmentManager.beginTransaction().remove(it).commit()
             }
         } else {
-            emptyQueryInfo?.visibility = GONE
-
             val fragment = supportFragmentManager.findFragmentByTag("foo")
             if (fragment != null) {
                 (fragment as SearchFragment).setQuery(query)
