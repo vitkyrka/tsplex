@@ -25,7 +25,7 @@ class SignProvider : ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
-        mDatabase = SignDatabase(context!!)
+        mDatabase = SignDatabase.getInstance(context!!)
         return true
     }
 

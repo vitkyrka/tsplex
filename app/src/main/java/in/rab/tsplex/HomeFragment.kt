@@ -18,7 +18,7 @@ class HomeFragment : ItemListFragment(mCache = false) {
         val act = activity ?: return java.util.ArrayList()
         val signCount = getNumSignColumns()
 
-        val db = SignDatabase(act)
+        val db = SignDatabase.getInstance(act)
         val history = db.getSignsByIds("history",
                 "history.date DESC LIMIT $signCount")
 

@@ -47,7 +47,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private inner class ClearSignHistoryTask : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void): Void? {
             activity?.let {
-                SignDatabase(it).clearHistory()
+                SignDatabase.getInstance(it).clearHistory()
             }
             return null
         }
@@ -56,7 +56,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private inner class RemoveAllBookmarksTask : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void): Void? {
             activity?.let {
-                SignDatabase(it).removeAllBookmarks()
+                SignDatabase.getInstance(it).removeAllBookmarks()
             }
             return null
         }

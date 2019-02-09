@@ -27,7 +27,7 @@ class SearchFragment : ItemListFragment() {
     override fun getSigns(): List<Item> {
         val act = activity ?: return ArrayList()
         val query = mQuery ?: return ArrayList()
-        val db = SignDatabase(act)
+        val db = SignDatabase.getInstance(act)
 
         if (query.startsWith("topic:")) {
             val topic = query.substring(6)

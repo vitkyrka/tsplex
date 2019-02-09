@@ -21,7 +21,7 @@ class DatabaseTest {
 
     @Before
     fun openDb() {
-        db = SignDatabase(ApplicationProvider.getApplicationContext())
+        db = SignDatabase.getInstance(ApplicationProvider.getApplicationContext())
     }
 
     @After

@@ -152,7 +152,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
                 return null
             }
 
-            val database = SignDatabase(this@SignActivity)
+            val database = SignDatabase.getInstance(this@SignActivity)
             val sign = database.getSign(id) ?: return null
 
             mSign = sign
@@ -203,7 +203,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
     private inner class HistorySaveTask : AsyncTask<Void, Void, Void>() {
         override fun doInBackground(vararg params: Void): Void? {
             mSign?.let {
-                SignDatabase(this@SignActivity).addToHistory(it.id)
+                SignDatabase.getInstance(this@SignActivity).addToHistory(it.id)
             }
 
             return null
@@ -226,7 +226,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
     private inner class StarUpdateTask : StarTask() {
         override fun doInBackground(vararg params: Void): Boolean? {
             mSign?.let {
-                return SignDatabase(this@SignActivity).isFavorite(it.id)
+                return SignDatabase.getInstance(this@SignActivity).isFavorite(it.id)
             }
 
             return null
@@ -236,7 +236,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
     private inner class StarToggleTask : StarTask() {
         override fun doInBackground(vararg params: Void): Boolean? {
             mSign?.let {
-                val db = SignDatabase(this@SignActivity)
+                val db = SignDatabase.getInstance(this@SignActivity)
                 val starred = db.isFavorite(it.id)
 
                 if (starred) {
