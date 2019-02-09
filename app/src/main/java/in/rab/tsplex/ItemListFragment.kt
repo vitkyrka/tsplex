@@ -162,7 +162,7 @@ abstract class ItemListFragment(private val mCache: Boolean = true, private val 
                                 (recylerView?.layoutManager as? GridAutofitLayoutManager?)?.scrollToPosition(mPreviewPosition)
                             }
 
-                            loadingProgress.hide()
+                            loadingProgress?.hide()
 
 //                            if (mScrollPos != 0) {
 //                                val scrollPos = mScrollPos
