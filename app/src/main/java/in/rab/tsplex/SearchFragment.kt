@@ -61,7 +61,11 @@ class SearchFragment : ItemListFragment() {
         } else {
             val signs = db.getSigns(query)
             val examples = db.getExamples(query)
-            val topics = db.getTopics(query)
+            val topics = if (query.length > 2) {
+                db.getTopics(query)
+            } else {
+                ArrayList()
+            }
 
             val combined = ArrayList<Item>()
 
