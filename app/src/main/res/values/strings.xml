@@ -2,23 +2,11 @@
 <resources>
 
     <string name="app_name">Teckenspråkslexikon</string>
-    <string name="menu_logout">Logga ut</string>
-    <string name="menu_share">Dela</string>
-    <string name="menu_search">Sök</string>
     <string name="search_hint">Sök i lexikonet</string>
-    <string name="loading">Laddar…</string>
-    <string name="empty"></string>
     <string name="settings">Inställningar</string>
-    <string name="tryagain">Försök igen</string>
-    <string name="error_offline">Ingen anslutning.</string>
-    <string name="error_results">Hämtningen misslyckades.</string>
-    <string name="error_word">Hämtningen misslyckades.</string>
-    <string name="error_audio">Ljuduppspelningen misslyckades.</string>
     <string name="no_results">Din sökning gav tyvärr inga resultat.</string>
     <string name="no_bookmarks">Du har inga bokmärkta tecken.</string>
     <string name="no_history">Du har inte öppnat några tecken.</string>
-    <string name="history">Historik</string>
-    <string name="bookmarks">Bokmärken</string>
     <string name="sign">Tecken</string>
     <string name="signs">Tecken</string>
     <string name="examples">Exempelmeningar</string>
@@ -27,26 +15,14 @@
     <string name="other_meanings">Tecknet kan också betyda</string>
     <string name="add_bookmark">Lägg till bokmärke</string>
     <string name="remove_bookmark">Radera bokmärke</string>
-    <string name="delete">Ta bort</string>
-    <string name="delete_all">Ta bort alla</string>
-    <string name="drawer_open">Öppna menyn</string>
-    <string name="drawer_close">Stäng menyn</string>
-    <string name="description">Beskrivning</string>
-    <string name="comment">Kommentar</string>
-    <string name="word">Ord</string>
-    <string name="transcription">Transkription</string>
-    <string name="topic">Ämne</string>
     <string name="topics">Ämnen</string>
     <string name="subtopics">Underordnade ämnen</string>
     <string name="parent_topic">Överordnat ämne</string>
-    <string name="id">ID-nummer</string>
-    <string name="filter_list">Sök i listan</string>
     <string name="fail_video_play">Videouppspelning misslyckades.</string>
     <string name="fail_offline">Ingen anslutning.</string>
     <string name="fail_database">Databasuppgradering misslyckades</string>
     <string name="random_signs">Slumpmässigt utvalda tecken</string>
     <string name="recently_seen">Nyligen öppnade tecken</string>
-    <string name="random_favorites">Slumpmässiga bokmärkta tecken</string>
     <string name="clear_search_box">Rensa sökfältet</string>
     <string name="clear_search_history">Rensa sökhistorik</string>
     <string name="clear_sign_history">Rensa visningshistorik</string>
@@ -57,14 +33,10 @@
     <string name="about_the_app">Om appen</string>
 
 
-    <string name="title_activity_home">Teckenspråkslexikon</string>
     <string name="title_home">Hem</string>
     <string name="title_history">Historik</string>
     <string name="title_favorites">Bokmärken</string>
-    <string name="title_topics">Ämnen</string>
-    <string name="title_examples">Exempelmeningar</string>
 
-    <string name="action_settings">Settings</string>
     <string name="search_help"><![CDATA[
         <strong>Söktips</strong>
 
