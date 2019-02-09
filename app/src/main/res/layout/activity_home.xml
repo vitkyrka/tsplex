@@ -1,75 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="0dp"
     tools:context="in.rab.tsplex.HomeActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/homeSearchView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:layout_marginEnd="10dp"
-                    android:textColor="@android:color/black"
-                    android:background="@android:color/white"
-                    android:focusableInTouchMode="false"
-                    android:elevation="4dp"
-                    android:inputType="none"
-                    android:drawableLeft="@drawable/ic_logo_24dp"
-                    android:drawableRight="@drawable/ic_search_black_24dp"
-                    android:drawablePadding="5dp"
-                    android:editable="false"
-                    android:focusable="false"
-                    android:text="@string/search_hint">
-
-                </EditText>
-
-            </FrameLayout>
-
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <FrameLayout
-        android:id="@+id/content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_margin="0dp"
+        android:layout_above="@+id/navigation"
+        tools:context="in.rab.tsplex.HomeActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/homeSearchView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:layout_marginEnd="10dp"
+                        android:textColor="@android:color/black"
+                        android:background="@android:color/white"
+                        android:focusableInTouchMode="false"
+                        android:elevation="4dp"
+                        android:inputType="none"
+                        android:drawableLeft="@drawable/ic_logo_24dp"
+                        android:drawableRight="@drawable/ic_search_black_24dp"
+                        android:drawablePadding="5dp"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:text="@string/search_hint">
+
+                    </EditText>
+
+                </FrameLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <FrameLayout
+            android:id="@+id/content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </FrameLayout>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
         app:menu="@menu/navigation"
         android:background="@android:color/white"
         app:itemIconTint="@color/drawer_item"
         app:itemTextColor="@color/drawer_item"
         app:labelVisibilityMode="selected"
         android:elevation="4dp"
+        android:layout_alignParentBottom="true"
         />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>
