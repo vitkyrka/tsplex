@@ -31,12 +31,13 @@
         app:layout_constraintBottom_toTopOf="@id/exoPlayerOpenNew"
         android:src="@drawable/ic_close_white_24dp"
         android:background="?android:attr/selectableItemBackground"
+        android:layout_marginEnd="10dp"
         />
 
     <ImageButton
         android:id="@+id/exoPlayerOpenNew"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/exoPlayerPrevious"
@@ -47,8 +48,8 @@
 
     <ImageButton
         android:id="@+id/exoPlayerPrevious"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/exoPlayerNext"
@@ -59,8 +60,8 @@
 
     <ImageButton
         android:id="@+id/exoPlayerNext"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
