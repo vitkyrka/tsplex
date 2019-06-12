@@ -43,8 +43,10 @@ def parse_one(f):
     root = x.getroot()
 
     video = root.xpath('//source[@type="video/mp4"]/@src')[0]
-    examplevids = root.xpath('//a/@data-video')
-    exampledescs = [x.strip() for x in root.xpath('//ul[@class="video-example-nav"]//span[@class="text"]/text()')]
+
+    scripts = '\n'.join(root.xpath('//script/text()'))
+    examplevids = re.findall('data-video="([^"]+)"', scripts)
+    exampledescs = [t.strip() for t in re.findall('<span class="text">([^<]+)</span>', scripts)]
 
     assert(len(exampledescs) == len(examplevids))
 
@@ -83,6 +85,9 @@ def parse_one(f):
     sign['samma-betydelse'] = parse_synonyms(sign, f)
     sign['kan-aven-betyda'] = parse_homonyms(sign, f)
     sign['images'] = list(root.xpath('//img[@class="img-50"]/@src'))
+
+    if int(sign['id-nummer']) == 1:
+        assert len(examplevids) > 3
 
     return sign
 
