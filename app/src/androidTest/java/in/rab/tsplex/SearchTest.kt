@@ -189,7 +189,7 @@ class SearchTest {
                 .check(matches(isDisplayed()))
         onView(withText("Kanarieöarna, Gran Canaria"))
                 .check(matches(isDisplayed()))
-        onView(withText("stanna kvar, uppehålla sig"))
+        onView(withText("ge sig iväg, sticka, åka iväg"))
                 .check(matches(isDisplayed()))
         Espresso.pressBack()
         onView(withSubstring(exampleString))

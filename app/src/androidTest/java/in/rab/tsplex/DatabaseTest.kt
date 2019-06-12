@@ -91,7 +91,10 @@ class DatabaseTest {
     @Test
     fun getExamplesSigns() {
         assertThat(db.getExampleSigns("00001-fras-2"),
-                contains(withWord("beställa, beställning"),
+                containsInAnyOrder(
+                        withWord("jag"),
+                        withWord("har gjort, har varit"),
+                        withWord("beställa, beställning"),
                         withWord("taxi")))
     }
 
