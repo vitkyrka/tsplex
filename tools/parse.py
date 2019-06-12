@@ -69,7 +69,8 @@ def parse_one(f):
 
         if name == 'Ämne':
             e = next(d.itersiblings())
-            value = [t.strip() for t in e.itertext()]
+            # Skip [Även] and [Endast] for now
+            value = [t.strip() for t in e.itertext() if t.strip() and not t.startswith('[')]
         else:
             try:
                 value = next(d.itersiblings()).text.strip()
