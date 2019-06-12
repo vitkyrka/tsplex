@@ -23,7 +23,7 @@ class SignFragment : ItemListFragment() {
             items.add(Description(sign))
             items.addAll(sign.examples)
 
-            if (sign.topic1 != 0 && !Topics.names[sign.topic1]!!.startsWith("Ospec")) {
+            if (sign.topic1 != 0 && !Topics.names[sign.topic1]!!.startsWith("Okä")) {
                 items.add(Topic(sign.topic1))
 
                 if (sign.topic2 != 0) {

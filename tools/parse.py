@@ -80,7 +80,7 @@ def parse_one(f):
         sign[name.lower()] = value
 
     if len(sign['ämne']) == 0:
-        sign['ämne'] = ['Ospecifierad']
+        sign['ämne'] = ['Okänt']
 
     sign['slug'] = re.search('movies/[^/]+/(.*?)-%s' % sign['id-nummer'], sign['video']).groups()[0]
     sign['samma-betydelse'] = parse_synonyms(sign, f)
