@@ -4,7 +4,11 @@
     <string name="app_name">Teckenspråkslexikon</string>
     <string name="search_hint">Sök i lexikonet</string>
     <string name="settings">Inställningar</string>
-    <string name="no_results">Din sökning gav tyvärr inga träffar.</string>
+    <string name="no_results"><![CDATA[
+        <strong>Din sökning (<em>%1$s</em>) gav tyvärr inga träffar.</strong>
+
+        <p><small><a href="%2$s">Sök efter <em>%1$s</em> på teckensprakslexikon.su.se</a>.</small>
+    ]]></string>
     <string name="no_bookmarks">Du har inga bokmärkta tecken.</string>
     <string name="no_history">Du har inte öppnat några tecken.</string>
     <string name="sign">Tecken</string>

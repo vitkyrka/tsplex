@@ -132,6 +132,12 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
     override fun onLoadList(items: List<Item>) {
         if (items.isEmpty()) {
             emptyQueryInfo.visibility = VISIBLE
+            noResults.text = fromHtml(getString(R.string.no_results, mQuery,
+                    Uri.parse("https://teckensprakslexikon.su.se/sok")
+                            .buildUpon()
+                            .appendQueryParameter("q", mQuery)
+                            .toString()))
+            noResults.movementMethod = LinkMovementMethod.getInstance()
             noResults.visibility = VISIBLE
         } else {
             emptyQueryInfo.visibility = GONE

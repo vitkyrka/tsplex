@@ -2,6 +2,9 @@ package `in`.rab.tsplex
 
 import `in`.rab.tsplex.TestHelper.Companion.assertIsCurrentVideo
 import `in`.rab.tsplex.TestHelper.Companion.clickPreview
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
 import android.view.View
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
@@ -13,8 +16,9 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.BoundedMatcher
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -41,6 +45,18 @@ class SearchTest {
 
     private lateinit var mSearchResource: IdlingResource
     private lateinit var mVideoResource: IdlingResource
+
+    @Before
+    fun setUp() {
+        Intents.init()
+        Intents.intending(not(IntentMatchers.isInternal()))
+                .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    @After
+    fun tearDown() {
+        Intents.release()
+    }
 
     @Before
     fun registerIdlingResource() {
@@ -123,13 +139,17 @@ class SearchTest {
     fun searchFail() {
         onView(withId(R.id.searchView))
                 .perform(typeText("x1"), pressImeActionButton())
-        onView(withText(R.string.no_results))
+        onView(withId(R.id.noResults))
                 .check(matches(isDisplayed()))
 
         onView(withId(R.id.searchView))
                 .perform(pressImeActionButton())
-        onView(withText(R.string.no_results))
+        onView(withId(R.id.noResults))
                 .check(matches(isDisplayed()))
+        onView(withId(R.id.noResults))
+                .perform(openLinkWithText(containsString("Sök")))
+        Intents.intended(allOf(IntentMatchers.hasData("https://teckensprakslexikon.su.se/sok?q=x1"),
+                IntentMatchers.hasAction(Intent.ACTION_VIEW)))
     }
 
     fun withSignId(id: Int): Matcher<Any> {
@@ -288,7 +308,7 @@ class SearchTest {
             override fun perform(uiController: UiController?, view: View?) {
                 if (view is ImageButton) {
                     if (view.contentDescription.contains("none") ||
-                            view.contentDescription.contains("inga") )
+                            view.contentDescription.contains("inga"))
                         view.performClick()
                 }
             }
