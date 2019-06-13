@@ -154,7 +154,7 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
             noResults.visibility = GONE
 
             supportFragmentManager.findFragmentByTag("foo")?.let {
-                supportFragmentManager.beginTransaction().remove(it).commit()
+                supportFragmentManager.beginTransaction().remove(it).commitAllowingStateLoss()
             }
         } else {
             val fragment = supportFragmentManager.findFragmentByTag("foo")
@@ -162,7 +162,7 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
                 (fragment as SearchFragment).setQuery(query)
             } else {
                 SearchFragment.newInstance(query).let {
-                    supportFragmentManager.beginTransaction().replace(R.id.content, it, "foo").commit()
+                    supportFragmentManager.beginTransaction().replace(R.id.content, it, "foo").commitAllowingStateLoss()
                 }
             }
         }
