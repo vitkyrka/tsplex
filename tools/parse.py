@@ -71,6 +71,18 @@ def parse_one(f):
             e = next(d.itersiblings())
             # Skip [Även] and [Endast] for now
             value = [t.strip() for t in e.itertext() if t.strip() and not t.startswith('[')]
+        elif name == 'Förekomster':
+            occurence = [l.strip().replace(' träffar', '').split(' ') for l in next(d.itersiblings()).text_content().strip().split('\n')]
+            totalhits = 0
+            try:
+                for where, hits in occurence:
+                    hits = hits.split(' ', maxsplit=1)[0]
+                    sign['förekomster-' + where.lower().rstrip(':')] = int(hits)
+                    totalhits += int(hits)
+            except ValueError:
+                # Percent after enkäter
+                pass
+            value = totalhits
         else:
             try:
                 value = next(d.itersiblings()).text.strip()
@@ -183,12 +195,12 @@ def main():
     except:
         pass
 
-    version = 35
+    version = 36
 
     conn = sqlite3.connect(args.db)
 
     conn.execute("PRAGMA user_version = %d" % version)
-    conn.execute("CREATE TABLE signs (id INTEGER, sv TEXT, video TEXT, slug TEXT, transcription TEXT, images INT, desc TEXT, topic1 INT, topic2 INT, comment TEXT, num_examples INT)")
+    conn.execute("CREATE TABLE signs (id INTEGER, sv TEXT, video TEXT, slug TEXT, transcription TEXT, images INT, desc TEXT, topic1 INT, topic2 INT, comment TEXT, num_examples INT, occurence INT, occurence_lexicon INT, occurence_corpus INT, occurence_surveys INT)")
     conn.execute("CREATE TABLE examples (video TEXT UNIQUE, desc TEXT, signid INTEGER)")
     conn.execute("CREATE TABLE synonyms (id INTEGER, otherid INTEGER)")
     conn.execute("CREATE TABLE homonyms (id INTEGER, otherid INTEGER)")
@@ -216,7 +228,7 @@ def main():
     for sign in signs:
         thisid = int(sign['id-nummer'])
 
-        conn.execute("insert into signs values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        conn.execute("insert into signs values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                      (thisid, ', '.join(sign['ord']),
                       sign['video'],
                       sign['slug'],
@@ -226,7 +238,11 @@ def main():
                       topictoid[sign['ämne'][0].replace('/', '»')],
                       topictoid[sign['ämne'][1].replace('/', '»')] if len(sign['ämne']) > 1 else 0,
                       sign['kommentar'],
-                      len(sign['examples'])))
+                      len(sign['examples']),
+                      sign['förekomster'],
+                      sign['förekomster-lexikonet'],
+                      sign['förekomster-korpusmaterial'],
+                      sign['förekomster-enkäter']))
 
         for word in sign['ord']:
             conn.execute("insert into words values (?)", (word.lower(),))

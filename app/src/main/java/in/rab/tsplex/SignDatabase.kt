@@ -11,7 +11,7 @@ import java.util.regex.Pattern
 
 class SignDatabase(context: Context) {
 
-    private val mSignColumns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples")
+    private val mSignColumns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples", "occurence")
     private val mExampleColumns = arrayOf("examples.video", "examples.desc", "examples.signid", "signs.sv")
     private val mOpenHelper: SignDatabaseOpenHelper
 
@@ -30,7 +30,8 @@ class SignDatabase(context: Context) {
                 cursor.getInt(7),
                 cursor.getInt(8),
                 cursor.getInt(9),
-                cursor.getInt(10))
+                cursor.getInt(10),
+                cursor.getInt(11))
     }
 
     private fun makeExample(cursor: Cursor): Example {
@@ -83,10 +84,11 @@ class SignDatabase(context: Context) {
         val builder = SQLiteQueryBuilder()
         val selection = "id in (SELECT otherid FROM $table WHERE id = ?)"
         val selectionArgs = arrayOf(id.toString())
+        val sortOrder = "occurence DESC, length(comment), num_examples DESC, signs.id"
 
         builder.tables = "signs"
 
-        val cursor = builder.query(getDatabase(), mSignColumns, selection, selectionArgs, null, null, null)
+        val cursor = builder.query(getDatabase(), mSignColumns, selection, selectionArgs, null, null, sortOrder)
                 ?: return signs
 
         while (cursor.moveToNext()) {
@@ -103,7 +105,7 @@ class SignDatabase(context: Context) {
     fun getSignsByIds(idTable: String, orderBy: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = mOpenHelper.database!!.rawQuery(
-                "SELECT signs.id, sv, video, desc, transcription, comment, slug, images, topic1, topic2, num_examples FROM signs INNER JOIN " + idTable +
+                "SELECT signs.id, sv, video, desc, transcription, comment, slug, images, topic1, topic2, num_examples, occurence FROM signs INNER JOIN " + idTable +
                         " ON signs.id = " + idTable + ".id ORDER BY " + orderBy, null)
                 ?: return signs
 
@@ -166,7 +168,7 @@ class SignDatabase(context: Context) {
         val selection = "descsegs_signs.rowid IN (SELECT docid FROM descsegs WHERE descsegs.content MATCH ?)"
         val terms = query.split(" ").map { v -> "$v*" }
         val selectionArgs = arrayOf(terms.joinToString(" "))
-        val sortOrder = "descsegs_signs.pos, descsegs_signs.len, sv"
+        val sortOrder = "occurence DESC, length(comment), num_examples DESC, descsegs_signs.pos, descsegs_signs.len, sv"
 
         builder.tables = "signs JOIN descsegs_signs ON descsegs_signs.signid == signs.id"
 
@@ -183,7 +185,7 @@ class SignDatabase(context: Context) {
         // The comment is usally says that the sign is not that common so prefer no comment.
         // A lower ID is also presumed to indicate a more important sign (since it was added
         // earlier), but perhaps this is not true.
-        val sortOrder = "words_signs.len, length(comment), num_examples DESC, signs.id"
+        val sortOrder = "words_signs.len, occurence DESC, length(comment), num_examples DESC, signs.id"
 
         builder.tables = "signs JOIN words_signs ON words_signs.signid == signs.id"
 
@@ -367,7 +369,7 @@ class SignDatabase(context: Context) {
     companion object {
         private const val RESULTS_LIMIT = "100"
         private const val DATABASE_NAME = "signs.jet"
-        const val DATABASE_VERSION = 35
+        const val DATABASE_VERSION = 36
         @Volatile private var INSTANCE: SignDatabase? = null
 
         fun getInstance(context: Context): SignDatabase =

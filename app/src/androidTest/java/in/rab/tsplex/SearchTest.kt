@@ -365,15 +365,15 @@ class SearchTest {
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(4,
                         clickPreview()))
 
-        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "04843-tecken") }
+        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "01557-tecken") }
 
         onView(withId(R.id.exoPlayerPrevious)).perform(click())
-        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "01557-tecken") }
+        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "04843-tecken") }
 
         onView(withId(R.id.exoPlayerPrevious)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.exoPlayerNext)).perform(click())
-        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "04843-tecken") }
+        activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "01557-tecken") }
 
         onView(withId(R.id.exoPlayerNext)).perform(click())
         activityScenarioRule.scenario.onActivity { assertIsCurrentVideo(it, "11352-tecken") }

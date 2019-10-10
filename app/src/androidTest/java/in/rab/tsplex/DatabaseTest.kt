@@ -41,9 +41,9 @@ class DatabaseTest {
     @Test
     fun getSynonyms() {
         assertThat(db.getSynonyms(1),
-                contains(withId(348),
+                contains(withId(1728),
                         withId(620),
-                        withId(1728)))
+                        withId(348)))
 
         assertThat(db.getSynonyms(12345), empty())
     }
