@@ -5,11 +5,15 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.speech.tts.TextToSpeech
 import android.view.*
 import android.view.View.*
 import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -21,6 +25,7 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.exoplayer_preview_control.*
 import kotlinx.android.synthetic.main.fragment_sign_list.*
+import java.util.*
 
 
 abstract class ItemListFragment(private val mCache: Boolean = true, private val mEmptyText: Int = 0) : FragmentVisibilityNotifier, androidx.fragment.app.Fragment(), androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener,
@@ -43,6 +48,9 @@ abstract class ItemListFragment(private val mCache: Boolean = true, private val 
     protected var mCloseVisible = VISIBLE
     protected var mOpenNewVisible = VISIBLE
     protected abstract fun getSigns(): List<Item>
+    private var ttsEnabled = false
+    private var tts: TextToSpeech? = null
+    private var ttsInitialized = false
 
     protected inner class DatabaseTask : AsyncTask<Void, Void, List<Item>>() {
         override fun doInBackground(vararg params: Void): List<Item> {
@@ -218,12 +226,44 @@ abstract class ItemListFragment(private val mCache: Boolean = true, private val 
         exoPlayerTitle.text = title
     }
 
+    private fun speakTts(tts: TextToSpeech?, what: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tts?.speak(what, TextToSpeech.QUEUE_FLUSH, null, what)
+        } else {
+            tts?.speak(what, TextToSpeech.QUEUE_FLUSH, null)
+        }
+    }
+
+    private fun speak(what: String) {
+        if (!ttsEnabled) return
+
+        if (ttsInitialized) {
+            speakTts(tts, what)
+            return
+        }
+
+        tts = TextToSpeech(context, object : TextToSpeech.OnInitListener {
+            override fun onInit(status: Int) {
+                if (status != TextToSpeech.SUCCESS) {
+                    Toast.makeText(context, R.string.fail_tts, Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                tts?.language = Locale("sv")
+                ttsInitialized = true
+                speakTts(tts, what)
+            }
+        })
+    }
+
     override fun onItemPlay(item: Sign, position: Int) {
+        speak(item.word)
         mListener?.onItemPlay(item)
         playVideo(item.word, item.video, position)
     }
 
     override fun onItemPlay(item: Example, position: Int) {
+        speak(item.toString())
         mListener?.onItemPlay(item)
         playVideo("", item.video, position)
     }
@@ -509,6 +549,11 @@ abstract class ItemListFragment(private val mCache: Boolean = true, private val 
     override fun onPause() {
         super.onPause()
 
+        tts?.stop()
+        tts?.shutdown()
+        tts = null
+        ttsInitialized = false
+
         mTask?.cancel(true)
         mTask = null
         mState = recylerView?.layoutManager?.onSaveInstanceState()
@@ -538,6 +583,9 @@ abstract class ItemListFragment(private val mCache: Boolean = true, private val 
             }
 
         }
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        ttsEnabled = sharedPreferences.getBoolean("tts", false)
 
         if (!mCache || mItems.isEmpty()) {
             update()

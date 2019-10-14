@@ -25,6 +25,7 @@
     <string name="fail_video_play">Det gick inte att spela upp videon.</string>
     <string name="fail_offline">Internetåtkomst saknas.</string>
     <string name="fail_database">Det gick inte att uppdatera databasen.</string>
+    <string name="fail_tts">Det gick inte att läsa upp översättningen.</string>
     <string name="random_signs">Slumpmässigt utvalda tecken</string>
     <string name="recently_seen">Nyligen öppnade tecken</string>
     <string name="clear_search_box">Rensa sökfältet</string>
@@ -35,6 +36,9 @@
     <string name="open_source_licenses">Licenser för öppen källkod</string>
     <string name="about">Om</string>
     <string name="about_the_app">Om appen</string>
+    <string name="clear">Rensa</string>
+    <string name="accessibility">Tillgänglighet</string>
+    <string name="tts">Läs upp översättningar</string>
 
 
     <string name="title_home">Hem</string>

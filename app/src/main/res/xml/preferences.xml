@@ -2,17 +2,34 @@
 <androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        app:key="clearSearchHistory"
-        app:title="@string/clear_search_history" />
+    <PreferenceCategory
+        android:title="@string/accessibility"
+        >
 
-    <Preference
-        app:key="clearSignHistory"
-        app:title="@string/clear_sign_history" />
+        <SwitchPreferenceCompat
+            app:key="tts"
+            app:title="@string/tts"
+            />
 
-    <Preference
-        app:key="removeAllBookmarks"
-        app:title="@string/remove_all_bookmarks" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/clear"
+        >
+
+        <Preference
+            app:key="clearSearchHistory"
+            app:title="@string/clear_search_history" />
+
+        <Preference
+            app:key="clearSignHistory"
+            app:title="@string/clear_sign_history" />
+
+        <Preference
+            app:key="removeAllBookmarks"
+            app:title="@string/remove_all_bookmarks" />
+
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/about"
