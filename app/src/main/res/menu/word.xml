@@ -13,4 +13,8 @@
         android:title="@string/open_in_browser"
         app:showAsAction="never" />
 
+    <item android:id="@+id/settings"
+        android:title="@string/settings"
+        app:showAsAction="never" />
+
 </menu>
