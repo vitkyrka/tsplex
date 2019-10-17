@@ -118,14 +118,14 @@ class SignDatabase(context: Context) {
     }
 
     fun getHistory(): ArrayList<Sign> = getSignsByIds("history", "history.date DESC")
-    fun getFavorites(): ArrayList<Sign> = getSignsByIds("favorites", "signs.sv ASC")
+    fun getFavorites(): ArrayList<Sign> = getSignsByIds("bookmarks", "signs.sv ASC")
 
     fun isFavorite(id: Int): Boolean {
         val builder = SQLiteQueryBuilder()
         val selection = "id = ?"
         val selectionArgs = arrayOf(id.toString())
 
-        builder.tables = "favorites"
+        builder.tables = "bookmarks"
 
         val cursor = builder.query(getDatabase(), null, selection, selectionArgs,
                 null, null, null, "1") ?: return false
@@ -136,17 +136,65 @@ class SignDatabase(context: Context) {
         return count > 0
     }
 
-    fun addToFavorites(id: Int) {
+    fun getFolderSigns(folderId: Int): ArrayList<Sign> {
+        val signs = ArrayList<Sign>()
+        val builder = SQLiteQueryBuilder()
+        builder.tables = "signs INNER JOIN bookmarks ON signs.id = bookmarks.id"
+        val selection = "bookmarks.folderid = ?"
+        val selectionArgs = arrayOf(folderId.toString())
+
+        val cursor: Cursor = builder.query(mOpenHelper.database, mSignColumns, selection, selectionArgs,
+                null, null, "signs.sv ASC") ?: return signs
+
+        while (cursor.moveToNext()) {
+            signs.add(makeSign(cursor))
+        }
+
+        cursor.close()
+        return signs
+    }
+
+    fun getBookmarksFolders(): ArrayList<Folder> {
+        val folders = ArrayList<Folder>()
+        val cursor = getDatabase()?.query("folders", arrayOf("id", "name"), null, null, null, null, "name ASC") ?: return folders
+
+        while (cursor.moveToNext()) {
+            folders.add(Folder(cursor.getInt(0), cursor.getString(1)))
+        }
+
+        cursor.close()
+        return folders
+    }
+
+
+    fun addBookmarksFolder(name: String) {
+        val values = ContentValues()
+
+        values.put("name", name)
+        values.put("lastused", Date().time)
+
+        getDatabase()?.insert("folders", "null", values)
+    }
+
+    fun removeBookmarksFolder(folderId: Int) {
+        getDatabase()?.apply {
+            delete("folders", "id = ?", arrayOf(folderId.toString()))
+            delete("bookmarks", "folderId = ?", arrayOf(folderId.toString()))
+        }
+    }
+
+    fun addToFavorites(id: Int, folderId: Int) {
         val values = ContentValues()
 
         values.put("id", id)
         values.put("date", Date().time)
+        values.put("folderid", folderId)
 
-        getDatabase()?.insert("favorites", "null", values)
+        getDatabase()?.insert("bookmarks", "null", values)
     }
 
     fun removeFromFavorites(id: Int) {
-        getDatabase()?.delete("favorites", "id = ?", arrayOf(id.toString()))
+        getDatabase()?.delete("bookmarks", "id = ?", arrayOf(id.toString()))
     }
 
     fun addToHistory(id: Int) {
@@ -303,7 +351,10 @@ class SignDatabase(context: Context) {
     }
 
     fun removeAllBookmarks() {
-        mOpenHelper.database?.delete("favorites", null, null)
+        getDatabase()?.apply {
+            delete("bookmarks", null, null)
+            delete("folders", null, null)
+        }
     }
 
     fun getExampleSigns(keyword: String): ArrayList<Sign> {
@@ -369,7 +420,7 @@ class SignDatabase(context: Context) {
     companion object {
         private const val RESULTS_LIMIT = "100"
         private const val DATABASE_NAME = "signs.jet"
-        const val DATABASE_VERSION = 36
+        const val DATABASE_VERSION = 38
         @Volatile private var INSTANCE: SignDatabase? = null
 
         fun getInstance(context: Context): SignDatabase =

@@ -1,9 +1,12 @@
 package `in`.rab.tsplex
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
@@ -14,13 +17,13 @@ import com.google.android.material.tabs.TabLayout
 class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmentInteractionListener {
     private var mOrdboken: Ordboken? = null
     private var mStarred: Boolean = false
-    private var mGotStarred: Boolean = false
     private var mSign: Sign? = null
     private var mExampleUrl: String? = null
     private var mSynonyms: ArrayList<Item>? = null
     private var mPosition = 0
     private var mViewPager: androidx.viewpager.widget.ViewPager? = null
     private var mTabLayout: TabLayout? = null
+    private var mFolders = ArrayList<Folder>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +99,8 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
     override fun onListFragmentInteraction(item: Example) {
     }
 
+    override fun onListFragmentInteraction(item: Folder) = Unit
+
     private inner class TabPagerAdapter(fm: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentPagerAdapter(fm) {
         override fun getPageTitle(position: Int): CharSequence {
             var adjpos = position
@@ -140,20 +145,23 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
         }
     }
 
-    private inner class SignLoadTask : AsyncTask<String, Void, Sign?>() {
+    private inner class SignLoadTask : AsyncTask<String, Void, Triple<Sign?, Boolean, ArrayList<Folder>>>() {
         var mSignId: String = ""
 
-        override fun doInBackground(vararg params: String?): Sign? {
+        override fun doInBackground(vararg params: String?): Triple<Sign?, Boolean, ArrayList<Folder>> {
+            var folders = ArrayList<Folder>()
+            var starred = false
+
             mSignId = params[0]!!
 
             val id = try {
                 Integer.parseInt(mSignId)
             } catch (e: NumberFormatException) {
-                return null
+                return Triple(null, starred, folders)
             }
 
             val database = SignDatabase.getInstance(this@SignActivity)
-            val sign = database.getSign(id) ?: return null
+            val sign = database.getSign(id) ?: return Triple(null, starred, folders)
 
             mSign = sign
             val synonyms = database.getSynonyms(sign.id)
@@ -173,13 +181,17 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
 
             mSynonyms = combined
 
-            return sign
+            database.addToHistory(sign.id)
+            starred = database.isFavorite(sign.id)
+            folders = database.getBookmarksFolders()
+
+            return Triple(sign, starred, folders)
         }
 
-        override fun onPostExecute(result: Sign?) {
+        override fun onPostExecute(result: Triple<Sign?, Boolean, ArrayList<Folder>>) {
             super.onPostExecute(result)
 
-            if (result == null) {
+            if (result.first == null) {
                 failLoad(mSignId)
                 return
             }
@@ -195,46 +207,16 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
                 mTabLayout?.setupWithViewPager(mViewPager)
             }
 
-            HistorySaveTask().execute()
-            StarUpdateTask().execute()
-        }
-    }
-
-    private inner class HistorySaveTask : AsyncTask<Void, Void, Void>() {
-        override fun doInBackground(vararg params: Void): Void? {
-            mSign?.let {
-                SignDatabase.getInstance(this@SignActivity).addToHistory(it.id)
-            }
-
-            return null
-        }
-    }
-
-    private abstract inner class StarTask : AsyncTask<Void, Void, Boolean>() {
-        override fun onPostExecute(starred: Boolean?) {
-            if (starred == null) {
-                return
-            }
-
-            mStarred = starred
-            mGotStarred = true
-            // updateStar();
+            mFolders = result.third
+            mStarred = result.second
             invalidateOptionsMenu()
         }
     }
 
-    private inner class StarUpdateTask : StarTask() {
-        override fun doInBackground(vararg params: Void): Boolean? {
-            mSign?.let {
-                return SignDatabase.getInstance(this@SignActivity).isFavorite(it.id)
-            }
+    private inner class StarToggleTask : AsyncTask<Int, Void, Boolean>() {
+        override fun doInBackground(vararg params: Int?): Boolean? {
+            val folderId = params[0]!!
 
-            return null
-        }
-    }
-
-    private inner class StarToggleTask : StarTask() {
-        override fun doInBackground(vararg params: Void): Boolean? {
             mSign?.let {
                 val db = SignDatabase.getInstance(this@SignActivity)
                 val starred = db.isFavorite(it.id)
@@ -242,13 +224,22 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
                 if (starred) {
                     db.removeFromFavorites(it.id)
                 } else {
-                    db.addToFavorites(it.id)
+                    db.addToFavorites(it.id, folderId)
                 }
 
                 return !starred
             }
 
             return null
+        }
+
+        override fun onPostExecute(starred: Boolean?) {
+            if (starred == null) {
+                return
+            }
+
+            mStarred = starred
+            invalidateOptionsMenu()
         }
     }
 
@@ -288,7 +279,20 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
         }
 
         if (item.itemId == R.id.menu_star) {
-            StarToggleTask().execute()
+            if (!mStarred) {
+                if (mFolders.isNotEmpty()) {
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle(R.string.add_bookmark)
+                            .setItems(mFolders.map { it.name }.toTypedArray()
+                            ) { _, which ->
+                                StarToggleTask().execute(mFolders[which].id)
+                            }
+                    builder.show()
+                    return true
+                }
+            }
+
+            StarToggleTask().execute(0)
             return true
         }
 

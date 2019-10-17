@@ -1,7 +1,6 @@
 package `in`.rab.tsplex
 
 import android.os.Bundle
-import java.util.regex.Pattern
 
 class SearchFragment : ItemListFragment() {
     private var mQuery: String? = null
@@ -54,6 +53,15 @@ class SearchFragment : ItemListFragment() {
             }
 
             return combined
+        } else if (query.startsWith("folder:")) {
+            val folder = query.substring(7)
+            val folderId = folder.toIntOrNull() ?: return arrayListOf()
+
+            // This list should be refreshed when resuming since the bookmark could have
+            // been removed.
+            mCache = false
+
+            return db.getFolderSigns(folderId)
         } else if (query.startsWith("ex:")) {
             val ex = query.substring(3)
 

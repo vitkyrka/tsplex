@@ -1,14 +1,12 @@
 package `in`.rab.tsplex
 
-import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.Matchers.*
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.notNullValue
+import org.hamcrest.Matchers.*
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
@@ -102,7 +100,7 @@ class DatabaseTest {
     fun getTopics() {
         assertThat(db.getTopics("jurid"),
                 contains(withName("Juridik"),
-                withName("Vad är juridik")))
+                        withName("Vad är juridik")))
 
         assertThat(db.getTopics("harry po"),
                 contains(withName("Harry Potter")))
@@ -131,9 +129,9 @@ class DatabaseTest {
         db.removeAllBookmarks()
         assertThat(db.getFavorites(), empty())
 
-        db.addToFavorites(1)
-        db.addToFavorites(2)
-        db.addToFavorites(3)
+        db.addToFavorites(1, 0)
+        db.addToFavorites(2, 0)
+        db.addToFavorites(3, 0)
 
         assertThat(db.isFavorite(2), equalTo(true))
 
@@ -153,6 +151,53 @@ class DatabaseTest {
         assertThat(db.getFavorites(), empty())
 
         assertThat(db.isFavorite(1), equalTo(false))
+    }
+
+    @Test
+    fun folders() {
+        db.removeAllBookmarks()
+        assertThat(db.getBookmarksFolders(), empty())
+
+        db.addBookmarksFolder("c")
+        db.addBookmarksFolder("a")
+        db.addBookmarksFolder("b")
+
+        val folders = db.getBookmarksFolders()
+
+        assertThat(folders, contains(
+                withFolderName("a"),
+                withFolderName("b"),
+                withFolderName("c")
+        ))
+
+        db.addToFavorites(1, folders[0].id)
+        db.addToFavorites(2, folders[0].id)
+        db.addToFavorites(3, folders[2].id)
+
+        assertThat(db.getFolderSigns(folders[0].id),
+                contains(withWord("dop, döpa"),
+                        withWord("taxi")))
+        assertThat(db.getFolderSigns(folders[2].id),
+                contains(withWord("mössa")))
+
+        assertThat(db.getFavorites(),
+                contains(withWord("dop, döpa"),
+                        withWord("mössa"),
+                        withWord("taxi")))
+
+        db.addToFavorites(4, 0)
+
+        db.removeBookmarksFolder(folders[0].id)
+        assertThat(db.getFavorites(),
+                contains(withWord("Indien"),
+                        withWord("mössa")))
+
+        assertThat(db.getFolderSigns(folders[0].id), empty())
+        assertThat(db.getFolderSigns(folders[1].id), empty())
+        assertThat(db.getFolderSigns(folders[2].id), not(empty()))
+
+        db.removeAllBookmarks()
+        assertThat(db.getFavorites(), empty())
     }
 
     @Test
@@ -265,4 +310,19 @@ class DatabaseTest {
             }
         }
     }
+
+    private fun withFolderName(matcher: Matcher<String>): Matcher<Folder> {
+        return object : TypeSafeMatcher<Folder>() {
+            override fun matchesSafely(folder: Folder): Boolean {
+                return matcher.matches(folder.name)
+            }
+
+            override fun describeTo(description: Description) {
+                description.appendText("with name: ")
+                matcher.describeTo(description)
+            }
+        }
+    }
+
+    private fun withFolderName(name: String) = withFolderName(equalTo(name))
 }

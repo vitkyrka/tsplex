@@ -3,7 +3,7 @@ package `in`.rab.tsplex
 import android.os.Parcel
 import android.os.Parcelable
 
-class Topic constructor (internal val id: Int, internal val name: String) : Item() {
+class Folder constructor (internal val id: Int, internal val name: String) : Item() {
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readString()!!)
@@ -11,7 +11,7 @@ class Topic constructor (internal val id: Int, internal val name: String) : Item
     constructor(id: Int) : this(id, Topics.names[id]!!)
 
     override fun toString(): String {
-        return Topics.names[id]!!
+        return name
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

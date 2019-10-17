@@ -40,6 +40,15 @@
     <string name="accessibility">Tillgänglighet</string>
     <string name="tts">Läs upp översättningar</string>
 
+    <string name="all_bookmarks">Alla bookmärken</string>
+    <string name="add_folder">Skapa mapp</string>
+    <string name="delete_folder">Ta bort mapp</string>
+    <string name="delete_folder_x">Ta bort mappen %1$s?</string>
+    <string name="name">Namn</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Avbryt</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nej</string>
 
     <string name="title_home">Hem</string>
     <string name="title_history">Historik</string>

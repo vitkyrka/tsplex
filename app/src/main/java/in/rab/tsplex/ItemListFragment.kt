@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_sign_list.*
 import java.util.*
 
 
-abstract class ItemListFragment(private val mCache: Boolean = true, private val mEmptyText: Int = 0) : FragmentVisibilityNotifier, androidx.fragment.app.Fragment(), androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener,
+abstract class ItemListFragment(protected var mCache: Boolean = true, private val mEmptyText: Int = 0) : FragmentVisibilityNotifier, androidx.fragment.app.Fragment(), androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener,
         ItemRecyclerViewAdapter.OnItemPlayHandler {
     private var mListener: OnListFragmentInteractionListener? = null
     private var recylerView: androidx.recyclerview.widget.RecyclerView? = null
@@ -617,6 +617,8 @@ abstract class ItemListFragment(private val mCache: Boolean = true, private val 
         fun onListFragmentInteraction(item: Sign)
         fun onListFragmentInteraction(item: Example)
         fun onListFragmentInteraction(item: Topic)
+        fun onListFragmentInteraction(item: Folder)
+        fun onItemLongClick(item: Folder) : Boolean
         fun onExampleSearchClick(example: Example)
     }
 

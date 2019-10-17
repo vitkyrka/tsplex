@@ -71,7 +71,7 @@ class BookmarksTest {
         onView(withText("dop, döpa")).check(matches(isDisplayed()))
 
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         click()))
         onView(withId(R.id.menu_star))
                 .perform(click())
@@ -83,5 +83,112 @@ class BookmarksTest {
         removeAllBookmarks()
 
         onView(withText("taxi")).check(doesNotExist())
+    }
+
+    private fun addFolder(name: String) {
+        onView(withId(R.id.menu_add_folder))
+                .perform((click()))
+        onView(withHint("Namn"))
+                .perform(typeText(name))
+        onView(withText("OK"))
+                .perform(click())
+        onView(withText(name))
+                .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun foldersTest() {
+        removeAllBookmarks()
+
+        onView(withId(R.id.navigation_favorites))
+                .perform((click()))
+
+        onView(withId(R.id.menu_add_folder))
+                .perform((click()))
+        onView(withHint("Namn"))
+                .perform(typeText("foo"))
+        onView(withText("Avbryt"))
+                .perform(click())
+        onView(withText("foo"))
+                .check(doesNotExist())
+
+        addFolder("foo")
+
+        onView(withId(R.id.homeSearchView))
+                .perform(click())
+        toggleSignBookmark(1)
+        onView(withText("foo"))
+                .perform(click())
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description))
+                .perform(click())
+        onView(withId(R.id.navigation_favorites))
+                .perform((click()))
+
+        onView(withText("taxi"))
+                .check(matches(isDisplayed()))
+        onView(withText("foo"))
+                .perform(click())
+        onView(withText("taxi"))
+                .check(matches(isDisplayed()))
+
+        onView(withId(R.id.search))
+                .perform(click())
+        toggleSignBookmark(2)
+        onView(withText("foo"))
+                .perform(click())
+        Espresso.pressBack()
+        onView(withText("dop, döpa"))
+                .check(matches(isDisplayed()))
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description))
+                .perform(click())
+
+        addFolder("bar")
+        onView(withId(R.id.homeSearchView))
+                .perform(click())
+        toggleSignBookmark(3)
+        onView(withText("bar"))
+                .perform(click())
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description))
+                .perform(click())
+
+        onView(withText("bar"))
+                .perform(click())
+        onView(withText("mössa"))
+                .check(matches(isDisplayed()))
+        Espresso.pressBack()
+
+        onView(withText("bar"))
+                .perform(longClick())
+        onView(withText("Nej"))
+                .perform(click())
+        onView(withText("mössa"))
+                .check(matches(isDisplayed()))
+
+        onView(withText("bar"))
+                .perform(longClick())
+        onView(withText("Ja"))
+                .perform(click())
+        onView(withText("taxi"))
+                .check(matches(isDisplayed()))
+        onView(withText("mössa"))
+                .check(doesNotExist())
+
+        onView(withText("foo"))
+                .perform(longClick())
+        onView(withText("Ja"))
+                .perform(click())
+        onView(withText("taxi"))
+                .check(doesNotExist())
+
+        onView(withId(R.id.homeSearchView))
+                .perform(click())
+        toggleSignBookmark(1)
+        onView(withContentDescription(R.string.abc_action_bar_up_description))
+                .perform(click())
+        onView(withText("taxi"))
+                .check(matches(isDisplayed()))
     }
 }

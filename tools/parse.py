@@ -195,7 +195,7 @@ def main():
     except:
         pass
 
-    version = 36
+    version = 38
 
     conn = sqlite3.connect(args.db)
 
@@ -217,7 +217,9 @@ def main():
     conn.execute("CREATE VIRTUAL TABLE descsegs USING fts4()")
 
     conn.execute("CREATE TABLE history (id INTEGER, date INTEGER, UNIQUE (id) ON CONFLICT REPLACE)")
-    conn.execute("CREATE TABLE favorites (id INTEGER UNIQUE, date INTEGER)")
+
+    conn.execute("CREATE TABLE folders (id INTEGER PRIMARY KEY, name TEXT, lastused INTEGER)")
+    conn.execute("CREATE TABLE bookmarks (id INTEGER, date INTEGER, folderid INTEGER, UNIQUE (id) ON CONFLICT REPLACE)")
 
     conn.execute("CREATE TABLE android_metadata (locale TEXT DEFAULT en_US)")
     conn.execute("INSERT INTO android_metadata VALUES ('en_US')")

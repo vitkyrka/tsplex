@@ -56,6 +56,16 @@ abstract class RoutingAppCompactActivity : AppCompatActivity(),
         startActivity(intent)
     }
 
+    override fun onListFragmentInteraction(item: Folder) {
+        val intent = Intent(this, SearchListActivity::class.java)
+        intent.action = Intent.ACTION_SEARCH
+        intent.putExtra(Intent.EXTRA_TITLE, item.name)
+        intent.putExtra(SearchManager.QUERY, "folder:" + item.id.toString())
+        startActivity(intent)
+    }
+
+    override fun onItemLongClick(item: Folder): Boolean = false
+
     override fun onLoadList(items: List<Item>) {
     }
 }

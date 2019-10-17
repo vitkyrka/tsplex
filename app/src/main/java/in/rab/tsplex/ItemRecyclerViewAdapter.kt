@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -33,6 +34,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
             R.layout.item_description -> DescriptionViewHolder(view, viewType)
             R.layout.item_header -> HeaderViewHolder(view, viewType)
             R.layout.item_topic -> TopicViewHolder(view, viewType)
+            R.layout.item_folder -> FolderViewHolder(view, viewType)
             else -> ExampleViewHolder(view, viewType)
         }
     }
@@ -189,6 +191,18 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         }
     }
 
+    private fun bindFolder(holder: FolderViewHolder, folder: Folder) {
+        holder.mIdView.text = folder.toString()
+
+        holder.mView.setOnClickListener {
+            mListener?.onListFragmentInteraction(folder)
+        }
+
+        holder.mView.setOnLongClickListener {
+            mListener?.onItemLongClick(folder) ?: false
+        }
+    }
+
     override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
         val item = mSigns[position]
 
@@ -205,6 +219,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
             R.layout.item_description -> bindDescription(holder as DescriptionViewHolder, item as Description, position)
             R.layout.item_header -> bindHeader(holder as HeaderViewHolder, item as Header)
             R.layout.item_topic -> bindTopic(holder as TopicViewHolder, item as Topic)
+            R.layout.item_folder -> bindFolder(holder as FolderViewHolder, item as Folder)
         }
     }
 
@@ -220,6 +235,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
             is Sign -> R.layout.fragment_sign
             is Example -> R.layout.item_example
             is Topic -> R.layout.item_topic
+            is Folder -> R.layout.item_folder
             else -> R.layout.item_header
         }
     }
@@ -267,6 +283,10 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
     }
 
     inner class TopicViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
+        val mIdView: TextView = mView.findViewById(R.id.id)
+    }
+
+    inner class FolderViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.findViewById(R.id.id)
     }
 

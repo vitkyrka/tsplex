@@ -100,7 +100,11 @@ abstract class ShippedSQLiteOpenHelper @JvmOverloads constructor(private val mCo
     }
 
     private fun copyUserTable(old: SQLiteDatabase, new: SQLiteDatabase, table: String) {
-        val cursor = old.rawQuery("SELECT id, date FROM $table", null) ?: return
+        val cursor = try {
+            old.rawQuery("SELECT id, date FROM $table", null) ?: return
+        } catch (e: SQLiteException) {
+            return
+        }
 
         while (cursor.moveToNext()) {
             val values = ContentValues()
@@ -114,9 +118,71 @@ abstract class ShippedSQLiteOpenHelper @JvmOverloads constructor(private val mCo
         cursor.close()
     }
 
+    private fun copyFavoritesToBookmarks(old: SQLiteDatabase, new: SQLiteDatabase) {
+        val cursor = try {
+            old.rawQuery("SELECT id, date FROM favorites", null) ?: return
+        } catch (e: SQLiteException) {
+            return
+        }
+
+        while (cursor.moveToNext()) {
+            val values = ContentValues()
+
+            values.put("id", cursor.getInt(0))
+            values.put("date", cursor.getLong(1))
+            values.put("folderid", 0)
+
+            new.insertOrThrow("bookmarks", null, values)
+        }
+
+        cursor.close()
+    }
+
+    private fun copyFolders(old: SQLiteDatabase, new: SQLiteDatabase) {
+        val cursor = try {
+            old.rawQuery("SELECT id, name, lastused FROM folders", null) ?: return
+        } catch (e: SQLiteException) {
+            return
+        }
+
+        while (cursor.moveToNext()) {
+            val values = ContentValues()
+
+            values.put("id", cursor.getInt(0))
+            values.put("name", cursor.getString(1))
+            values.put("lastused", cursor.getLong(0))
+
+            new.insertOrThrow("folders", null, values)
+        }
+
+        cursor.close()
+    }
+
+    private fun copyBoomarks(old: SQLiteDatabase, new: SQLiteDatabase) {
+        val cursor = try {
+            old.rawQuery("SELECT id, date, folderid FROM bookmarks", null) ?: return
+        } catch (e: SQLiteException) {
+            return
+        }
+
+        while (cursor.moveToNext()) {
+            val values = ContentValues()
+
+            values.put("id", cursor.getInt(0))
+            values.put("date", cursor.getLong(1))
+            values.put("folderid", cursor.getInt(0))
+
+            new.insertOrThrow("bookmarks", null, values)
+        }
+
+        cursor.close()
+    }
+
     private fun copyUserTables(old: SQLiteDatabase, new: SQLiteDatabase) {
         copyUserTable(old, new, "history")
-        copyUserTable(old, new, "favorites")
+        copyFavoritesToBookmarks(old, new)
+        copyFolders(old, new)
+        copyBoomarks(old, new)
     }
 
     private fun createUserTables(new: SQLiteDatabase) {

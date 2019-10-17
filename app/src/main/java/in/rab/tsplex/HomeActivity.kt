@@ -1,14 +1,10 @@
 package `in`.rab.tsplex
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
-import com.google.android.material.navigation.NavigationView
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -58,19 +54,19 @@ class HomeActivity : RoutingAppCompactActivity(), BottomNavigationView.OnNavigat
         when (it.itemId) {
             R.id.navigation_home -> {
                 val fragment: androidx.fragment.app.Fragment? = HomeFragment.newInstance()
-                supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!, "home").commit()
                 setAndSaveTitle(R.string.app_name)
                 return true
             }
             R.id.navigation_history -> {
                 val fragment: androidx.fragment.app.Fragment? = HistoryFragment.newInstance()
-                supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!, "history").commit()
                 setAndSaveTitle(R.string.title_history)
                 return true
             }
             R.id.navigation_favorites -> {
                 val fragment: androidx.fragment.app.Fragment? = FavoritesFragment.newInstance()
-                supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.content, fragment!!, "favorites").commit()
                 setAndSaveTitle(R.string.title_favorites)
                 return true
             }
@@ -78,6 +74,30 @@ class HomeActivity : RoutingAppCompactActivity(), BottomNavigationView.OnNavigat
                 return false
             }
         }
+    }
+
+    override fun onItemLongClick(folder: Folder): Boolean {
+        val builder = AlertDialog.Builder(this)
+
+        builder.setTitle(R.string.delete_folder)
+                .setMessage(getString(R.string.delete_folder_x, folder.name))
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    SignDatabase.getInstance(this).removeBookmarksFolder(folder.id)
+
+                    supportFragmentManager.findFragmentByTag("favorites")?.also {
+                        supportFragmentManager.beginTransaction().apply {
+                            detach(it)
+                            attach(it)
+                            commit()
+                        }
+                    }
+                }
+                .setNegativeButton(R.string.no) { dialog, _ ->
+                    dialog.cancel()
+                }
+                .show()
+
+        return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
