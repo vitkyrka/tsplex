@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 
 
@@ -118,7 +119,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
             }
         }
 
-        override fun getItem(pos: Int): androidx.fragment.app.Fragment? {
+        override fun getItem(pos: Int): Fragment {
             var adjpos = pos
 
             if (adjpos > 0) {
@@ -129,8 +130,7 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
 
             return when (adjpos) {
                 0 -> SignFragment.newInstance(mSign!!, mExampleUrl)
-                1 -> ArrayListFragment.newInstance(mSynonyms!!)
-                else -> null
+                else -> ArrayListFragment.newInstance(mSynonyms!!)
             }
         }
 

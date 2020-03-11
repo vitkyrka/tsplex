@@ -76,13 +76,13 @@ class HomeActivity : RoutingAppCompactActivity(), BottomNavigationView.OnNavigat
         }
     }
 
-    override fun onItemLongClick(folder: Folder): Boolean {
+    override fun onItemLongClick(item: Folder): Boolean {
         val builder = AlertDialog.Builder(this)
 
         builder.setTitle(R.string.delete_folder)
-                .setMessage(getString(R.string.delete_folder_x, folder.name))
+                .setMessage(getString(R.string.delete_folder_x, item.name))
                 .setPositiveButton(R.string.yes) { _, _ ->
-                    SignDatabase.getInstance(this).removeBookmarksFolder(folder.id)
+                    SignDatabase.getInstance(this).removeBookmarksFolder(item.id)
 
                     supportFragmentManager.findFragmentByTag("favorites")?.also {
                         supportFragmentManager.beginTransaction().apply {

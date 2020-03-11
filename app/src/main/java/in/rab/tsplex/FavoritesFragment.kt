@@ -15,8 +15,8 @@ class FavoritesFragment : ItemListFragment(mCache = false, mEmptyText = R.string
         setHasOptionsMenu(true)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.menu_add_folder) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_add_folder) {
 
             val builder = AlertDialog.Builder(context!!)
 
@@ -47,9 +47,9 @@ class FavoritesFragment : ItemListFragment(mCache = false, mEmptyText = R.string
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.bookmarks, menu)
+        inflater.inflate(R.menu.bookmarks, menu)
     }
 
     override fun getSigns(): List<Item> {

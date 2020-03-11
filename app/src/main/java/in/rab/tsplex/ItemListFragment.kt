@@ -513,8 +513,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         val context = recycler.getContext()
 
         val layoutManager = GridAutofitLayoutManager(context, 1)
-        val decoration = androidx.recyclerview.widget.DividerItemDecoration(getContext(), layoutManager.orientation)
-
+        // val decoration = androidx.recyclerview.widget.DividerItemDecoration(getContext(), layoutManager.orientation)
         // view.addItemDecoration(decoration)
         recycler.layoutManager = layoutManager
         recylerView = recycler
@@ -595,12 +594,12 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         playItem(mPreviewPosition)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnListFragmentInteractionListener) {
             mListener = context
         } else {
-            throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
+            throw RuntimeException("$context must implement OnListFragmentInteractionListener")
         }
     }
 
