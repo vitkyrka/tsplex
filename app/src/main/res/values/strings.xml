@@ -68,7 +68,7 @@
         ]]>
     </string>
 
-    <string name="about_html"><![CDATA[
+    <string name="about_html" formatted="false"><![CDATA[
         <h1>Teckenspråkslexikon</h1>
 
         <strong>Allt innehåll</strong> i appen är hämtat från
