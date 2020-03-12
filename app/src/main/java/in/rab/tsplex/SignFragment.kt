@@ -21,6 +21,7 @@ class SignFragment : ItemListFragment() {
 
             val items: ArrayList<Item> = arrayListOf()
             items.add(Description(sign))
+            items.addAll(sign.explanations)
             items.addAll(sign.examples)
 
             if (sign.topic1 != 0 && !Topics.names[sign.topic1]!!.startsWith("Okä")) {

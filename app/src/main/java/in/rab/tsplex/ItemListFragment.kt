@@ -268,6 +268,12 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         playVideo("", item.video, position)
     }
 
+    override fun onItemPlay(item: Explanation, position: Int) {
+        speak(item.toString())
+        mListener?.onItemPlay(item)
+        playVideo("", item.video, position)
+    }
+
     override fun onExampleClick(item: Example, position: Int) {
         mListener?.onListFragmentInteraction(item)
     }
@@ -307,6 +313,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
             is Sign -> true
             is Description -> true
             is Example -> true
+            is Explanation -> true
             else -> false
         }
     }
@@ -325,12 +332,19 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
 
         (recylerView?.layoutManager as? GridAutofitLayoutManager?)?.scrollToPosition(position)
 
-        if (item is Sign) {
-            onItemPlay(item, position)
-        } else if (item is Description) {
-            onItemPlay(item.mSign, position)
-        } else if (item is Example) {
-            onItemPlay(item, position)
+        when (item) {
+            is Sign -> {
+                onItemPlay(item, position)
+            }
+            is Description -> {
+                onItemPlay(item.mSign, position)
+            }
+            is Example -> {
+                onItemPlay(item, position)
+            }
+            is Explanation -> {
+                onItemPlay(item, position)
+            }
         }
     }
 

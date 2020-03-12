@@ -36,6 +36,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
             R.layout.item_header -> HeaderViewHolder(view, viewType)
             R.layout.item_topic -> TopicViewHolder(view, viewType)
             R.layout.item_folder -> FolderViewHolder(view, viewType)
+            R.layout.item_explanation -> ExplanationViewHolder(view, viewType)
             else -> ExampleViewHolder(view, viewType)
         }
     }
@@ -152,6 +153,18 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         }
     }
 
+    private fun bindExplanation(holder: ExplanationViewHolder, explanation: Explanation, position: Int) {
+        holder.mIdView.text = fromHtml("$explanation")
+
+        holder.mIdView.setOnClickListener {
+            mPlayHandler.onItemPlay(explanation, position)
+        }
+
+        holder.mPlayButton.setOnClickListener {
+            mPlayHandler.onItemPlay(explanation, position)
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun bindDescription(holder: DescriptionViewHolder, description: Description, position: Int) {
         val sign = description.mSign
@@ -216,6 +229,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         when (getItemViewType(position)) {
             R.layout.fragment_sign -> bindSign(holder as SignViewHolder, item as Sign, position)
             R.layout.item_example -> bindExample(holder as ExampleViewHolder, item as Example, position)
+            R.layout.item_explanation -> bindExplanation(holder as ExplanationViewHolder, item as Explanation, position)
             R.layout.item_description -> bindDescription(holder as DescriptionViewHolder, item as Description, position)
             R.layout.item_header -> bindHeader(holder as HeaderViewHolder, item as Header)
             R.layout.item_topic -> bindTopic(holder as TopicViewHolder, item as Topic)
@@ -234,6 +248,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
             is Description -> R.layout.item_description
             is Sign -> R.layout.fragment_sign
             is Example -> R.layout.item_example
+            is Explanation -> R.layout.item_explanation
             is Topic -> R.layout.item_topic
             is Folder -> R.layout.item_folder
             else -> R.layout.item_header
@@ -269,6 +284,10 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         val mExampleSearch: ImageButton = mView.findViewById(R.id.exampleSearch)
     }
 
+    inner class ExplanationViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
+        val mIdView: TextView = mView.findViewById(R.id.id)
+        val mPlayButton: ImageButton = mView.findViewById(R.id.playButton)
+    }
 
     inner class DescriptionViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
         val mWordText: TextView = mView.findViewById(R.id.wordText)
@@ -293,6 +312,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
     interface OnItemPlayHandler {
         fun onItemPlay(item: Sign, position: Int)
         fun onItemPlay(item: Example, position: Int)
+        fun onItemPlay(item: Explanation, position: Int)
         fun onExampleClick(item: Example, position: Int)
     }
 }

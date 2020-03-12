@@ -60,6 +60,14 @@ class SignDatabase(context: Context) {
         cursor.close()
 
         builder = SQLiteQueryBuilder()
+        builder.tables = "explanations"
+        cursor = builder.query(mOpenHelper.database, arrayOf("video", "desc"), selection, selectionArgs, null, null, null)
+        if (cursor != null && cursor.moveToNext()) {
+            sign.explanations.add(Explanation(cursor.getString(0), cursor.getString(1)))
+        }
+        cursor?.close()
+
+        builder = SQLiteQueryBuilder()
         builder.tables = "examples JOIN examples_signs ON examples.rowid == examples_signs.exampleid JOIN signs ON signs.id == examples.signid"
         val columns = arrayOf("examples.video", "examples.desc", "examples.signid", "signs.sv")
         cursor = builder.query(mOpenHelper.database, columns, "examples_signs.signid = ?", selectionArgs,
@@ -420,7 +428,7 @@ class SignDatabase(context: Context) {
     companion object {
         private const val RESULTS_LIMIT = "100"
         private const val DATABASE_NAME = "signs.jet"
-        const val DATABASE_VERSION = 39
+        const val DATABASE_VERSION = 40
         @Volatile private var INSTANCE: SignDatabase? = null
 
         fun getInstance(context: Context): SignDatabase =

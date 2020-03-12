@@ -3,6 +3,7 @@ package `in`.rab.tsplex
 import android.os.Parcel
 import android.os.Parcelable
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Sign internal constructor(internal val id: Int,
                                 internal val word: String,
@@ -17,6 +18,7 @@ class Sign internal constructor(internal val id: Int,
                                 internal val examplesCount: Int,
                                 internal val occurence: Int) : Parcelable, Item() {
     internal val examples: ArrayList<Example> = ArrayList()
+    internal val explanations: ArrayList<Explanation> = ArrayList()
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
@@ -32,6 +34,7 @@ class Sign internal constructor(internal val id: Int,
             parcel.readInt(),
             parcel.readInt()) {
         parcel.readList(examples, Example::class.java.classLoader)
+        parcel.readList(explanations, Explanation::class.java.classLoader)
     }
 
     override fun toString(): String {
@@ -60,6 +63,7 @@ class Sign internal constructor(internal val id: Int,
         parcel.writeInt(examplesCount)
         parcel.writeInt(occurence)
         parcel.writeList(examples)
+        parcel.writeList(explanations)
     }
 
     override fun describeContents(): Int {

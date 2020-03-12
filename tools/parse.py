@@ -102,6 +102,17 @@ def parse_one(f):
     if int(sign['id-nummer']) == 1:
         assert len(examplevids) > 3
 
+    try:
+        explvid = next(u for u in root.xpath('//source[@type="video/mp4"]/@src') if '-explanation' in u)
+        explanation = root.xpath('//div[@class="descriptionText"]')[0].text_content()
+
+        sign['explanation_video'] = explvid
+        sign['explanation'] = explanation
+
+    except StopIteration:
+        assert int(sign['id-nummer']) != 13464
+        pass
+
     return sign
 
 def fixup_sign(sign):
@@ -144,6 +155,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cache', action='store_true')
     parser.add_argument('--dump', action='store_true')
+    parser.add_argument('--debug', action='store_true')
     parser.add_argument('--db', default='signs.db')
     parser.add_argument('files', nargs='+')
     args = parser.parse_args()
@@ -158,8 +170,14 @@ def main():
             pass
 
     if not signs:
-        with Pool(10) as p:
-            signs = p.map(parse_one, args.files)
+        if args.debug:
+            signs = []
+            for f in args.files:
+                print(f"Parsing {f}")
+                signs.append(parse_one(f))
+        else:
+            with Pool(10) as p:
+                signs = p.map(parse_one, args.files)
 
         if args.cache:
             with open('signs.pickle', 'wb') as f:
@@ -195,7 +213,7 @@ def main():
     except:
         pass
 
-    version = 39
+    version = 40
 
     conn = sqlite3.connect(args.db)
 
@@ -204,6 +222,7 @@ def main():
     conn.execute("CREATE TABLE examples (video TEXT UNIQUE, desc TEXT, signid INTEGER)")
     conn.execute("CREATE TABLE synonyms (id INTEGER, otherid INTEGER)")
     conn.execute("CREATE TABLE homonyms (id INTEGER, otherid INTEGER)")
+    conn.execute("CREATE TABLE explanations (id INTEGER, video TEXT, desc TEXT)")
 
     conn.execute("CREATE TABLE examples_signs (exampleid INTEGER, signid INTEGER)")
 
@@ -276,6 +295,10 @@ def main():
                     conn.execute("insert into sentences values (?)", (desc.lower(),))
                     conn.execute("insert into sentences_examples values (?)", (exampleid,))
 
+        if sign['explanation_video']:
+            conn.execute("insert into explanations values (?, ?, ?)",
+                    (thisid, sign['explanation_video'], sign['explanation']))
+
         conn.executemany("insert into synonyms values (?, ?)",
                          ((thisid, otherid) for otherid in sign['samma-betydelse']))
 
@@ -292,6 +315,7 @@ def main():
     conn.execute("CREATE INDEX examples_sign_index ON examples_signs(signid)")
     conn.execute("CREATE INDEX synonyms_index ON synonyms(id)")
     conn.execute("CREATE INDEX homonyms_index ON homonyms(id)")
+    conn.execute("CREATE INDEX explanations_index ON explanations(id)")
 
     conn.execute("INSERT INTO words(words) VALUES (?)", ('optimize',))
     conn.execute("INSERT INTO sentences(sentences) VALUES (?)", ('optimize',))
