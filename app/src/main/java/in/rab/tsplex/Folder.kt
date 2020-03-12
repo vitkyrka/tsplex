@@ -3,19 +3,19 @@ package `in`.rab.tsplex
 import android.os.Parcel
 import android.os.Parcelable
 
-class Topic constructor (internal val id: Int, internal val name: String) : Item() {
+class Topic constructor (internal val id: Long, internal val name: String) : Item() {
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
+            parcel.readLong(),
             parcel.readString()!!)
 
-    constructor(id: Int) : this(id, Topics.names[id]!!)
+    constructor(id: Long) : this(id, Topics.names[id]!!)
 
     override fun toString(): String {
         return Topics.names[id]!!
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
+        parcel.writeLong(id)
         parcel.writeString(name)
     }
 

@@ -30,7 +30,7 @@ class SearchFragment : ItemListFragment() {
 
         if (query.startsWith("topic:")) {
             val topic = query.substring(6)
-            val topicid = topic.toIntOrNull() ?: return arrayListOf()
+            val topicid = topic.toLongOrNull() ?: return arrayListOf()
 
             val signs = db.getTopicSigns(topicid)
             val topics = db.getSubTopics(topicid)

@@ -122,6 +122,8 @@ class DatabaseTest {
                 hasSize(0))
         assertThat(db.getParentTopic(0x00000101),
                 contains(withTopicId(0x00000001)))
+        assertThat(db.getParentTopic(0x0502090d),
+                contains(withTopicId(0x0002090d)))
     }
 
     @Test
@@ -240,7 +242,7 @@ class DatabaseTest {
         assertThat(db.getHistory(), empty())
     }
 
-    private fun withTopicId(id: Int): Matcher<Topic> {
+    private fun withTopicId(id: Long): Matcher<Topic> {
         return object : TypeSafeMatcher<Topic>() {
             override fun matchesSafely(topic: Topic): Boolean {
                 return topic.id == id

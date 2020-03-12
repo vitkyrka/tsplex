@@ -28,8 +28,8 @@ class SignDatabase(context: Context) {
                 cursor.getString(5),
                 cursor.getString(6),
                 cursor.getInt(7),
-                cursor.getInt(8),
-                cursor.getInt(9),
+                cursor.getLong(8),
+                cursor.getLong(9),
                 cursor.getInt(10),
                 cursor.getInt(11))
     }
@@ -290,9 +290,9 @@ class SignDatabase(context: Context) {
         return signs
     }
 
-    private fun getMask(topic: Int): Int {
+    private fun getMask(topic: Long): Long {
         var remaining = topic
-        var mask = 0
+        var mask = 0L
 
         while (remaining > 0) {
             remaining = remaining shr 8
@@ -310,25 +310,25 @@ class SignDatabase(context: Context) {
         }
     }
 
-    fun getSubTopics(topicId: Int): List<Topic> {
+    fun getSubTopics(topicId: Long): List<Topic> {
         val mask = getMask(topicId)
         val levelMask = ((mask shl 8) or 0xff).inv()
 
         return Topics.topics.filter {
-            it.id != topicId && ((it.id and mask) == topicId) && ((it.id and levelMask) == 0)
+            it.id != topicId && ((it.id and mask) == topicId) && ((it.id and levelMask) == 0L)
         }
     }
 
-    fun getParentTopic(topicId: Int): List<Topic> {
+    fun getParentTopic(topicId: Long): List<Topic> {
         val mask = getMask(topicId) shr 8
         val levelMask = mask.inv()
 
-        if (mask == 0) {
+        if (mask == 0L) {
             return ArrayList()
         }
 
         return Topics.topics.filter {
-            it.id != topicId && ((it.id and mask) == (topicId and mask)) && ((it.id and levelMask) == 0)
+            it.id != topicId && ((it.id and mask) == (topicId and mask)) && ((it.id and levelMask) == 0L)
         }
     }
 
@@ -385,7 +385,7 @@ class SignDatabase(context: Context) {
         return signs
     }
 
-    fun getTopicSigns(topic: Int): ArrayList<Sign> {
+    fun getTopicSigns(topic: Long): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val mask = getMask(topic)
 

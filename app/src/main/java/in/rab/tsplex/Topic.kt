@@ -8,8 +8,6 @@ class Folder constructor (internal val id: Int, internal val name: String) : Ite
             parcel.readInt(),
             parcel.readString()!!)
 
-    constructor(id: Int) : this(id, Topics.names[id]!!)
-
     override fun toString(): String {
         return name
     }
@@ -23,12 +21,12 @@ class Folder constructor (internal val id: Int, internal val name: String) : Ite
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Topic> {
-        override fun createFromParcel(parcel: Parcel): Topic {
-            return Topic(parcel)
+    companion object CREATOR : Parcelable.Creator<Folder> {
+        override fun createFromParcel(parcel: Parcel): Folder {
+            return Folder(parcel)
         }
 
-        override fun newArray(size: Int): Array<Topic?> {
+        override fun newArray(size: Int): Array<Folder?> {
             return arrayOfNulls(size)
         }
     }
