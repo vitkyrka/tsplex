@@ -118,7 +118,7 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         for (span in builder.getSpans(0, html.length, URLSpan::class.java)) {
             builder.setSpan(object : URLSpan(span.url.toString()) {
                 override fun onClick(widget: View) {
-                    setSearch(url)
+                    setSearch(url.replace("_", " "))
                 }
 
             }, builder.getSpanStart(span), builder.getSpanEnd(span), builder.getSpanFlags(span))

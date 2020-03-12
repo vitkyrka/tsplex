@@ -54,17 +54,17 @@
     <string name="title_history">Historik</string>
     <string name="title_favorites">Bokmärken</string>
 
-    <string name="search_help"><![CDATA[
+    <string name="search_help" formatted="false"><![CDATA[
         <strong>Söktips</strong>
 
         <p>Använd sökrutan för att hitta tecken, exempelmeningar och ämnen.
         Prova att söka på t.ex. <a href="handalfabet">handalfabet</a>, <a href="chans">chans</a>,
-        <a href="har inte">har inte</a> eller <a href="igelkott">igelkott</a>.
+        <a href="har_inte">har inte</a> eller <a href="igelkott">igelkott</a>.
 
         <p>Det finns även begränsat stöd för att söka i transkriptionerna.  Prova t.ex.
-        <a href="flyghänder vrids">flyghänder vrids</a> (som hittar <em>tidig</em>, <em>fest</em> med mera)
+        <a href="flyghänder_vrids">flyghänder vrids</a> (som hittar <em>tidig</em>, <em>fest</em> med mera)
         eller
-        <a href="tumh nedåtv brös">tumh nedåtv brös</a> (som hittar <em>rolig</em>, <em>själv</em> med mera).
+        <a href="tumh_nedåtv_brös">tumh nedåtv brös</a> (som hittar <em>rolig</em>, <em>själv</em> med mera).
         ]]>
     </string>
 
