@@ -420,7 +420,7 @@ class SignDatabase(context: Context) {
     companion object {
         private const val RESULTS_LIMIT = "100"
         private const val DATABASE_NAME = "signs.jet"
-        const val DATABASE_VERSION = 38
+        const val DATABASE_VERSION = 39
         @Volatile private var INSTANCE: SignDatabase? = null
 
         fun getInstance(context: Context): SignDatabase =
