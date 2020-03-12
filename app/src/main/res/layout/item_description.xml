@@ -38,7 +38,7 @@
                 android:layout_marginRight="4dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="0dp"
-                android:textColor="#000" />
+                android:textColor="?colorOnBackground" />
 
 
             <TextView
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/freesans_swl"
                 android:textSize="14sp"
-                android:textColor="#000" />
+                android:textColor="?colorOnBackground" />
 
         </LinearLayout>
 
@@ -67,7 +67,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="0dp"
-        android:textColor="#000" />
+        android:textColor="?colorOnBackground" />
 
     <TextView
         android:id="@+id/commentText"
@@ -79,7 +79,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="4dp"
-        android:textColor="#000"
+        android:textColor="?colorOnBackground"
         android:visibility="gone" />
 
 

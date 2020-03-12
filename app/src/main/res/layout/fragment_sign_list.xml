@@ -39,7 +39,6 @@
         <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/loadingProgress"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:theme="@style/searchProgress"
             android:indeterminate="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="@android:color/black"
+            android:textColor="?colorOnBackground"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_margin="8dp"
@@ -74,7 +73,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:textColor="@android:color/black"
+                android:textColor="?colorOnBackground"
                 android:padding="8dp" />
 
         </LinearLayout>

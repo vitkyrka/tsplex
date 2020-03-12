@@ -12,6 +12,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
@@ -206,9 +207,8 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
     override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
         val item = mSigns[position]
 
-
         holder.itemView.setBackgroundColor(if (position == selectedPosition) {
-            0x66FFCA28
+            ContextCompat.getColor(holder.itemView.context, R.color.selected)
         } else {
             Color.TRANSPARENT
         })

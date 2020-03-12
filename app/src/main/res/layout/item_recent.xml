@@ -25,4 +25,5 @@
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:drawableLeft="@drawable/ic_history_black_24dp"
     android:drawablePadding="10dp"
+    android:drawableTint="?colorOnBackground"
     />
