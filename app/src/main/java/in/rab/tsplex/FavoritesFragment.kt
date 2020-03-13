@@ -65,9 +65,9 @@ class FavoritesFragment : ItemListFragment(mCache = false, mEmptyText = R.string
             items.addAll(folders)
         }
 
-        val signs = db.getFavorites()
+        val signs = db.getFolderSigns(0)
         if (signs.isNotEmpty()) {
-            items.add(Header(getString(R.string.all_bookmarks)))
+            items.add(Header(getString(R.string.unorganized_bookmarks)))
             items.addAll(signs)
         }
 
