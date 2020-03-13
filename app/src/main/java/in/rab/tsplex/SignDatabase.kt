@@ -71,7 +71,7 @@ class SignDatabase(context: Context) {
         builder.tables = "examples JOIN examples_signs ON examples.rowid == examples_signs.exampleid JOIN signs ON signs.id == examples.signid"
         val columns = arrayOf("examples.video", "examples.desc", "examples.signid", "signs.sv")
         cursor = builder.query(mOpenHelper.database, columns, "examples_signs.signid = ?", selectionArgs,
-                null, null, null)
+                null, null, null, "100")
         if (cursor == null) {
             return sign
         }
