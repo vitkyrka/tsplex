@@ -186,8 +186,8 @@ def main():
     signs = [fixup_sign(sign) for sign in signs]
 
     if args.dump:
-        import pprint
-        pprint.pprint(signs)
+        import json
+        print(json.dumps(signs, indent=2))
         return
 
     topicids = get_topic_ids(signs)
