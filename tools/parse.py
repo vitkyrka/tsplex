@@ -13,7 +13,7 @@ from collections import defaultdict
 from multiprocessing import Pool
 
 
-def parse_list(sign, f, listfile):
+def parse_list(sign, f, listfile, include_variants=False):
     signdir = os.path.splitext(f)[0]
     synonymfile = os.path.join(signdir, listfile)
     if not os.path.exists(synonymfile):
@@ -28,14 +28,15 @@ def parse_list(sign, f, listfile):
     except AttributeError:
         raise Exception(synonymfile)
 
-    variants = [v.strip() for v in root.xpath('//div[contains(@class, "variation")]/a[position()=2]/text()')]
-    items.extend([int(x) for x in variants if x and thisid != x])
+    if include_variants:
+        variants = [v.strip() for v in root.xpath('//div[contains(@class, "variation")]/a[position()=2]/text()')]
+        items.extend([int(x) for x in variants if x and thisid != x])
 
     return items
 
 
 def parse_synonyms(sign, f):
-    return parse_list(sign, f, 'samma-betydelse.html')
+    return parse_list(sign, f, 'samma-betydelse.html', include_variants=True)
 
 
 def parse_homonyms(sign, f):
