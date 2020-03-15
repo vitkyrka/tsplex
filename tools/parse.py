@@ -24,9 +24,14 @@ def parse_list(sign, f, listfile):
 
     thisid = sign['id-nummer']
     try:
-        return [int(x) for x in root.xpath('//td[contains(@class, "id")]/a/span/text()') if thisid != x]
+        items = [int(x) for x in root.xpath('//td[contains(@class, "id")]/a/span/text()') if thisid != x]
     except AttributeError:
         raise Exception(synonymfile)
+
+    variants = [v.strip() for v in root.xpath('//div[contains(@class, "variation")]/a[position()=2]/text()')]
+    items.extend([int(x) for x in variants if x and thisid != x])
+
+    return items
 
 
 def parse_synonyms(sign, f):
