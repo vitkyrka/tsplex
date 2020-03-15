@@ -30,17 +30,27 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--write', action='store_true')
     parser.add_argument('--last', default=0, type=int)
+    parser.add_argument('--overwrite', action='store_true')
+    parser.add_argument('--tail', action='store_true')
+    parser.add_argument('--offline', action='store_true')
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG)
-    requests_cache.install_cache('requests')
+    requests_cache.install_cache('cache')
 
     s = requests_cache.CachedSession()
     s.hooks = {'response': make_throttle_hook()}
 
     last = args.last
     if not last:
-        page = lxml.html.fromstring(s.get(f'{base}/?sortby=fm_id&order=desc').text)
+        url = f'{base}/?sortby=fm_id&order=desc'
+        if args.offline:
+            resp = s.get(url)
+        else:
+            with s.cache_disabled():
+                resp = s.get(url)
+
+        page = lxml.html.fromstring(resp.text)
         lastlink = sorted(page.xpath('//a[contains(@href, "/ord/")]/@href'))[-1]
         last = int(lastlink.split('/')[-1])
 
@@ -52,9 +62,17 @@ def main():
         except FileExistsError:
             pass
 
-    for i in range(1, last+1):
+    openflags = 'w' if args.overwrite else 'x'
+
+    for i in range(last, 0, -1):
         signid = f'{i:05d}'
         signurl = f'{base}/ord/{signid}'
+
+        if args.tail and s.cache.has_url(signurl):
+            break
+
+        if args.offline and not s.cache.has_url(signurl):
+            continue
 
         resp = s.get(signurl)
         if not resp.ok:
@@ -63,9 +81,15 @@ def main():
         page = resp.text
         html = lxml.html.fromstring(page)
 
+        if ((i % 1000) == 0):
+            logging.debug(f'Processing {signid}')
+
         if args.write:
-            with open(basepath / f'{signid}.html', 'w') as f:
-                f.write(page)
+            try:
+                with open(basepath / f'{signid}.html', openflags) as f:
+                    f.write(page)
+            except FileExistsError:
+                pass
 
         for url in [url for url in html.xpath('//a/@href') if f'/ord/{signid}' in url and '?' not in url]:
             what = url.split('/')[-1]
@@ -77,8 +101,11 @@ def main():
                 except FileExistsError:
                     pass
 
-                with open(basepath / signid / f'{what}.html', 'w') as f:
-                    f.write(page)
+                try:
+                    with open(basepath / signid / f'{what}.html', openflags) as f:
+                        f.write(page)
+                except FileExistsError:
+                    pass
 
 if __name__ == '__main__':
     main()
