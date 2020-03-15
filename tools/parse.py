@@ -120,11 +120,17 @@ def parse_one(f):
 
     return sign
 
-def fixup_sign(sign):
+def fixup_sign(sign, signs):
     if any(topic for topic in sign['ämne'] if 'Orter' in topic or 'Länder' in topic or 'Finland' in topic):
             sign['ord'][0] = sign['ord'][0].capitalize()
     else:
         sign['ord'] = [word if word.isupper() else word.lower() for word in sign['ord']]
+
+    thisid = int(sign['id-nummer'])
+    synonyms = [int(s['id-nummer']) for s in signs if thisid in s['samma-betydelse']]
+    if len(synonyms) > len(sign['samma-betydelse']):
+        diff = set(synonyms) - set(sign['samma-betydelse'])
+        sign['samma-betydelse'].extend(list(diff))
 
     return sign
 
@@ -135,32 +141,45 @@ def main():
     parser.add_argument('files', nargs='+')
     args = parser.parse_args()
 
-    signs = []
+    parsed = []
+    fixedup = []
 
     if args.cache:
         try:
-            with open('signs.pickle', 'rb') as f:
-                signs = pickle.load(f)
+            with open('signs-parsed.pickle', 'rb') as f:
+                parsed = pickle.load(f)
         except:
             pass
 
-    if not signs:
+    if parsed:
+        if args.cache:
+            try:
+                with open('signs-fixedup.pickle', 'rb') as f:
+                    fixedup = pickle.load(f)
+            except:
+                pass
+    else:
         if args.debug:
-            signs = []
+            parsed = []
             for f in args.files:
                 print(f"Parsing {f}")
-                signs.append(parse_one(f))
+                parsed.append(parse_one(f))
         else:
             with Pool(10) as p:
-                signs = p.map(parse_one, args.files)
+                parsed = p.map(parse_one, args.files)
 
         if args.cache:
-            with open('signs.pickle', 'wb') as f:
-                pickle.dump(signs, f)
+            with open('signs-parsed.pickle', 'wb') as f:
+                pickle.dump(parsed, f)
 
-    signs = [fixup_sign(sign) for sign in signs]
+    if not fixedup:
+        fixedup = [fixup_sign(sign, parsed) for sign in parsed]
 
-    print(json.dumps(signs, indent=2))
+        if args.cache:
+            with open('signs-fixedup.pickle', 'wb') as f:
+                pickle.dump(parsed, f)
+
+    print(json.dumps(fixedup, indent=2))
 
 if __name__ == '__main__':
     main()
