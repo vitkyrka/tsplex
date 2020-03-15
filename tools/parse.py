@@ -9,6 +9,7 @@ import subprocess
 
 import lxml.html
 
+from functools import partial
 from collections import defaultdict
 from multiprocessing import Pool
 
@@ -121,17 +122,34 @@ def parse_one(f):
 
     return sign
 
-def fixup_sign(sign, signs):
+def fixup(sign):
     if any(topic for topic in sign['ämne'] if 'Orter' in topic or 'Länder' in topic or 'Finland' in topic):
             sign['ord'][0] = sign['ord'][0].capitalize()
     else:
         sign['ord'] = [word if word.isupper() else word.lower() for word in sign['ord']]
 
+    # Homonym information seems to be incorrect for Österberg 1916 signs.
+    # All the Österberg signs are listed as homonyms of each other.
+    if sign['ämne'][0].startswith('Österberg'):
+        sign['kan-aven-betyda'] = []
+
+    # Pseudo-sign with wrong homonym information
+    if int(sign['id-nummer']) == 715:
+        sign['kan-aven-betyda'] = []
+
+    return sign
+
+def fixup_relations(sign, signs):
     thisid = int(sign['id-nummer'])
     synonyms = [int(s['id-nummer']) for s in signs if thisid in s['samma-betydelse']]
     if len(synonyms) > len(sign['samma-betydelse']):
         diff = set(synonyms) - set(sign['samma-betydelse'])
         sign['samma-betydelse'].extend(list(diff))
+
+    homonyms = [int(s['id-nummer']) for s in signs if thisid in s['kan-aven-betyda']]
+    if len(homonyms) > len(sign['kan-aven-betyda']):
+        diff = set(homonyms) - set(sign['kan-aven-betyda'])
+        sign['kan-aven-betyda'].extend(list(diff))
 
     return sign
 
@@ -174,7 +192,10 @@ def main():
                 pickle.dump(parsed, f)
 
     if not fixedup:
-        fixedup = [fixup_sign(sign, parsed) for sign in parsed]
+        fixedup = [fixup(sign) for sign in parsed]
+
+        with Pool(10) as p:
+            fixedup = p.map(partial(fixup_relations, signs=fixedup), fixedup)
 
         if args.cache:
             with open('signs-fixedup.pickle', 'wb') as f:

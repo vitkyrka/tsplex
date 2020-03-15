@@ -162,11 +162,6 @@ def main():
         conn.executemany("insert into synonyms values (?, ?)",
                          ((thisid, otherid) for otherid in sign['samma-betydelse']))
 
-        # Homonym information seems to be incorrect for Österberg 1916 signs.
-        # All the Österberg signs are listed as homonyms of each other.
-        if sign['ämne'][0].startswith('Österberg'):
-            continue
-
         conn.executemany("insert into homonyms values (?, ?)",
                          ((thisid, otherid) for otherid in sign['kan-aven-betyda']))
 
