@@ -62,10 +62,10 @@ repositories {
 }
 apply plugin: 'kotlin-android-extensions'
 
-task genDatabase(type:Exec) {
-    inputs.file('data/signs.sql')
+task genDatabaseAndTopics(type:Exec) {
+    inputs.file('data/signs.json')
     outputs.file('src/main/assets/signs.jet')
-    commandLine 'sh', '-c', 'mkdir -p src/main/assets/ && rm -f src/main/assets/signs.jet && cat data/signs.sql | sqlite3 src/main/assets/signs.jet'
+    commandLine 'sh', '-c', 'mkdir -p src/main/assets/ && rm -f src/main/assets/signs.jet && ../tools/generate.py --signs data/signs.json --db src/main/assets/signs.jet --topics src/main/java/in/rab/tsplex/Topics.kt'
 }
 
 task cleanDatabase(type:Exec) {
@@ -73,11 +73,6 @@ task cleanDatabase(type:Exec) {
 }
 
 afterEvaluate {
+    preBuild.dependsOn(genDatabaseAndTopics)
     clean.dependsOn cleanDatabase
-}
-
-tasks.whenTaskAdded { task ->
-    if (task.name == 'generateDebugAssets' || task.name == 'generateReleaseAssets') {
-        task.dependsOn genDatabase
-    }
 }

@@ -8,8 +8,10 @@ build/
 *.class
 *.apk
 *.iml
+*.pickle
 .idea
 signs.jet
 app/release/
 .settings
 .gradle
+app/src/main/java/in/rab/tsplex/Topics.kt
