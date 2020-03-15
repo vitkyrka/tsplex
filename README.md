@@ -9,7 +9,7 @@ teckenspråkslexikon](http://teckensprakslexikon.su.se/)).
 
 The code is licensed under the [Apache license, version 2.0](LICENSE).
 
-[The sign data](app/data/signs.sql) was obtained by screen-scraping
+[The sign data](app/data/signs.json) was obtained by screen-scraping
 http://teckensprakslexikon.su.se/.  Svenskt teckenspråkslexikon is licensed by
 its authors, [Avdelningen för teckenspråk, Institutionen för lingvistik,
 Stockholms universitet](http://www.ling.su.se/teckenspr%C3%A5k) under a
