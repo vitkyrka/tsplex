@@ -1,0 +1,847 @@
+[
+  {
+    "char": "\udbf2\udd00",
+    "name": "position_crown",
+    "sv": "hj\u00e4ssan"
+  },
+  {
+    "char": "\udbf2\udd02",
+    "name": "position_face_upper",
+    "sv": "ansiktet, \u00f6vre delen"
+  },
+  {
+    "char": "\udbf2\udd03",
+    "name": "position_forehead",
+    "sv": "pannan"
+  },
+  {
+    "char": "\udbf2\udd04",
+    "name": "position_eyes",
+    "sv": "\u00f6gonen"
+  },
+  {
+    "char": "\udbf2\udd05",
+    "name": "position_eye",
+    "sv": "\u00f6gat"
+  },
+  {
+    "char": "\udbf2\udd06",
+    "name": "position_face",
+    "sv": "ansiktet / huvudh\u00f6jd"
+  },
+  {
+    "char": "\udbf2\udd07",
+    "name": "position_ear_right",
+    "sv": "\u00f6rat, h\u00f6ger / sidan av huvudet"
+  },
+  {
+    "char": "\udbf2\udd08",
+    "name": "position_ear_left",
+    "sv": "\u00f6rat, v\u00e4nster / sidan av huvudet"
+  },
+  {
+    "char": "\udbf2\udd09",
+    "name": "position_cheeks",
+    "sv": "kinderna"
+  },
+  {
+    "char": "\udbf2\udd0a",
+    "name": "position_cheek_right",
+    "sv": "kinden, h\u00f6ger"
+  },
+  {
+    "char": "\udbf2\udd0b",
+    "name": "position_cheek_left",
+    "sv": "kinden, v\u00e4nster"
+  },
+  {
+    "char": "\udbf2\udd0c",
+    "name": "position_mouth",
+    "sv": "munnen"
+  },
+  {
+    "char": "\udbf2\udd0e",
+    "name": "handshape_small_o",
+    "sv": "lilla O-handen"
+  },
+  {
+    "char": "\udbf2\udd11",
+    "name": "position_arm_upper",
+    "sv": "\u00f6verarmen"
+  },
+  {
+    "char": "\udbf2\udd12",
+    "name": "position_arm_lower",
+    "sv": "underarmen"
+  },
+  {
+    "char": "\udbf2\udd13",
+    "name": "position_chest",
+    "sv": "br\u00f6stet"
+  },
+  {
+    "char": "\udbf2\udd14",
+    "name": "position_chest_right",
+    "sv": "br\u00f6stet, h\u00f6ger sida"
+  },
+  {
+    "char": "\udbf2\udd15",
+    "name": "position_chest_left",
+    "sv": "br\u00f6stet, v\u00e4nster sida"
+  },
+  {
+    "char": "\udbf2\udd16",
+    "name": "position_stomach",
+    "sv": "magen / mellang\u00e4rdet"
+  },
+  {
+    "char": "\udbf2\udd17",
+    "name": "position_hips",
+    "sv": "h\u00f6fterna"
+  },
+  {
+    "char": "\udbf2\udd18",
+    "name": "position_hip_right",
+    "sv": "h\u00f6ften, h\u00f6ger sida"
+  },
+  {
+    "char": "\udbf2\udd19",
+    "name": "position_hip_left",
+    "sv": "h\u00f6ften, v\u00e4nster sida"
+  },
+  {
+    "char": "\udbf2\udd1a",
+    "name": "position_leg",
+    "sv": "benet"
+  },
+  {
+    "char": "\udbf2\udd1b",
+    "name": "position_chin",
+    "sv": "hakan"
+  },
+  {
+    "char": "\udbf2\udd1c",
+    "name": "position_neck_back",
+    "sv": "nacken"
+  },
+  {
+    "char": "\udbf2\udd1e",
+    "name": "position_neck_front",
+    "sv": "halsen"
+  },
+  {
+    "char": "\udbf2\udd1f",
+    "name": "interaction_type_contact",
+    "sv": "kontakt"
+  },
+  {
+    "char": "\udbf2\udd20",
+    "name": "position_shoulders",
+    "sv": "axlarna"
+  },
+  {
+    "char": "\udbf2\udd21",
+    "name": "position_shoulder_right",
+    "sv": "axeln, h\u00f6ger"
+  },
+  {
+    "char": "\udbf2\udd22",
+    "name": "handshape_flat",
+    "sv": "flata handen"
+  },
+  {
+    "char": "\udbf2\udd23",
+    "name": "handshape_angled",
+    "sv": "vinkelhanden"
+  },
+  {
+    "char": "\udbf2\udd24",
+    "name": "handshape_a",
+    "sv": "A-handen"
+  },
+  {
+    "char": "\udbf2\udd25",
+    "name": "handshape_claw",
+    "sv": "klohanden"
+  },
+  {
+    "char": "\udbf2\udd26",
+    "name": "handshape_fist",
+    "sv": "knutna handen"
+  },
+  {
+    "char": "\udbf2\udd27",
+    "name": "handshape_thumb",
+    "sv": "tumhanden"
+  },
+  {
+    "char": "\udbf2\udd28",
+    "name": "handshape_l",
+    "sv": "L-handen"
+  },
+  {
+    "char": "\udbf2\udd29",
+    "name": "handshape_pinch",
+    "sv": "nyphanden"
+  },
+  {
+    "char": "\udbf2\udd2a",
+    "name": "handshape_hook_finger",
+    "sv": "krokfingret"
+  },
+  {
+    "char": "\udbf2\udd2b",
+    "name": "handshape_holding",
+    "sv": "h\u00e5llhanden"
+  },
+  {
+    "char": "\udbf2\udd2c",
+    "name": "handshape_middle_finger",
+    "sv": "l\u00e5ngfingret"
+  },
+  {
+    "char": "\udbf2\udd2d",
+    "name": "handshape_v",
+    "sv": "V-handen"
+  },
+  {
+    "char": "\udbf2\udd2e",
+    "name": "handshape_rooster",
+    "sv": "tupphanden"
+  },
+  {
+    "char": "\udbf2\udd2f",
+    "name": "handshape_rooster_bent",
+    "sv": "b\u00f6jda tupphanden"
+  },
+  {
+    "char": "\udbf2\udd30",
+    "name": "handshape_w",
+    "sv": "W-handen"
+  },
+  {
+    "char": "\udbf2\udd31",
+    "name": "handshape_little_finger",
+    "sv": "lillfingret"
+  },
+  {
+    "char": "\udbf2\udd32",
+    "name": "handshape_pinch_large",
+    "sv": "stora nyphanden"
+  },
+  {
+    "char": "\udbf2\udd33",
+    "name": "handshape_x",
+    "sv": "X-handen"
+  },
+  {
+    "char": "\udbf2\udd34",
+    "name": "attitude_pointed_forward",
+    "sv": "fram\u00e5triktad"
+  },
+  {
+    "char": "\udbf2\udd35",
+    "name": "attitude_pointed_upward",
+    "sv": "upp\u00e5triktad"
+  },
+  {
+    "char": "\udbf2\udd36",
+    "name": "attitude_turned_leftward",
+    "sv": "v\u00e4nsterv\u00e4nd"
+  },
+  {
+    "char": "\udbf2\udd37",
+    "name": "attitude_turned_forward",
+    "sv": "fram\u00e5tv\u00e4nd"
+  },
+  {
+    "char": "\udbf2\udd38",
+    "name": "attitude_turned_upward",
+    "sv": "upp\u00e5tv\u00e4nd"
+  },
+  {
+    "char": "\udbf2\udd39",
+    "name": "relation_above",
+    "sv": "ovanf\u00f6r"
+  },
+  {
+    "char": "\udbf2\udd3a",
+    "name": "relation_beside",
+    "sv": "brevid"
+  },
+  {
+    "char": "\udbf2\udd3b",
+    "name": "relation_behind",
+    "sv": "innanf\u00f6r/bakom"
+  },
+  {
+    "char": "\udbf2\udd3c",
+    "name": "position_nose",
+    "sv": "n\u00e4san"
+  },
+  {
+    "char": "\udbf2\udd3d",
+    "name": "handshape_hook_double",
+    "sv": "dubbelkroken"
+  },
+  {
+    "char": "\udbf2\udd3e",
+    "name": "position_ears",
+    "sv": "\u00f6ronen / sidorna av huvudet"
+  },
+  {
+    "char": "\udbf2\udd3f",
+    "name": "handshape_m",
+    "sv": "M-handen"
+  },
+  {
+    "char": "\udbf2\udd40",
+    "name": "position_shoulder_left",
+    "sv": "axeln, v\u00e4nster"
+  },
+  {
+    "char": "\udbf2\udd42",
+    "name": "handshape_flat_with_thumb",
+    "sv": "flata tumhanden"
+  },
+  {
+    "char": "\udbf2\udd43",
+    "name": "handshape_spread",
+    "sv": "sprethanden"
+  },
+  {
+    "char": "\udbf2\udd44",
+    "name": "handshape_angled_with_thumb",
+    "sv": "tumvinkelhanden"
+  },
+  {
+    "char": "\udbf2\udd45",
+    "name": "handshape_s",
+    "sv": "S-handen"
+  },
+  {
+    "char": "\udbf2\udd46",
+    "name": "handshape_o",
+    "sv": "O-handen"
+  },
+  {
+    "char": "\udbf2\udd47",
+    "name": "handshape_e",
+    "sv": "E-handen"
+  },
+  {
+    "char": "\udbf2\udd48",
+    "name": "handshape_index_finger",
+    "sv": "pekfingret"
+  },
+  {
+    "char": "\udbf2\udd49",
+    "name": "handshape_measure_straight",
+    "sv": "raka m\u00e5tthanden"
+  },
+  {
+    "char": "\udbf2\udd4a",
+    "name": "handshape_t",
+    "sv": "T-handen"
+  },
+  {
+    "char": "\udbf2\udd4b",
+    "name": "handshape_measure",
+    "sv": "m\u00e5tthanden"
+  },
+  {
+    "char": "\udbf2\udd4c",
+    "name": "handshape_n",
+    "sv": "N-handen"
+  },
+  {
+    "char": "\udbf2\udd4e",
+    "name": "handshape_k",
+    "sv": "K-handen"
+  },
+  {
+    "char": "\udbf2\udd51",
+    "name": "handshape_flyer",
+    "sv": "flyghanden"
+  },
+  {
+    "char": "\udbf2\udd52",
+    "name": "handshape_middle_finger_large",
+    "sv": "stora l\u00e5ngfingret"
+  },
+  {
+    "char": "\udbf2\udd53",
+    "name": "attitude_pointed_leftward",
+    "sv": "v\u00e4nsterriktad"
+  },
+  {
+    "char": "\udbf2\udd54",
+    "name": "attitude_pointed_rightward",
+    "sv": "h\u00f6gerriktad"
+  },
+  {
+    "char": "\udbf2\udd55",
+    "name": "attitude_pointed_backward",
+    "sv": "in\u00e5triktad/bak\u00e5triktad"
+  },
+  {
+    "char": "\udbf2\udd56",
+    "name": "attitude_pointed_downward",
+    "sv": "ned\u00e5triktad"
+  },
+  {
+    "char": "\udbf2\udd57",
+    "name": "attitude_turned_rightward",
+    "sv": "h\u00f6gerv\u00e4nd"
+  },
+  {
+    "char": "\udbf2\udd58",
+    "name": "attitude_turned_backward",
+    "sv": "in\u00e5tv\u00e4nd/bak\u00e5tv\u00e4nd"
+  },
+  {
+    "char": "\udbf2\udd59",
+    "name": "attitude_turned_downward",
+    "sv": "ned\u00e5tv\u00e4nd"
+  },
+  {
+    "char": "\udbf2\udd5a",
+    "name": "relation_below",
+    "sv": "nedanf\u00f6r"
+  },
+  {
+    "char": "\udbf2\udd5b",
+    "name": "relation_ahead",
+    "sv": "framf\u00f6r"
+  },
+  {
+    "char": "\udbf2\udd5c",
+    "name": "position_arm",
+    "sv": "armen"
+  },
+  {
+    "char": "\udbf2\udd5e",
+    "name": "position_face_lower",
+    "sv": "ansiktet, nedre delen"
+  },
+  {
+    "char": "\udbf2\udd5f",
+    "name": "handshape_middle_finger_round",
+    "sv": "runda l\u00e5ngfingret"
+  },
+  {
+    "char": "\udbf2\udd60",
+    "name": "other_separator_segments",
+    "sv": "separator mellan segment"
+  },
+  {
+    "char": "\udbf2\udd61",
+    "name": "modifier_medial_contact",
+    "sv": "medial kontakt"
+  },
+  {
+    "char": "\udbf2\udd62",
+    "name": "motion_leftward",
+    "sv": "f\u00f6rs v\u00e4nster"
+  },
+  {
+    "char": "\udbf2\udd63",
+    "name": "motion_rightward",
+    "sv": "f\u00f6rs h\u00f6ger"
+  },
+  {
+    "char": "\udbf2\udd64",
+    "name": "motion_sideways",
+    "sv": "f\u00f6rs i sidled / v\u00e4nster\u2013h\u00f6ger"
+  },
+  {
+    "char": "\udbf2\udd65",
+    "name": "motion_depthwise",
+    "sv": "f\u00f6rs i djupled / fram\u00e5t\u2013in\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd66",
+    "name": "motion_upward",
+    "sv": "f\u00f6rs upp\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd67",
+    "name": "motion_downward",
+    "sv": "f\u00f6rs ned\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd68",
+    "name": "motion_vertically",
+    "sv": "f\u00f6rs i h\u00f6jdled / upp\u00e5t\u2013ned\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd69",
+    "name": "motion_leftward_short",
+    "sv": "f\u00f6rs kort v\u00e4nster"
+  },
+  {
+    "char": "\udbf2\udd6a",
+    "name": "motion_rightward_short",
+    "sv": "f\u00f6rs kort h\u00f6ger"
+  },
+  {
+    "char": "\udbf2\udd6b",
+    "name": "interaction_type_hooking",
+    "sv": "hakning"
+  },
+  {
+    "char": "\udbf2\udd6c",
+    "name": "interaction_type_exchanging",
+    "sv": "byte"
+  },
+  {
+    "char": "\udbf2\udd6d",
+    "name": "interaction_type_entering",
+    "sv": "entr\u00e9 / mottagning"
+  },
+  {
+    "char": "\udbf2\udd6e",
+    "name": "interaction_type_angling",
+    "sv": "vinkel"
+  },
+  {
+    "char": "\udbf2\udd6f",
+    "name": "motion_type_curving",
+    "sv": "b\u00e5ge"
+  },
+  {
+    "char": "\udbf2\udd70",
+    "name": "motion_type_circling",
+    "sv": "cirkel"
+  },
+  {
+    "char": "\udbf2\udd71",
+    "name": "motion_type_hitting",
+    "sv": "sl\u00e5s"
+  },
+  {
+    "char": "\udbf2\udd72",
+    "name": "motion_type_twisting",
+    "sv": "vrids"
+  },
+  {
+    "char": "\udbf2\udd73",
+    "name": "motion_type_playing",
+    "sv": "spelar"
+  },
+  {
+    "char": "\udbf2\udd74",
+    "name": "motion_type_strewing",
+    "sv": "str\u00f6r"
+  },
+  {
+    "char": "\udbf2\udd75",
+    "name": "motion_forward_short",
+    "sv": "f\u00f6rs kort fram\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd76",
+    "name": "motion_backward_short",
+    "sv": "f\u00f6rs kort in\u00e5t/bak\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd77",
+    "name": "motion_upward_short",
+    "sv": "f\u00f6rs kort upp\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd78",
+    "name": "motion_downward_short",
+    "sv": "f\u00f6rs kort ned\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd79",
+    "name": "interaction_type_diverging",
+    "sv": "divergerar (tidigare interaktionsart)"
+  },
+  {
+    "char": "\udbf2\udd7a",
+    "name": "motion_type_waving",
+    "sv": "vinkar"
+  },
+  {
+    "char": "\udbf2\udd7b",
+    "name": "other_repetition",
+    "sv": "upprepad artikulation"
+  },
+  {
+    "char": "\udbf2\udd7c",
+    "name": "other_separator_groups",
+    "sv": "separator mellan artikulationsgrupper"
+  },
+  {
+    "char": "\udbf2\udd7d",
+    "name": "modifier_rightward",
+    "sv": "\u00e5t h\u00f6ger"
+  },
+  {
+    "char": "\udbf2\udd7e",
+    "name": "modifier_forward",
+    "sv": "fram\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd7f",
+    "name": "modifier_upward",
+    "sv": "upp\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd80",
+    "name": "modifier_downward",
+    "sv": "ned\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd82",
+    "name": "modifier_toward_each_other",
+    "sv": "mot varandra"
+  },
+  {
+    "char": "\udbf2\udd83",
+    "name": "motion_forward",
+    "sv": "f\u00f6rs fram\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd84",
+    "name": "motion_backward",
+    "sv": "f\u00f6rs in\u00e5t/bak\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd85",
+    "name": "interaction_type_converging",
+    "sv": "konvergerar (tidigare interaktionsart)"
+  },
+  {
+    "char": "\udbf2\udd86",
+    "name": "motion_type_reshaping",
+    "sv": "f\u00f6r\u00e4ndras"
+  },
+  {
+    "char": "\udbf2\udd87",
+    "name": "interaction_type_alternating",
+    "sv": "v\u00e4xelvis"
+  },
+  {
+    "char": "\udbf2\udd88",
+    "name": "modifier_leftward",
+    "sv": "\u00e5t v\u00e4nster"
+  },
+  {
+    "char": "\udbf2\udd89",
+    "name": "modifier_sideways",
+    "sv": "i sidled"
+  },
+  {
+    "char": "\udbf2\udd8a",
+    "name": "modifier_backwards",
+    "sv": "in\u00e5t/bak\u00e5t"
+  },
+  {
+    "char": "\udbf2\udd8b",
+    "name": "modifier_depthwise",
+    "sv": "i djupled"
+  },
+  {
+    "char": "\udbf2\udd8c",
+    "name": "modifier_vertically",
+    "sv": "i h\u00f6jdled"
+  },
+  {
+    "char": "\udbf2\udd8e",
+    "name": "interaction_type_crossing",
+    "sv": "kors"
+  },
+  {
+    "char": "\udbf2\udd91",
+    "name": "motion_held_still",
+    "sv": "h\u00e5lls stilla"
+  },
+  {
+    "char": "\udbf2\udda7",
+    "name": "other_abruptly",
+    "sv": "distinkt b\u00f6rjan/avslutning (historisk)"
+  },
+  {
+    "char": "\udbf2\udda8",
+    "name": "motion_type_bending",
+    "sv": "b\u00f6js"
+  },
+  {
+    "char": "\udbf2\udda9",
+    "name": "other_separator_hands",
+    "sv": "separator mellan h\u00e4nder"
+  },
+  {
+    "char": "\udbf2\uddaa",
+    "name": "handshape_4",
+    "sv": "4-handen"
+  },
+  {
+    "char": "\udbf2\uddab",
+    "name": "handshape_d",
+    "sv": "D-handen"
+  },
+  {
+    "char": "\udbf2\uddac",
+    "name": "handshape_f",
+    "sv": "F-handen"
+  },
+  {
+    "char": "\udbf2\uddad",
+    "name": "handshape_q",
+    "sv": "Q-handen"
+  },
+  {
+    "char": "\udbf2\uddae",
+    "name": "motion_type_circling_frontal",
+    "sv": "cirkel i frontalplan"
+  },
+  {
+    "char": "\udbf2\uddaf",
+    "name": "motion_type_circling_horizontal",
+    "sv": "cirkel i horisontalplan"
+  },
+  {
+    "char": "\udbf2\uddb0",
+    "name": "motion_type_circling_sagittal",
+    "sv": "cirkel i sagittalplan"
+  },
+  {
+    "char": "\udbf2\uddb1",
+    "name": "handshape_llama",
+    "sv": "lamahanden"
+  },
+  {
+    "char": "\udbf2\uddb2",
+    "name": "position_arm_elbow_pit",
+    "sv": "armvecket"
+  },
+  {
+    "char": "\udbf2\uddb3",
+    "name": "position_neutral_space",
+    "sv": "neutrala l\u00e4get"
+  },
+  {
+    "char": "\udbf2\uddb4",
+    "name": "interaction_type_braiding",
+    "sv": "fl\u00e4tas"
+  },
+  {
+    "char": "\udbf2\uddb5",
+    "name": "modifier_away_from_each_other",
+    "sv": "fr\u00e5n varandra"
+  },
+  {
+    "char": "\udbf2\uddb6",
+    "name": "motion_type_bouncing",
+    "sv": "studs"
+  },
+  {
+    "char": "\udbf2\uddb7",
+    "name": "interaction_type_medial_contact",
+    "sv": "medial kontakt (oberoende)"
+  },
+  {
+    "char": "\udbf2\uddec",
+    "name": "finger_straight",
+    "sv": "rakt finger"
+  },
+  {
+    "char": "\udbf2\udded",
+    "name": "finger_angled",
+    "sv": "vinklat finger"
+  },
+  {
+    "char": "\udbf2\uddee",
+    "name": "finger_bent_slightly",
+    "sv": "l\u00e4tt b\u00f6jt finger"
+  },
+  {
+    "char": "\udbf2\uddef",
+    "name": "finger_bent",
+    "sv": "b\u00f6jt finger"
+  },
+  {
+    "char": "\udbf2\uddf0",
+    "name": "finger_f_hand",
+    "sv": "F-handsfinger"
+  },
+  {
+    "char": "\udbf2\uddf1",
+    "name": "finger_holding",
+    "sv": "h\u00e5llhandsfinger"
+  },
+  {
+    "char": "\udbf2\uddf2",
+    "name": "finger_fist",
+    "sv": "knutet finger"
+  },
+  {
+    "char": "\udbf2\uddf3",
+    "name": "finger_crossed",
+    "sv": "tv\u00e5 korsade fingrar"
+  },
+  {
+    "char": "\udbf2\uddf4",
+    "name": "thumb_straight",
+    "sv": "rak tumme"
+  },
+  {
+    "char": "\udbf2\uddf5",
+    "name": "thumb_bent",
+    "sv": "b\u00f6jd tumme"
+  },
+  {
+    "char": "\udbf2\uddf6",
+    "name": "thumb_parallel",
+    "sv": "parallell tumme"
+  },
+  {
+    "char": "\udbf2\uddf7",
+    "name": "thumb_fist",
+    "sv": "knuten tumme"
+  },
+  {
+    "char": "\udbf2\uddf8",
+    "name": "thumb_opposing_bent",
+    "sv": "tumme i b\u00f6jd opposition"
+  },
+  {
+    "char": "\udbf2\uddf9",
+    "name": "thumb_opposing_straight",
+    "sv": "tumme i rak opposition"
+  },
+  {
+    "char": "\udbf2\uddfa",
+    "name": "contact_finger_tip",
+    "sv": "kontakt vid fingerspets"
+  },
+  {
+    "char": "\udbf2\uddfb",
+    "name": "contact_finger_middle",
+    "sv": "kontakt vid fingers mitt"
+  },
+  {
+    "char": "\udbf2\uddfc",
+    "name": "contact_finger_between",
+    "sv": "kontakt mellan tv\u00e5 fingrar"
+  },
+  {
+    "char": "\udbf2\uddfd",
+    "name": "contact_palm",
+    "sv": "kontakt i handflata"
+  },
+  {
+    "char": "\udbf2\uddfe",
+    "name": "spread_whole",
+    "sv": "hel hand spretad"
+  },
+  {
+    "char": "\udbf2\uddff",
+    "name": "spread_finger_pair",
+    "sv": "fingerpar spretat"
+  }
+]
