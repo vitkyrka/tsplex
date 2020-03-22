@@ -5,9 +5,12 @@ import os
 import re
 import json
 import sqlite3
+import itertools
 
 from collections import defaultdict
 
+from genchars import Char
+from genattrs import AttributeGen
 
 def get_topic_ids(signs):
     topicids = []
@@ -40,7 +43,9 @@ def get_topic_ids(signs):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--signs', default='signs.json')
+    parser.add_argument('--chars', default='chars.json')
     parser.add_argument('--topics', default='Topics.kt')
+    parser.add_argument('--attributes', default='Attributes.kt')
     parser.add_argument('--db', default='signs.db')
     args = parser.parse_args()
 
@@ -51,6 +56,15 @@ def main():
 
     with open(args.signs, 'r') as f:
         signs = json.load(f, object_hook=hook)
+
+    with open(args.chars, 'r') as f:
+        chars = [Char(**o) for o in json.load(f)]
+
+    attrgen = AttributeGen(chars)
+    signs = attrgen.tag(signs)
+
+    with open(args.attributes, 'w') as f:
+        f.write(attrgen.gen())
 
     topicids = get_topic_ids(signs)
     with open(args.topics, 'w') as f:
@@ -99,6 +113,8 @@ def main():
 
     conn.execute("CREATE TABLE folders (id INTEGER PRIMARY KEY, name TEXT, lastused INTEGER)")
     conn.execute("CREATE TABLE bookmarks (id INTEGER, date INTEGER, folderid INTEGER, UNIQUE (id) ON CONFLICT REPLACE)")
+
+    conn.execute("CREATE TABLE signs_tags (signid INTEGER, tagid INTEGER)")
 
     conn.execute("CREATE TABLE android_metadata (locale TEXT DEFAULT en_US)")
     conn.execute("INSERT INTO android_metadata VALUES ('en_US')")
@@ -165,12 +181,20 @@ def main():
         conn.executemany("insert into homonyms values (?, ?)",
                          ((thisid, otherid) for otherid in sign['kan-aven-betyda']))
 
+        if sign['tagids']:
+            conn.executemany("insert into signs_tags values (?, ?)",
+                             zip(itertools.repeat(thisid), sign['tagids']))
+
     conn.execute("CREATE INDEX signs_index ON signs(id)")
     conn.execute("CREATE INDEX examples_example_index ON examples_signs(exampleid)")
     conn.execute("CREATE INDEX examples_sign_index ON examples_signs(signid)")
     conn.execute("CREATE INDEX synonyms_index ON synonyms(id)")
     conn.execute("CREATE INDEX homonyms_index ON homonyms(id)")
     conn.execute("CREATE INDEX explanations_index ON explanations(id)")
+
+    conn.execute("CREATE INDEX signs_tags_sign_index ON signs_tags(signid)")
+    conn.execute("CREATE INDEX signs_tags_tag_index ON signs_tags(tagid)")
+    conn.execute("CREATE INDEX signs_tags_index ON signs_tags(signid, tagid)")
 
     conn.execute("INSERT INTO words(words) VALUES (?)", ('optimize',))
     conn.execute("INSERT INTO sentences(sentences) VALUES (?)", ('optimize',))
