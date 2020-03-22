@@ -1,6 +1,7 @@
 package `in`.rab.tsplex
 
 import android.os.Bundle
+import android.util.Log
 
 class SearchFragment : ItemListFragment() {
     private var mQuery: String? = null
@@ -66,6 +67,10 @@ class SearchFragment : ItemListFragment() {
             val ex = query.substring(3)
 
             return ArrayList(db.getExampleSigns(ex))
+        } else if (query.startsWith("tags:")) {
+            val tagIds = query.substring(5).split(";").map { it.split(",").map { tagId -> Integer.valueOf(tagId) }.toTypedArray() }.toTypedArray()
+
+            return ArrayList(db.getSignsByTags(tagIds))
         } else {
             val signs = db.getSigns(query)
             val examples = db.getExamples(query)

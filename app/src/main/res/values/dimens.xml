@@ -4,4 +4,5 @@
 
     <dimen name="sign_thumbnail_width">120dp</dimen>
     <dimen name="sign_thumbnail_height">90dp</dimen>
+    <dimen name="chip_stroke_width">1dp</dimen>
 </resources>

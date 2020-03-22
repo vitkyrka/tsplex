@@ -6,6 +6,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteQueryBuilder
 import android.provider.BaseColumns
+import android.util.Log
 import java.util.*
 import java.util.regex.Pattern
 
@@ -164,7 +165,8 @@ class SignDatabase(context: Context) {
 
     fun getBookmarksFolders(): ArrayList<Folder> {
         val folders = ArrayList<Folder>()
-        val cursor = getDatabase()?.query("folders", arrayOf("id", "name"), null, null, null, null, "name ASC") ?: return folders
+        val cursor = getDatabase()?.query("folders", arrayOf("id", "name"), null, null, null, null, "name ASC")
+                ?: return folders
 
         while (cursor.moveToNext()) {
             folders.add(Folder(cursor.getInt(0), cursor.getString(1)))
@@ -252,6 +254,54 @@ class SignDatabase(context: Context) {
         }
 
         return getSignsByDescription(fixedQuery, columns, builder, limit)
+    }
+
+    private fun getSignsByTags(tagIds: Array<Array<Int>>, columns: Array<String>, limit: String? = RESULTS_LIMIT): Cursor {
+        val builder = SQLiteQueryBuilder()
+        val selectionArgs = null
+        val groupBy = null
+        val sortOrder = "occurence DESC, length(comment), num_examples DESC, signs.id"
+
+        val selections = tagIds.map {
+            val or = it.joinToString(",")
+            "signs.id IN (SELECT signs_tags.signid FROM signs_tags WHERE signs_tags.tagid IN ($or))"
+        }
+
+        val selection = selections.joinToString(" AND ")
+
+        builder.tables = "signs"
+
+        val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
+                groupBy, null, sortOrder, limit)
+
+        Log.i("foo", builder.buildQuery(columns, selection, selectionArgs,
+                groupBy, null, sortOrder, limit))
+
+        return cursor
+    }
+
+    fun getSignsByTags(tagIds: Array<Array<Int>>, limit: String? = RESULTS_LIMIT): ArrayList<Sign> {
+        val signs = ArrayList<Sign>()
+        val cursor = getSignsByTags(tagIds, mSignColumns, limit)
+
+        while (cursor.moveToNext()) {
+            signs.add(makeSign(cursor))
+        }
+
+        cursor.close()
+        return signs
+    }
+
+    fun getSignsCountByTags(tagIds: Array<Array<Int>>): Int {
+        var signs = 0
+        val cursor = getSignsByTags(tagIds, arrayOf("COUNT(signs.id)"))
+
+        while (cursor.moveToNext()) {
+            signs = cursor.getInt(0)
+        }
+
+        cursor.close()
+        return signs
     }
 
     fun search(query: String, columns: Array<String>): Cursor {
@@ -428,8 +478,10 @@ class SignDatabase(context: Context) {
     companion object {
         private const val RESULTS_LIMIT = "100"
         private const val DATABASE_NAME = "signs.jet"
-        const val DATABASE_VERSION = 41
-        @Volatile private var INSTANCE: SignDatabase? = null
+        const val DATABASE_VERSION = 43
+
+        @Volatile
+        private var INSTANCE: SignDatabase? = null
 
         fun getInstance(context: Context): SignDatabase =
                 INSTANCE ?: synchronized(this) {

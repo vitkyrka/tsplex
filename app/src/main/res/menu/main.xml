@@ -7,4 +7,9 @@
         android:icon="@drawable/ic_search_white_24dp"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/reverseSearch"
+        android:title="@string/search_hint"
+        android:icon="@drawable/ic_image_search"
+        app:showAsAction="ifRoom" />
+
 </menu>

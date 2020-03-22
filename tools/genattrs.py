@@ -133,7 +133,7 @@ class AttributeGen(object):
             'left-attitude_turned_any',
         ])
 
-        return list(set(tags))
+        return sorted(list(set(tags)))
 
     def tag(self, signs):
         for sign in signs:
@@ -270,26 +270,32 @@ class AttributeGen(object):
         env = jinja2.Environment(trim_blocks=False, lstrip_blocks=True,
                                  undefined=jinja2.StrictUndefined)
         template = env.from_string('''
-val attributes = arrayOf(
-{% for attr in attribs %}
-    Attribute(
-        name = "{{ transmap[attr.name] }}",
-        {% if attr.defaultstate %}
-        defaultStateName = "{{ transmap[attr.defaultstate] }}",
-        {% endif %}
-        tagId = {{ attr.tagid }},
-        states = arrayOf(
-        {% for state in attr.states %}
-            AttributeState(
-                name="{{ transmap[state.name] }}",
-                tagId={{ state.tagid }}
-            ){% if not loop.last %},{% endif %}
-        {% endfor %}
-        )
-    ){% if not loop.last %},{% endif %}
-{% endfor %}
-)
-''')
+// Auto-generated.  Do not edit.
+
+package `in`.rab.tsplex
+
+object Attributes {
+    val attributes = arrayOf(
+    {% for attr in attribs %}
+        Attribute(
+            name = "{{ transmap[attr.name] }}",
+            {% if attr.defaultstate %}
+            defaultStateName = "{{ transmap[attr.defaultstate] }}",
+            {% endif %}
+            tagId = {{ attr.tagid }},
+            states = arrayOf(
+            {% for state in attr.states %}
+                AttributeState(
+                    name = "{{ transmap[state.name] }}",
+                    tagId = {{ state.tagid }}
+                ){% if not loop.last %},{% endif %}
+            {% endfor %}
+            )
+        ){% if not loop.last %},{% endif %}
+    {% endfor %}
+    )
+}
+'''.lstrip())
 
         return template.render(attribs=attribs, transmap=transmap)
 

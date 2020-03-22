@@ -51,6 +51,10 @@ public class Ordboken {
             Intent intent = new Intent(activity, SearchActivity.class);
             activity.startActivity(intent);
             activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        } else if (item.getItemId() == R.id.reverseSearch) {
+            Intent intent = new Intent(activity, ReverseSearchActivity.class);
+            activity.startActivity(intent);
+            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
 
         return false;

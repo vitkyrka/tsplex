@@ -42,6 +42,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'com.google.android:flexbox:2.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.1.1'
@@ -63,9 +64,13 @@ repositories {
 apply plugin: 'kotlin-android-extensions'
 
 task genDatabaseAndTopics(type:Exec) {
-    inputs.file('data/signs.json')
+    inputs.dir('data')
+    inputs.dir('../tools')
     outputs.file('src/main/assets/signs.jet')
-    commandLine 'sh', '-c', 'mkdir -p src/main/assets/ && rm -f src/main/assets/signs.jet && ../tools/generate.py --signs data/signs.json --db src/main/assets/signs.jet --topics src/main/java/in/rab/tsplex/Topics.kt'
+    outputs.file('src/main/java/in/rab/tsplex/Topics.kt')
+    outputs.file('src/main/java/in/rab/tsplex/Attributes.kt')
+    commandLine 'sh', '-c', 'mkdir -p src/main/assets/ && rm -f src/main/assets/signs.jet && ../tools/generate.py --signs data/signs.json --chars data/chars.json --db src/main/assets/signs.jet --topics src/main/java/in/rab/tsplex/Topics.kt --attributes src/main/java/in/rab/tsplex/Attributes.kt'
+    commandLine 'sh', '-c', 'mkdir -p src/main/assets/ && rm -f src/main/assets/signs.jet && ../tools/generate.py --signs data/signs.json --chars data/chars.json --db src/main/assets/signs.jet --topics src/main/java/in/rab/tsplex/Topics.kt --attributes src/main/java/in/rab/tsplex/Attributes.kt'
 }
 
 task cleanDatabase(type:Exec) {
