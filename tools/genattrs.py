@@ -179,11 +179,11 @@ class AttributeGen(object):
             'attitude_pointed_any': 'Alla riktningar',
             'attitude_turned_any': 'Alla vridningar',
 
-            'handshape_same': 'Samma handform',
+            'handshape_same': '(Samma handform)',
             'attitude_pointed_same': '(Samma riktning)',
-            'attitude_turned_same': '(Samma vridning)',
+            'attitude_turned_same': '(Samma vändning)',
             'attitude_pointed_symmetric': '(Symmetrisk riktning)',
-            'attitude_turned_symmetric': '(Symmetrisk vridning)',
+            'attitude_turned_symmetric': '(Symmetrisk vändning)',
 
             'hands': 'Händer',
             'position': 'Läge',
