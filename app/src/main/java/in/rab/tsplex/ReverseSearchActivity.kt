@@ -40,33 +40,33 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.more).let {
             it.setOnClickListener {
-                val dynamicAttributes = Attributes.attributes.filter { at -> at.defaultStateName == null }
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("More")
-                        .setItems(dynamicAttributes.map { at -> at.name }
-                                .toTypedArray()) { _, which ->
-                            addDynamicAttribute(dynamicAttributes[which])
-                        }
-                        .show()
+                ChooseDynamicAttributeTask().execute(ChooseDynamicAttributeArgs(getTagIds(),
+                        Attributes.attributes.filter { at -> at.defaultStateName == null }.map { it.tagId }.toTypedArray()))
             }
         }
 
         Attributes.attributes.forEach { at ->
             val activeStates = at.states.filter { state -> tags.contains(state.tagId) }
             if (at.defaultStateName != null || activeStates.isNotEmpty()) {
-                addChip(at, activeStates.map { state -> state.tagId })
+                addChip(at, activeStates.map { state -> state.tagId }, update = false)
             }
         }
+
+        updateSearchCount()
 
         findViewById<Button>(R.id.search).setOnClickListener {
             search()
         }
     }
 
-    private fun getTagIds() : Array<Array<Int>> {
+    private fun getTagIds(exclude: Chip? = null): Array<Array<Int>> {
         val tagIds = arrayListOf<Array<Int>>()
 
         chips.forEach {
+            if (it == exclude) {
+                return@forEach
+            }
+
             val subTags = it.getTag(R.id.tagIds) as ArrayList<Int>
 
             if (subTags.isEmpty()) {
@@ -98,7 +98,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             val count = db.getSignsCountByTags(tagIds)
 
             val signs = if (count > 0) {
-                db.getSignsByTags(tagIds, limit="5")
+                db.getSignsByTags(tagIds, limit = "5")
             } else {
                 arrayListOf()
             }
@@ -121,58 +121,133 @@ class ReverseSearchActivity : AppCompatActivity() {
         SearchCountTask().execute(getTagIds())
     }
 
-    private fun addChip(at: Attribute, initialTags: List<Int>) {
+    class ChooseChipStateArgs constructor(val chip: Chip, val at: Attribute, val tagIds: Array<Array<Int>>) {
+    }
+
+    private inner class ChooseChipStatesTask : AsyncTask<ChooseChipStateArgs, Void, Pair<ChooseChipStateArgs, HashMap<Int, Int>>>() {
+        override fun doInBackground(vararg params: ChooseChipStateArgs): Pair<ChooseChipStateArgs, HashMap<Int, Int>> {
+            val tagIds = params[0].tagIds
+            val chip = params[0].chip
+            val at = params[0].at
+            val db = SignDatabase.getInstance(this@ReverseSearchActivity)
+            val newTagIds = arrayOf(at.tagId) + at.states.map { it.tagId }.toTypedArray()
+
+            return Pair(params[0], db.getNewTagsSignCounts(tagIds, newTagIds))
+        }
+
+        override fun onPostExecute(res: Pair<ChooseChipStateArgs, HashMap<Int, Int>>) {
+            chooseChipStates(res.first.chip, res.first.at, res.second)
+        }
+    }
+
+    private fun chooseDynamicAttribute(counts: HashMap<Int, Int>) {
+        val dynamicAttributes = Attributes.attributes.filter { at -> at.defaultStateName == null }
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("More")
+                .setItems(dynamicAttributes.map { at ->
+                            val count = if (counts.containsKey(at.tagId)) {
+                                counts[at.tagId]
+                            } else {
+                                0
+                            }
+                            "${at.name} ($count)"
+                        }
+                        .toTypedArray()) { _, which ->
+                    addDynamicAttribute(dynamicAttributes[which])
+                }
+                .show()
+    }
+
+    class ChooseDynamicAttributeArgs constructor(val tagIds: Array<Array<Int>>, val newTagIds: Array<Int>) {
+    }
+
+    private inner class ChooseDynamicAttributeTask : AsyncTask<ChooseDynamicAttributeArgs, Void, HashMap<Int, Int>>() {
+        override fun doInBackground(vararg params: ChooseDynamicAttributeArgs): HashMap<Int, Int> {
+            val tagIds = params[0].tagIds
+            val newTagIds = params[0].newTagIds
+            val db = SignDatabase.getInstance(this@ReverseSearchActivity)
+
+            return db.getNewTagsSignCounts(tagIds, newTagIds)
+        }
+
+        override fun onPostExecute(res: HashMap<Int, Int>) {
+            chooseDynamicAttribute(res)
+        }
+    }
+
+    private fun chooseChipStates(chip: Chip, at: Attribute, stateCounts: HashMap<Int, Int>) {
+        val obj = chip.getTag(R.id.tagIds)
+        val tags = if (obj != null) {
+            obj as ArrayList<*>
+        } else {
+            ArrayList<Int>()
+        }
+
+        val defaultStateCount = if (stateCounts.containsKey(at.tagId)) {
+            stateCounts[at.tagId]
+        } else {
+            0
+        }
+
+        val selectedStates =
+                at.states.filter { state -> tags.contains(state.tagId) }
+        val selectedItems =
+                ArrayList(selectedStates.map { state -> state.tagId })
+        val builder = AlertDialog.Builder(this)
+        val dialog = builder
+                .setTitle(if (at.defaultStateName == null) "${at.name} (${defaultStateCount})" else {
+                    at.name
+                })
+                .setMultiChoiceItems(
+                        at.states.map { state ->
+                            val count = if (stateCounts.containsKey(state.tagId)) {
+                                stateCounts[state.tagId]
+                            } else {
+                                0
+                            }
+                            "${state.name} ($count)"
+                        }.toTypedArray(),
+                        at.states.map { state -> tags.contains(state.tagId) }
+                                .toBooleanArray()
+                ) { _, which, checked ->
+                    if (checked) {
+                        selectedItems.add(at.states[which].tagId)
+                    } else if (selectedItems.contains(at.states[which].tagId)) {
+                        selectedItems.remove(at.states[which].tagId)
+                    }
+                }
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    refreshChip(chip, at, selectedItems)
+                }
+                .setNeutralButton("Kryssa alla", null)
+                .setNegativeButton(android.R.string.cancel) { _, _ ->
+                }
+                .create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+                for (i in 0..dialog.listView.adapter.count) {
+                    dialog.listView.setItemChecked(i, true)
+                }
+
+                // OnMultiChoiceClickListener is not called when we do setItemChecked
+                selectedItems.clear()
+                selectedItems.addAll(at.states.map { state -> state.tagId })
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun addChip(at: Attribute, initialTags: List<Int>, update: Boolean = true) {
         container.addView(Chip(this).apply {
             setTag(R.id.defaultTagId, at.tagId)
             chips.add(this)
-            refreshChip(this, at, initialTags)
+            refreshChip(this, at, initialTags, update)
 
             if (at.states.isNotEmpty()) {
                 setOnClickListener {
-                    val obj = it.getTag(R.id.tagIds)
-                    val tags = if (obj != null) {
-                        obj as ArrayList<*>
-                    } else {
-                        ArrayList<Int>()
-                    }
-                    val selectedStates =
-                            at.states.filter { state -> tags.contains(state.tagId) }
-                    val selectedItems =
-                            ArrayList(selectedStates.map { state -> state.tagId })
-                    val builder = AlertDialog.Builder(context)
-                    val dialog = builder.setTitle(at.name)
-                            .setMultiChoiceItems(
-                                    at.states.map { state -> state.name }.toTypedArray(),
-                                    at.states.map { state -> tags.contains(state.tagId) }
-                                            .toBooleanArray()
-                            ) { _, which, checked ->
-                                if (checked) {
-                                    selectedItems.add(at.states[which].tagId)
-                                } else if (selectedItems.contains(at.states[which].tagId)) {
-                                    selectedItems.remove(at.states[which].tagId)
-                                }
-                            }
-                            .setPositiveButton(android.R.string.ok) { _, _ ->
-                                refreshChip(this, at, selectedItems)
-                            }
-                            .setNeutralButton("Kryssa alla", null)
-                            .setNegativeButton(android.R.string.cancel) { _, _ ->
-                            }
-                            .create()
-
-                    dialog.setOnShowListener {
-                        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
-                            for (i in 0..dialog.listView.adapter.count) {
-                                dialog.listView.setItemChecked(i, true)
-                            }
-
-                            // OnMultiChoiceClickListener is not called when we do setItemChecked
-                            selectedItems.clear()
-                            selectedItems.addAll(at.states.map { state -> state.tagId })
-                        }
-                    }
-
-                    dialog.show()
+                    ChooseChipStatesTask().execute(ChooseChipStateArgs(this, at, getTagIds(exclude = this)))
                 }
             }
 
@@ -182,7 +257,7 @@ class ReverseSearchActivity : AppCompatActivity() {
         })
     }
 
-    private fun removeChip(chip: Chip, at: Attribute) {
+    private fun removeChip(chip: Chip, at: Attribute, update: Boolean = true) {
         chip.setTag(R.id.tagIds, ArrayList<Int>())
 
         if (at.defaultStateName != null) {
@@ -198,10 +273,12 @@ class ReverseSearchActivity : AppCompatActivity() {
             chips.remove(chip)
         }
 
-        updateSearchCount()
+        if (update) {
+            updateSearchCount()
+        }
     }
 
-    private fun refreshChip(chip: Chip, at: Attribute, tags: List<Int>) {
+    private fun refreshChip(chip: Chip, at: Attribute, tags: List<Int>, update: Boolean = true) {
         val selectedStates = at.states.filter { state -> tags.contains(state.tagId) }
 
         chip.chipBackgroundColor =
@@ -213,7 +290,7 @@ class ReverseSearchActivity : AppCompatActivity() {
                 chip.text = at.name
                 chip.isCloseIconVisible = true
             } else {
-                removeChip(chip, at)
+                removeChip(chip, at, update)
             }
         } else {
             chip.text = at.name + ": " + selectedStates.joinToString(", ") { state ->
@@ -223,20 +300,49 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
 
         chip.setTag(R.id.tagIds, ArrayList(tags))
-        updateSearchCount()
+        if (update) {
+            updateSearchCount()
+        }
     }
 
-    private fun addDynamicAttribute(at: Attribute) {
-        if (at.states.isEmpty()) {
-            addChip(at, arrayListOf())
-            return
+    class ChooseNewDynamicAttributeStatesArgs constructor(val at: Attribute, val tagIds: Array<Array<Int>>) {
+    }
+
+    private inner class ChooseNewDynamicAttributeStatesTask : AsyncTask<ChooseNewDynamicAttributeStatesArgs, Void, Pair<ChooseNewDynamicAttributeStatesArgs, HashMap<Int, Int>>>() {
+        override fun doInBackground(vararg params: ChooseNewDynamicAttributeStatesArgs): Pair<ChooseNewDynamicAttributeStatesArgs, HashMap<Int, Int>> {
+            val tagIds = params[0].tagIds
+            val at = params[0].at
+            val newTagIds = arrayOf(at.tagId) + at.states.map { it.tagId }.toTypedArray()
+            val db = SignDatabase.getInstance(this@ReverseSearchActivity)
+
+            return Pair(params[0], db.getNewTagsSignCounts(tagIds, newTagIds))
         }
 
+        override fun onPostExecute(res: Pair<ChooseNewDynamicAttributeStatesArgs, HashMap<Int, Int>>) {
+            chooseNewDynamicAttributeStates(res.first.at, res.second)
+        }
+    }
+
+    private fun chooseNewDynamicAttributeStates(at: Attribute, stateCounts: HashMap<Int, Int>) {
         val selectedItems = ArrayList<Int>()
         val builder = AlertDialog.Builder(this)
-        val dialog = builder.setTitle(at.name)
+
+        val defaultStateCount = if (stateCounts.containsKey(at.tagId)) {
+            stateCounts[at.tagId]
+        } else {
+            0
+        }
+
+        val dialog = builder.setTitle("${at.name} (${defaultStateCount})")
                 .setMultiChoiceItems(
-                        at.states.map { state -> state.name }.toTypedArray(),
+                        at.states.map { state ->
+                            val count = if (stateCounts.containsKey(state.tagId)) {
+                                stateCounts[state.tagId]
+                            } else {
+                                0
+                            }
+                            "${state.name} ($count)"
+                        }.toTypedArray(),
                         null
                 ) { _, which, checked ->
                     Log.i("foo", "$which $checked")
@@ -266,6 +372,15 @@ class ReverseSearchActivity : AppCompatActivity() {
             }
         }
         dialog.show()
+    }
+
+    private fun addDynamicAttribute(at: Attribute) {
+        if (at.states.isEmpty()) {
+            addChip(at, arrayListOf())
+            return
+        }
+
+        ChooseNewDynamicAttributeStatesTask().execute(ChooseNewDynamicAttributeStatesArgs(at, getTagIds()))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -256,6 +256,39 @@ class SignDatabase(context: Context) {
         return getSignsByDescription(fixedQuery, columns, builder, limit)
     }
 
+    fun getNewTagsSignCounts(baseTagIds: Array<Array<Int>>, newTagIds: Array<Int>): HashMap<Int, Int> {
+        val builder = SQLiteQueryBuilder()
+        val selectionArgs = null
+        val groupBy = "tagid"
+        val columns = arrayOf("tagid, COUNT(signid)")
+        val sortOrder = null
+        val limit = null
+
+        val selections = baseTagIds.map {
+            val or = it.joinToString(",")
+            "signid IN (SELECT signs_tags.signid FROM signs_tags WHERE signs_tags.tagid IN ($or))"
+        } + arrayOf("tagid IN (${newTagIds.joinToString(",")})")
+
+        val selection = selections.joinToString(" AND ")
+
+        builder.tables = "signs_tags"
+
+        val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
+                groupBy, null, sortOrder, limit)
+
+        Log.i("foo", builder.buildQuery(columns, selection, selectionArgs,
+                groupBy, null, sortOrder, limit))
+
+        val counts = hashMapOf<Int, Int>()
+
+        while (cursor.moveToNext()) {
+            counts[cursor.getInt(0)] = cursor.getInt(1)
+        }
+
+        cursor.close()
+        return counts
+    }
+
     private fun getSignsByTags(tagIds: Array<Array<Int>>, columns: Array<String>, limit: String? = RESULTS_LIMIT): Cursor {
         val builder = SQLiteQueryBuilder()
         val selectionArgs = null
