@@ -38,6 +38,10 @@ class ReverseSearchActivity : AppCompatActivity() {
         mOrdboken = Ordboken.getInstance(this)
         container = findViewById(R.id.container)
 
+        intent.getIntArrayExtra("tagIds")?.let {
+            tags.addAll(it.toCollection(ArrayList()))
+        }
+
         findViewById<Button>(R.id.more).let {
             it.setOnClickListener {
                 ChooseDynamicAttributeTask().execute(ChooseDynamicAttributeArgs(getTagIds(),
