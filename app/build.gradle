@@ -65,7 +65,10 @@ apply plugin: 'kotlin-android-extensions'
 
 task genDatabaseAndTopics(type:Exec) {
     inputs.dir('data')
-    inputs.dir('../tools')
+    inputs.file('../tools/parse.py')
+    inputs.file('../tools/genattrs.py')
+    inputs.file('../tools/generate.py')
+    inputs.file('../tools/tagger.py')
     outputs.file('src/main/assets/signs.jet')
     outputs.file('src/main/java/in/rab/tsplex/Topics.kt')
     outputs.file('src/main/java/in/rab/tsplex/Attributes.kt')
