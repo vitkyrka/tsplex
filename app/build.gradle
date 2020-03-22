@@ -69,8 +69,8 @@ task genDatabaseAndTopics(type:Exec) {
     outputs.file('src/main/assets/signs.jet')
     outputs.file('src/main/java/in/rab/tsplex/Topics.kt')
     outputs.file('src/main/java/in/rab/tsplex/Attributes.kt')
-    commandLine 'sh', '-c', 'mkdir -p src/main/assets/ && rm -f src/main/assets/signs.jet && ../tools/generate.py --signs data/signs.json --chars data/chars.json --db src/main/assets/signs.jet --topics src/main/java/in/rab/tsplex/Topics.kt --attributes src/main/java/in/rab/tsplex/Attributes.kt'
-    commandLine 'sh', '-c', 'mkdir -p src/main/assets/ && rm -f src/main/assets/signs.jet && ../tools/generate.py --signs data/signs.json --chars data/chars.json --db src/main/assets/signs.jet --topics src/main/java/in/rab/tsplex/Topics.kt --attributes src/main/java/in/rab/tsplex/Attributes.kt'
+    outputs.file('src/main/java/in/rab/tsplex/DatabaseVersion.kt')
+    commandLine 'sh', '-c', 'mkdir -p src/main/assets/ && rm -f src/main/assets/signs.jet && ../tools/generate.py --signs data/signs.json --chars data/chars.json --db src/main/assets/signs.jet --topics src/main/java/in/rab/tsplex/Topics.kt --attributes src/main/java/in/rab/tsplex/Attributes.kt --dbversion src/main/java/in/rab/tsplex/DatabaseVersion.kt'
 }
 
 task cleanDatabase(type:Exec) {

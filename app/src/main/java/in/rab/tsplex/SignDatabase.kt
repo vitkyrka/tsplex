@@ -506,12 +506,11 @@ class SignDatabase(context: Context) {
 
     fun getDatabase() = mOpenHelper.database
 
-    private class SignDatabaseOpenHelper internal constructor(context: Context) : ShippedSQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION)
+    private class SignDatabaseOpenHelper internal constructor(context: Context) : ShippedSQLiteOpenHelper(context, DATABASE_NAME, null, DatabaseVersion.version)
 
     companion object {
         private const val RESULTS_LIMIT = "100"
         private const val DATABASE_NAME = "signs.jet"
-        const val DATABASE_VERSION = 43
 
         @Volatile
         private var INSTANCE: SignDatabase? = null

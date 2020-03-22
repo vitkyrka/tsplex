@@ -14,5 +14,6 @@ signs.jet
 app/release/
 .settings
 .gradle
-app/src/main/java/in/rab/tsplex/Topics.kt
 app/src/main/java/in/rab/tsplex/Attributes.kt
+app/src/main/java/in/rab/tsplex/DatabaseVersion.kt
+app/src/main/java/in/rab/tsplex/Topics.kt

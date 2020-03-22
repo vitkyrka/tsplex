@@ -6,6 +6,7 @@ import android.database.DatabaseErrorHandler
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteException
+import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -33,6 +34,7 @@ abstract class ShippedSQLiteOpenHelper @JvmOverloads constructor(private val mCo
             }
 
             try {
+                Log.d("ShippedSQLiteOpenHelper", "Copy database, mVersion ${mVersion} mWantedVersion ${mWantedVersion}")
                 copyDatabase(db)
             } catch (e: IOException) {
                 throw SQLiteException("Unable to copy database: " + e.message)

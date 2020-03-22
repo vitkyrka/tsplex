@@ -6,6 +6,8 @@ import re
 import json
 import sqlite3
 import itertools
+import time
+import jinja2
 
 from collections import defaultdict
 
@@ -46,6 +48,7 @@ def main():
     parser.add_argument('--chars', default='chars.json')
     parser.add_argument('--topics', default='Topics.kt')
     parser.add_argument('--attributes', default='Attributes.kt')
+    parser.add_argument('--dbversion', default='DatabaseVersion.kt')
     parser.add_argument('--db', default='signs.db')
     args = parser.parse_args()
 
@@ -59,6 +62,8 @@ def main():
 
     with open(args.chars, 'r') as f:
         chars = [Char(**o) for o in json.load(f)]
+
+    version = int(time.time())
 
     attrgen = AttributeGen(chars)
     signs = attrgen.tag(signs)
@@ -80,14 +85,29 @@ def main():
         f.write("\n    )\n")
         f.write("}\n")
 
+    env = jinja2.Environment(trim_blocks=False, lstrip_blocks=True,
+                             undefined=jinja2.StrictUndefined)
+
+    with open(args.dbversion, 'w') as f:
+        template = env.from_string('''
+// Auto-generated.  Do not edit.
+
+package `in`.rab.tsplex
+
+object DatabaseVersion {
+    // {{ asctime }}
+    const val version = {{ version }}
+}
+'''.lstrip())
+        f.write(template.render(version=version,
+                                asctime=time.asctime(time.localtime(version))))
+
     topictoid = dict(topicids)
 
     try:
         os.remove(args.db)
     except:
         pass
-
-    version = 43
 
     conn = sqlite3.connect(args.db)
 
