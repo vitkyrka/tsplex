@@ -145,19 +145,14 @@ class ReverseSearchActivity : AppCompatActivity() {
     }
 
     private fun chooseDynamicAttribute(counts: HashMap<Int, Int>) {
-        val dynamicAttributes = Attributes.attributes.filter { at -> at.defaultStateName == null }
+        val available = Attributes.attributes.filter {
+            it.defaultStateName == null && counts.containsKey(it.tagId) && counts[it.tagId]!! > 0
+        }
+
         val builder = AlertDialog.Builder(this)
         builder.setTitle("More")
-                .setItems(dynamicAttributes.map { at ->
-                            val count = if (counts.containsKey(at.tagId)) {
-                                counts[at.tagId]
-                            } else {
-                                0
-                            }
-                            "${at.name} ($count)"
-                        }
-                        .toTypedArray()) { _, which ->
-                    addDynamicAttribute(dynamicAttributes[which])
+                .setItems(available.map { "${it.name} (${counts[it.tagId]})" }.toTypedArray()) { _, which ->
+                    addDynamicAttribute(available[which])
                 }
                 .show()
     }
@@ -187,6 +182,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             ArrayList<Int>()
         }
 
+
         val defaultStateCount = if (stateCounts.containsKey(at.tagId)) {
             stateCounts[at.tagId]
         } else {
@@ -195,6 +191,9 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         val selectedStates =
                 at.states.filter { state -> tags.contains(state.tagId) }
+        val available = at.states.filter {
+            (stateCounts.containsKey(it.tagId) && stateCounts[it.tagId]!! > 0) || selectedStates.contains(it)
+        }
         val selectedItems =
                 ArrayList(selectedStates.map { state -> state.tagId })
         val builder = AlertDialog.Builder(this)
@@ -203,7 +202,7 @@ class ReverseSearchActivity : AppCompatActivity() {
                     at.name
                 })
                 .setMultiChoiceItems(
-                        at.states.map { state ->
+                        available.map { state ->
                             val count = if (stateCounts.containsKey(state.tagId)) {
                                 stateCounts[state.tagId]
                             } else {
@@ -211,13 +210,13 @@ class ReverseSearchActivity : AppCompatActivity() {
                             }
                             "${state.name} ($count)"
                         }.toTypedArray(),
-                        at.states.map { state -> tags.contains(state.tagId) }
+                        available.map { state -> tags.contains(state.tagId) }
                                 .toBooleanArray()
                 ) { _, which, checked ->
                     if (checked) {
-                        selectedItems.add(at.states[which].tagId)
-                    } else if (selectedItems.contains(at.states[which].tagId)) {
-                        selectedItems.remove(at.states[which].tagId)
+                        selectedItems.add(available[which].tagId)
+                    } else if (selectedItems.contains(available[which].tagId)) {
+                        selectedItems.remove(available[which].tagId)
                     }
                 }
                 .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -236,7 +235,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
                 // OnMultiChoiceClickListener is not called when we do setItemChecked
                 selectedItems.clear()
-                selectedItems.addAll(at.states.map { state -> state.tagId })
+                selectedItems.addAll(available.map { state -> state.tagId })
             }
         }
 
@@ -337,23 +336,20 @@ class ReverseSearchActivity : AppCompatActivity() {
             0
         }
 
+        val availableStates = at.states.filter {
+            stateCounts.containsKey(it.tagId) && stateCounts[it.tagId]!! > 0
+        }
+
         val dialog = builder.setTitle("${at.name} (${defaultStateCount})")
                 .setMultiChoiceItems(
-                        at.states.map { state ->
-                            val count = if (stateCounts.containsKey(state.tagId)) {
-                                stateCounts[state.tagId]
-                            } else {
-                                0
-                            }
-                            "${state.name} ($count)"
-                        }.toTypedArray(),
+                        availableStates.map { "${it.name} (${stateCounts[it.tagId]})" }.toTypedArray(),
                         null
                 ) { _, which, checked ->
                     Log.i("foo", "$which $checked")
                     if (checked) {
-                        selectedItems.add(at.states[which].tagId)
-                    } else if (selectedItems.contains(at.states[which].tagId)) {
-                        selectedItems.remove(at.states[which].tagId)
+                        selectedItems.add(availableStates[which].tagId)
+                    } else if (selectedItems.contains(availableStates[which].tagId)) {
+                        selectedItems.remove(availableStates[which].tagId)
                     }
                 }
                 .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -372,7 +368,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
                 // OnMultiChoiceClickListener is not called when we do setItemChecked
                 selectedItems.clear()
-                selectedItems.addAll(at.states.map { state -> state.tagId })
+                selectedItems.addAll(availableStates.map { state -> state.tagId })
             }
         }
         dialog.show()
