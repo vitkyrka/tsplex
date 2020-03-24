@@ -228,11 +228,9 @@ object DatabaseVersion {
 
     conn.execute("CREATE INDEX signs_segs_sign_index ON signs_segs(signid)")
     conn.execute("CREATE INDEX signs_segs_seg_index ON signs_segs(segid)")
-    conn.execute("CREATE INDEX signs_segs_index ON signs_segs(signid, segid)")
 
     conn.execute("CREATE INDEX segs_tags_sign_index ON segs_tags(segid)")
     conn.execute("CREATE INDEX segs_tags_tag_index ON segs_tags(tagid)")
-    conn.execute("CREATE INDEX segs_tags_index ON segs_tags(segid, tagid)")
 
     conn.execute("INSERT INTO words(words) VALUES (?)", ('optimize',))
     conn.execute("INSERT INTO sentences(sentences) VALUES (?)", ('optimize',))
