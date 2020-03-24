@@ -166,7 +166,7 @@ class Motion(object):
         return tags
 
 @attr.s
-class Sign(object):
+class Segment(object):
     hands: int = attr.ib(default=1)
     position = attr.ib(default=None)
     left: Hand = attr.ib(default=None)
@@ -197,7 +197,7 @@ class Tagger(object):
         self.charmap = charmap
 
     def parse(self, ops):
-        s = Sign()
+        s = Segment()
 
         logging.debug(ops)
         artend = next(i for i, op in enumerate(ops) if \
@@ -284,12 +284,6 @@ class Tagger(object):
         ops = [c.name for c in chars]
 
         try:
-            idx = ops.index('other_separator_segments')
-            return None
-        except ValueError:
-            pass
-
-        try:
             idx = ops.index('other_separator_hands')
             return None
         except ValueError:
@@ -299,7 +293,11 @@ class Tagger(object):
             return None
 
         # Broken transcriptions
-        if idn in [17172, 1199, 18548]:
+        if idn in [6966, 17172, 1199, 18548, 13286, 15115,
+                   16596, 16608, 17066, 18175, 18744,
+                   18797, 19100, 19133]:
             return None
 
-        return self.parse(ops)
+        segs = [list(group) for key, group in itertools.groupby(ops, lambda op:op == 'other_separator_segments') if not key]
+
+        return [self.parse(seg) for seg in segs]

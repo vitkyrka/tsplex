@@ -138,11 +138,13 @@ class AttributeGen(object):
     def tag(self, signs):
         for sign in signs:
             idn = int(sign['id-nummer'])
-            s = self.tagger.tag(sign)
-            if not s:
+            segs = self.tagger.tag(sign)
+            if not segs:
                 continue
 
-            tags = self.massage_tags(s, s.tags)
+            tags = []
+            for seg in segs:
+                tags.extend(self.massage_tags(seg, seg.tags))
 
             tagids = []
             for t in tags:
