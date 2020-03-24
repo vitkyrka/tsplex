@@ -2,6 +2,7 @@ package `in`.rab.tsplex
 
 import android.os.Bundle
 import android.util.Log
+import java.lang.NumberFormatException
 
 class SearchFragment : ItemListFragment() {
     private var mQuery: String? = null
@@ -68,7 +69,11 @@ class SearchFragment : ItemListFragment() {
 
             return ArrayList(db.getExampleSigns(ex))
         } else if (query.startsWith("tags:")) {
-            val tagIds = query.substring(5).split(";").map { it.split(",").map { tagId -> Integer.valueOf(tagId) }.toTypedArray() }.toTypedArray()
+            val tagIds = try {
+                query.substring(5).split(";").map { it.split(",").map { tagId -> Integer.valueOf(tagId) }.toTypedArray() }.toTypedArray()
+            } catch (e: NumberFormatException) {
+                arrayOf<Array<Int>>()
+            }
 
             return ArrayList(db.getSignsByTags(tagIds))
         } else {
