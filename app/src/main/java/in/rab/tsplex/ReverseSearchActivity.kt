@@ -74,7 +74,10 @@ class ReverseSearchActivity : AppCompatActivity() {
             val subTags = it.getTag(R.id.tagIds) as ArrayList<Int>
 
             if (subTags.isEmpty()) {
-                tagIds.add(arrayOf(it.getTag(R.id.defaultTagId) as Int))
+                val defTag = it.getTag(R.id.defaultTagId) as Int
+                if (defTag != -1) {
+                    tagIds.add(arrayOf(defTag))
+                }
             } else {
                 tagIds.add(subTags.toTypedArray())
             }
@@ -134,9 +137,10 @@ class ReverseSearchActivity : AppCompatActivity() {
             val chip = params[0].chip
             val at = params[0].at
             val db = SignDatabase.getInstance(this@ReverseSearchActivity)
-            val newTagIds = arrayOf(at.tagId) + at.states.map { it.tagId }.toTypedArray()
+            val headTagId = if (at.tagId == -1) arrayOf() else arrayOf(at.tagId)
+            val stateTagIds = at.states.map { it.tagId }.toTypedArray()
 
-            return Pair(params[0], db.getNewTagsSignCounts(tagIds, newTagIds))
+            return Pair(params[0], db.getNewTagsSignCounts(tagIds, headTagId + stateTagIds))
         }
 
         override fun onPostExecute(res: Pair<ChooseChipStateArgs, HashMap<Int, Int>>) {
@@ -315,10 +319,11 @@ class ReverseSearchActivity : AppCompatActivity() {
         override fun doInBackground(vararg params: ChooseNewDynamicAttributeStatesArgs): Pair<ChooseNewDynamicAttributeStatesArgs, HashMap<Int, Int>> {
             val tagIds = params[0].tagIds
             val at = params[0].at
-            val newTagIds = arrayOf(at.tagId) + at.states.map { it.tagId }.toTypedArray()
             val db = SignDatabase.getInstance(this@ReverseSearchActivity)
+            val headTagId = if (at.tagId == -1) arrayOf() else arrayOf(at.tagId)
+            val stateTagIds = at.states.map { it.tagId }.toTypedArray()
 
-            return Pair(params[0], db.getNewTagsSignCounts(tagIds, newTagIds))
+            return Pair(params[0], db.getNewTagsSignCounts(tagIds, headTagId + stateTagIds))
         }
 
         override fun onPostExecute(res: Pair<ChooseNewDynamicAttributeStatesArgs, HashMap<Int, Int>>) {

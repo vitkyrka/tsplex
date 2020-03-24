@@ -121,18 +121,6 @@ class AttributeGen(object):
         if any(t for t in tags if 'motion_type_moving' in t):
             tags.append('action-motion_type_moving')
 
-        tags.extend([
-            'hands_any',
-            'position_any',
-            'position-relation_any',
-            'right-handshape_any',
-            'right-attitude_pointed_any',
-            'right-attitude_turned_any',
-            'left-handshape_any',
-            'left-attitude_pointed_any',
-            'left-attitude_turned_any',
-        ])
-
         return sorted(list(set(tags)))
 
     def tag(self, signs):
@@ -282,7 +270,7 @@ class AttributeGen(object):
                 tags.remove(t)
 
                 statename = t.replace('action-', '').replace(attrib.stateprefix, '').lstrip('-')
-                if not statename or 'any' in statename:
+                if not statename or 'any' in statename and not attrib.defaultstate:
                     assert attrib.tagid == -1
                     attrib.tagid = self.tagmap[t]
                     continue
@@ -293,7 +281,8 @@ class AttributeGen(object):
             attrib.states = sorted(attrib.states, key=lambda s:transmap[s.name])
 
 
-        assert not any(a for a in attribs if a.tagid == -1)
+        assert not any(a for a in attribs if a.defaultstate and a.tagid != -1)
+        assert not any(a for a in attribs if not a.defaultstate and a.tagid == -1)
         assert not tags
 
         env = jinja2.Environment(trim_blocks=False, lstrip_blocks=True,
