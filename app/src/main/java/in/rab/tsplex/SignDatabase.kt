@@ -12,7 +12,7 @@ import java.util.regex.Pattern
 
 class SignDatabase(context: Context) {
 
-    private val mSignColumns = arrayOf("signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples", "occurence")
+    private val mSignColumns = arrayOf("DISTINCT signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples", "occurence")
     private val mExampleColumns = arrayOf("examples.video", "examples.desc", "examples.signid", "signs.sv")
     private val mOpenHelper: SignDatabaseOpenHelper
 
@@ -260,18 +260,18 @@ class SignDatabase(context: Context) {
         val builder = SQLiteQueryBuilder()
         val selectionArgs = null
         val groupBy = "tagid"
-        val columns = arrayOf("tagid, COUNT(signid)")
+        val columns = arrayOf("segs_tags.tagid, COUNT(DISTINCT signs_segs.signid)")
         val sortOrder = null
         val limit = null
 
         val selections = baseTagIds.map {
             val or = it.joinToString(",")
-            "signid IN (SELECT signs_tags.signid FROM signs_tags WHERE signs_tags.tagid IN ($or))"
+            "signs_segs.segid IN (SELECT segs_tags.segid FROM segs_tags WHERE segs_tags.tagid IN ($or))"
         } + arrayOf("tagid IN (${newTagIds.joinToString(",")})")
 
         val selection = selections.joinToString(" AND ")
 
-        builder.tables = "signs_tags"
+        builder.tables = "signs_segs JOIN segs_tags ON signs_segs.segid == segs_tags.segid"
 
         val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 groupBy, null, sortOrder, limit)
@@ -297,12 +297,12 @@ class SignDatabase(context: Context) {
 
         val selections = tagIds.map {
             val or = it.joinToString(",")
-            "signs.id IN (SELECT signs_tags.signid FROM signs_tags WHERE signs_tags.tagid IN ($or))"
+            "signs_segs.segid IN (SELECT segs_tags.segid FROM segs_tags WHERE segs_tags.tagid IN ($or))"
         }
 
         val selection = selections.joinToString(" AND ")
 
-        builder.tables = "signs"
+        builder.tables = "signs JOIN signs_segs ON signs.id == signs_segs.signid"
 
         val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 groupBy, null, sortOrder, limit)
@@ -327,7 +327,7 @@ class SignDatabase(context: Context) {
 
     fun getSignsCountByTags(tagIds: Array<Array<Int>>): Int {
         var signs = 0
-        val cursor = getSignsByTags(tagIds, arrayOf("COUNT(signs.id)"))
+        val cursor = getSignsByTags(tagIds, arrayOf("COUNT(DISTINCT signs.id)"), limit = null)
 
         while (cursor.moveToNext()) {
             signs = cursor.getInt(0)

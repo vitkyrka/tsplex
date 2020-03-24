@@ -137,27 +137,30 @@ class AttributeGen(object):
 
     def tag(self, signs):
         for sign in signs:
+            sign['tagids'] = []
+
             idn = int(sign['id-nummer'])
             segs = self.tagger.tag(sign)
             if not segs:
                 continue
 
-            tags = []
             for seg in segs:
-                tags.extend(self.massage_tags(seg, seg.tags))
+                assert seg.tags
 
-            tagids = []
-            for t in tags:
-                try:
-                    v = self.tagmap[t]
-                except KeyError:
-                    v = self.tagidx
-                    self.tagmap[t] = self.tagidx
-                    self.tagidx += 1
+                tags = self.massage_tags(seg, seg.tags)
 
-                tagids.append(v)
+                tagids = []
+                for t in tags:
+                    try:
+                        v = self.tagmap[t]
+                    except KeyError:
+                        v = self.tagidx
+                        self.tagmap[t] = self.tagidx
+                        self.tagidx += 1
 
-            sign['tagids'] = tagids
+                    tagids.append(v)
+
+                    sign['tagids'].append(tuple(tagids))
 
         return signs
 

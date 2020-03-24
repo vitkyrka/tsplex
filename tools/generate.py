@@ -134,13 +134,17 @@ object DatabaseVersion {
     conn.execute("CREATE TABLE folders (id INTEGER PRIMARY KEY, name TEXT, lastused INTEGER)")
     conn.execute("CREATE TABLE bookmarks (id INTEGER, date INTEGER, folderid INTEGER, UNIQUE (id) ON CONFLICT REPLACE)")
 
-    conn.execute("CREATE TABLE signs_tags (signid INTEGER, tagid INTEGER)")
+    conn.execute("CREATE TABLE segs_tags (segid INTEGER, tagid INTEGER)")
+    conn.execute("CREATE TABLE signs_segs (signid INTEGER, segid INTEGER)")
 
     conn.execute("CREATE TABLE android_metadata (locale TEXT DEFAULT en_US)")
     conn.execute("INSERT INTO android_metadata VALUES ('en_US')")
 
     conn.execute("COMMIT")
     conn.execute("BEGIN")
+
+    segmap = {}
+    cursegid = 1
 
     for sign in signs:
         thisid = int(sign['id-nummer'])
@@ -201,9 +205,19 @@ object DatabaseVersion {
         conn.executemany("insert into homonyms values (?, ?)",
                          ((thisid, otherid) for otherid in sign['kan-aven-betyda']))
 
-        if sign['tagids']:
-            conn.executemany("insert into signs_tags values (?, ?)",
-                             zip(itertools.repeat(thisid), sign['tagids']))
+        for tagids in sign['tagids']:
+            try:
+                segid = segmap[tagids]
+            except KeyError:
+                segid = cursegid
+                segmap[tagids] = segid
+                cursegid += 1
+
+                conn.executemany("insert into segs_tags values (?, ?)",
+                                 zip(itertools.repeat(segid), tagids))
+
+            conn.execute("insert into signs_segs values (?, ?)",
+                         (thisid, segid))
 
     conn.execute("CREATE INDEX signs_index ON signs(id)")
     conn.execute("CREATE INDEX examples_example_index ON examples_signs(exampleid)")
@@ -212,9 +226,13 @@ object DatabaseVersion {
     conn.execute("CREATE INDEX homonyms_index ON homonyms(id)")
     conn.execute("CREATE INDEX explanations_index ON explanations(id)")
 
-    conn.execute("CREATE INDEX signs_tags_sign_index ON signs_tags(signid)")
-    conn.execute("CREATE INDEX signs_tags_tag_index ON signs_tags(tagid)")
-    conn.execute("CREATE INDEX signs_tags_index ON signs_tags(signid, tagid)")
+    conn.execute("CREATE INDEX signs_segs_sign_index ON signs_segs(signid)")
+    conn.execute("CREATE INDEX signs_segs_seg_index ON signs_segs(segid)")
+    conn.execute("CREATE INDEX signs_segs_index ON signs_segs(signid, segid)")
+
+    conn.execute("CREATE INDEX segs_tags_sign_index ON segs_tags(segid)")
+    conn.execute("CREATE INDEX segs_tags_tag_index ON segs_tags(tagid)")
+    conn.execute("CREATE INDEX segs_tags_index ON segs_tags(segid, tagid)")
 
     conn.execute("INSERT INTO words(words) VALUES (?)", ('optimize',))
     conn.execute("INSERT INTO sentences(sentences) VALUES (?)", ('optimize',))
