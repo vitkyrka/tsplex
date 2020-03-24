@@ -189,7 +189,7 @@ class AttributeGen(object):
             'relation_any': 'Alla',
             'handshape_any': 'Alla handformer',
             'attitude_pointed_any': 'Alla riktningar',
-            'attitude_turned_any': 'Alla vridningar',
+            'attitude_turned_any': 'Alla vändningar',
 
             'handshape_same': '(Samma handform)',
             'attitude_pointed_same': '(Samma riktning)',
