@@ -49,7 +49,7 @@ class Position(object):
     @classmethod
     def parse(cls, ops):
         pos = next(ops)
-        assert 'position' in pos or 'handshape' in pos
+        assert pos.startswith('position') or pos.startswith('handshape')
 
         p = cls(pos)
 
@@ -212,13 +212,13 @@ class Tagger(object):
         hands = sum('handshape' in op for op in artops)
         logging.debug(f'hands: {hands}')
 
-        if ops[0].startswith('position') or ops[0].startswith('handshape'):
-            s.position = Position.parse(peekable(iter(artops)))
-
         handops = peekable(op for op in artops if 'relation' not in op and 'position' not in op)
         if hands > 1:
             s.left = Hand.parse(handops)
         s.right = Hand.parse(handops)
+
+        if ops[0].startswith('position') or (hands > 1 and ops[0].startswith('handshape')):
+            s.position = Position.parse(peekable(iter(artops)))
 
         if ops[0].startswith('handshape'):
             hands = 1
