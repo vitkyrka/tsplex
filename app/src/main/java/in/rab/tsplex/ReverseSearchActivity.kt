@@ -38,6 +38,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         val actionBar = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.title = "Teckenväljare"
 
         mOrdboken = Ordboken.getInstance(this)
         container = findViewById(R.id.container)
@@ -67,7 +68,6 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
     }
 
-
     private fun getTagIds(exclude: Chip? = null): Array<Array<Int>> {
         val tagIds = arrayListOf<Array<Int>>()
 
@@ -88,6 +88,16 @@ class ReverseSearchActivity : AppCompatActivity() {
             }
         }
         return tagIds.toTypedArray()
+    }
+
+    private fun resetFilters() {
+        tags.clear()
+
+        chips.forEach {
+            removeChip(it, update = false)
+        }
+
+        updateSearchCount()
     }
 
     private fun search() {
@@ -271,6 +281,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         flex.addView(Chip(this).apply {
             setTag(R.id.defaultTagId, at.tagId)
+            setTag(R.id.attribute, at)
             // setEnsureMinTouchTargetSize(false)
             chips.add(this)
             refreshChip(this, at, initialTags, update)
@@ -282,12 +293,13 @@ class ReverseSearchActivity : AppCompatActivity() {
             }
 
             setOnCloseIconClickListener {
-                removeChip(this, at)
+                removeChip(this)
             }
         })
     }
 
-    private fun removeChip(chip: Chip, at: Attribute, update: Boolean = true) {
+    private fun removeChip(chip: Chip, update: Boolean = true) {
+        val at = chip.getTag(R.id.attribute) as Attribute
         chip.setTag(R.id.tagIds, ArrayList<Int>())
 
         if (!at.dynamic) {
@@ -320,7 +332,7 @@ class ReverseSearchActivity : AppCompatActivity() {
                 chip.text = at.name
                 chip.isCloseIconVisible = true
             } else {
-                removeChip(chip, at, update)
+                removeChip(chip, update)
             }
         } else {
             val stateString = selectedStates.joinToString(", ") { state ->
@@ -417,11 +429,16 @@ class ReverseSearchActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_search, menu)
+        menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.reverseSearch) {
+            resetFilters()
+            return true
+        }
+
         if (mOrdboken!!.onOptionsItemSelected(this, item)) {
             return true
         }
