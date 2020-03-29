@@ -337,6 +337,50 @@ class SignDatabase(context: Context) {
         return signs
     }
 
+    fun getTags(id: Int): Array<Array<Int>> {
+        val builder = SQLiteQueryBuilder()
+        val selectionArgs = arrayOf(id.toString())
+        val groupBy = null
+        val limit = null
+        val sortOrder = "segs_tags.segid"
+        val columns = arrayOf("segs_tags.segid, segs_tags.tagid")
+        val selection = "signs.id = ?"
+
+        builder.tables = "signs JOIN signs_segs ON signs.id == signs_segs.signid JOIN segs_tags ON signs_segs.segid == segs_tags.segid"
+
+        val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
+                groupBy, null, sortOrder, limit)
+
+        Log.i("foo", builder.buildQuery(columns, selection, selectionArgs,
+                groupBy, null, sortOrder, limit))
+
+        var curSeg = -1
+        var segTagIds = arrayListOf<Int>()
+        val tagIds = arrayListOf<Array<Int>>()
+
+        while (cursor.moveToNext()) {
+            val seg = cursor.getInt(0)
+            val tagId = cursor.getInt(1)
+
+            if (seg == curSeg) {
+                segTagIds.add(tagId)
+            } else {
+                if (segTagIds.isNotEmpty()) {
+                    tagIds.add(segTagIds.toTypedArray())
+                }
+
+                segTagIds = arrayListOf()
+                curSeg = seg
+            }
+        }
+
+        if (segTagIds.isNotEmpty()) {
+            tagIds.add(segTagIds.toTypedArray())
+        }
+
+        return tagIds.toTypedArray()
+    }
+
     fun search(query: String, columns: Array<String>): Cursor {
         val builder = SQLiteQueryBuilder()
         builder.setProjectionMap(buildColumnMap())

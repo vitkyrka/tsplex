@@ -211,6 +211,29 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
         }
     }
 
+    private inner class FindSimilarTask : AsyncTask<Void, Void, Array<Array<Int>>>() {
+        override fun doInBackground(vararg params: Void): Array<Array<Int>>? {
+            mSign?.let {
+                val db = SignDatabase.getInstance(this@SignActivity)
+                return db.getTags(it.id)
+            }
+
+            return arrayOf()
+        }
+
+        override fun onPostExecute(tagIds: Array<Array<Int>>) {
+            val flat = arrayListOf<Int>()
+
+            tagIds.forEach {
+                flat.addAll(it)
+            }
+
+            startActivity(Intent(this@SignActivity, ReverseSearchActivity::class.java).apply {
+                putIntegerArrayListExtra("tagIds", flat)
+            })
+        }
+    }
+
     private inner class StarToggleTask : AsyncTask<Int, Void, Boolean>() {
         override fun doInBackground(vararg params: Int?): Boolean? {
             val folderId = params[0]!!
@@ -291,6 +314,11 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
             }
 
             StarToggleTask().execute(0)
+            return true
+        }
+
+        if (item.itemId == R.id.findSimilar) {
+            FindSimilarTask().execute()
             return true
         }
 

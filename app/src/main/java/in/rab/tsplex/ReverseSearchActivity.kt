@@ -43,9 +43,11 @@ class ReverseSearchActivity : AppCompatActivity() {
         mOrdboken = Ordboken.getInstance(this)
         container = findViewById(R.id.container)
 
-        intent.getIntArrayExtra("tagIds")?.let {
-            tags.addAll(it.toCollection(ArrayList()))
+        intent.getIntegerArrayListExtra("tagIds")?.let {
+            tags.addAll(it)
         }
+
+        Log.i("tags", tags.toString())
 
         findViewById<Button>(R.id.more).let {
             it.setOnClickListener {
@@ -56,6 +58,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         Attributes.attributes.forEach { at ->
             val activeStates = at.states.filter { state -> tags.contains(state.tagId) }
+            Log.i("foo", activeStates.toString())
             if (!at.dynamic || activeStates.isNotEmpty()) {
                 addChip(at, activeStates.map { state -> state.tagId }, update = false)
             }

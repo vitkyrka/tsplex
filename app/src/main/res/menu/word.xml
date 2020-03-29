@@ -9,6 +9,11 @@
         app:showAsAction="ifRoom"
         android:title="@string/add_bookmark" />
 
+    <item android:id="@+id/findSimilar"
+        android:icon="@drawable/ic_image_search"
+        android:title="@string/find_simliar"
+        app:showAsAction="never" />
+
     <item android:id="@+id/openInBrowser"
         android:title="@string/open_in_browser"
         app:showAsAction="never" />

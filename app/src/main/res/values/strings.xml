@@ -33,6 +33,7 @@
     <string name="clear_sign_history">Rensa visningshistorik</string>
     <string name="remove_all_bookmarks">Ta bort alla bokmärken</string>
     <string name="open_in_browser">Öppna i webbläsare</string>
+    <string name="find_simliar">Hitta liknande tecken</string>
     <string name="open_source_licenses">Licenser för öppen källkod</string>
     <string name="about">Om</string>
     <string name="about_the_app">Om appen</string>
