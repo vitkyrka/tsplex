@@ -75,7 +75,7 @@ class AttributeGen(object):
             'attitude_turned_symmetric': '(Symmetrisk vändning)',
 
             # Titles for filters in UI
-            'hands/position': 'Händer / Läge',
+            '': '',
             'hands': 'Händer',
             'position': 'Läge',
             'right': 'Höger hand',
@@ -223,12 +223,12 @@ class AttributeGen(object):
 
         attribs = [
             Attribute(name='hands',
-                      group='hands/position',
+                      group='',
                       defaultstate='hands_any',
                       tagprefix='hands_',
                       stateprefix=''),
             Attribute(name='position',
-                      group='hands/position',
+                      group='',
                       defaultstate='position_any',
                       tagprefix='position_',
                       stateprefix=''),

@@ -267,13 +267,15 @@ class ReverseSearchActivity : AppCompatActivity() {
                 chipSpacingHorizontal = 5
             }
 
-            container.addView(TextView(this).apply {
-                text = at.group
-                val tv = TypedValue()
-                if (context.theme.resolveAttribute(R.attr.colorOnSurface, tv, true)) {
-                    setTextColor(tv.data)
-                }
-            })
+            if (at.group.isNotEmpty()) {
+                container.addView(TextView(this).apply {
+                    text = at.group
+                    val tv = TypedValue()
+                    if (context.theme.resolveAttribute(R.attr.colorOnSurface, tv, true)) {
+                        setTextColor(tv.data)
+                    }
+                })
+            }
 
             container.addView(f)
             f
