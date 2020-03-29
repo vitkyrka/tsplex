@@ -6,21 +6,25 @@ import android.content.res.ColorStateList
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.chip.Chip
 
 
 class ReverseSearchActivity : AppCompatActivity() {
     private var mOrdboken: Ordboken? = null
-    private lateinit var container: FlexboxLayout
+    private lateinit var container: LinearLayout
+    private var holderMap = mutableMapOf<String, FlexboxLayout>()
     val tags: ArrayList<Int> = arrayListOf()
     val chips = ArrayList<Chip>()
 
@@ -45,13 +49,13 @@ class ReverseSearchActivity : AppCompatActivity() {
         findViewById<Button>(R.id.more).let {
             it.setOnClickListener {
                 ChooseDynamicAttributeTask().execute(ChooseDynamicAttributeArgs(getTagIds(),
-                        Attributes.attributes.filter { at -> at.defaultStateName == null }.map { it.tagId }.toTypedArray()))
+                        Attributes.attributes.filter { at -> at.dynamic }.map { it.tagId }.toTypedArray()))
             }
         }
 
         Attributes.attributes.forEach { at ->
             val activeStates = at.states.filter { state -> tags.contains(state.tagId) }
-            if (at.defaultStateName != null || activeStates.isNotEmpty()) {
+            if (!at.dynamic || activeStates.isNotEmpty()) {
                 addChip(at, activeStates.map { state -> state.tagId }, update = false)
             }
         }
@@ -62,6 +66,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             search()
         }
     }
+
 
     private fun getTagIds(exclude: Chip? = null): Array<Array<Int>> {
         val tagIds = arrayListOf<Array<Int>>()
@@ -150,7 +155,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
     private fun chooseDynamicAttribute(counts: HashMap<Int, Int>) {
         val available = Attributes.attributes.filter {
-            it.defaultStateName == null && counts.containsKey(it.tagId) && counts[it.tagId]!! > 0
+            it.dynamic && counts.containsKey(it.tagId) && counts[it.tagId]!! > 0
         }
 
         val builder = AlertDialog.Builder(this)
@@ -202,7 +207,7 @@ class ReverseSearchActivity : AppCompatActivity() {
                 ArrayList(selectedStates.map { state -> state.tagId })
         val builder = AlertDialog.Builder(this)
         val dialog = builder
-                .setTitle(if (at.defaultStateName == null) "${at.name} (${defaultStateCount})" else {
+                .setTitle(if (at.dynamic) "${at.name} (${defaultStateCount})" else {
                     at.name
                 })
                 .setMultiChoiceItems(
@@ -247,7 +252,24 @@ class ReverseSearchActivity : AppCompatActivity() {
     }
 
     private fun addChip(at: Attribute, initialTags: List<Int>, update: Boolean = true) {
-        container.addView(Chip(this).apply {
+        val flex = holderMap.getOrPut(at.group, {
+            val f = FlexboxLayout(this).apply {
+                flexWrap = FlexWrap.WRAP
+            }
+
+            container.addView(TextView(this).apply {
+                text = at.group
+                val tv = TypedValue()
+                if (context.theme.resolveAttribute(R.attr.colorOnSurface, tv, true)) {
+                    setTextColor(tv.data)
+                }
+            })
+
+            container.addView(f)
+            f
+        })
+
+        flex.addView(Chip(this).apply {
             setTag(R.id.defaultTagId, at.tagId)
             chips.add(this)
             refreshChip(this, at, initialTags, update)
@@ -267,8 +289,8 @@ class ReverseSearchActivity : AppCompatActivity() {
     private fun removeChip(chip: Chip, at: Attribute, update: Boolean = true) {
         chip.setTag(R.id.tagIds, ArrayList<Int>())
 
-        if (at.defaultStateName != null) {
-            chip.text = "${at.name}: ${at.defaultStateName}"
+        if (!at.dynamic) {
+            chip.text = at.defaultStateName
             chip.isCloseIconVisible = false
             chip.chipBackgroundColor =
                     ColorStateList.valueOf(ContextCompat.getColor(this, android.R.color.transparent))
@@ -276,7 +298,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             chip.chipStrokeColor =
                     ColorStateList.valueOf(ContextCompat.getColor(this, android.R.color.darker_gray))
         } else {
-            container.removeView(chip)
+            (chip.parent as FlexboxLayout).removeView(chip)
             chips.remove(chip)
         }
 
@@ -293,15 +315,20 @@ class ReverseSearchActivity : AppCompatActivity() {
         chip.chipStrokeWidth = 0f
 
         if (selectedStates.isEmpty()) {
-            if (at.defaultStateName == null) {
+            if (at.dynamic) {
                 chip.text = at.name
                 chip.isCloseIconVisible = true
             } else {
                 removeChip(chip, at, update)
             }
         } else {
-            chip.text = at.name + ": " + selectedStates.joinToString(", ") { state ->
+            val stateString = selectedStates.joinToString(", ") { state ->
                 state.name
+            }
+            chip.text = if (at.dynamic) {
+                at.name + ": " + stateString
+            } else {
+                stateString
             }
             chip.isCloseIconVisible = true
         }

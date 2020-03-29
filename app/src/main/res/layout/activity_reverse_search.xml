@@ -34,43 +34,48 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/container"
-            android:layout_margin="2dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:flexWrap="wrap">
-        </com.google.android.flexbox.FlexboxLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5dp">
 
-        <Button
-            android:id="@+id/more"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="1dp"
-            android:text="+ Mer" />
+            <LinearLayout
+                android:id="@+id/container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/info"
-            />
+            <Button
+                android:id="@+id/more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
+                android:text="+ Aktion" />
 
-        <Button
-            android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="1dp"
-            android:text="Search" />
+            <TextView
+                android:id="@+id/info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?colorOnSurface" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
+                android:drawableStart="@drawable/ic_image_search"
+                android:text="Search" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

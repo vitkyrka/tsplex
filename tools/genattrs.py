@@ -18,6 +18,7 @@ from tagger import Tagger
 @attr.s
 class Attribute(object):
     name: str = attr.ib()
+    group: str = attr.ib()
     tagprefix: str = attr.ib()
     stateprefix: str = attr.ib()
     defaultstate: str = attr.ib(None)
@@ -195,9 +196,9 @@ class AttributeGen(object):
             'motion_type_fingers': 'Fingrarna',
 
             'hands_any': 'En eller två',
-            'position_any': 'Alla',
-            'relation_any': 'Alla',
-            'handshape_any': 'Alla handformer',
+            'position_any': 'Alla lägen',
+            'relation_any': 'Alla lägesrelationer',
+            'handshape_any': 'Alla former',
             'attitude_pointed_any': 'Alla riktningar',
             'attitude_turned_any': 'Alla vändningar',
 
@@ -208,47 +209,58 @@ class AttributeGen(object):
             'attitude_turned_symmetric': '(Symmetrisk vändning)',
 
             # Titles for filters in UI
+            'hands/position': 'Händer / Läge',
             'hands': 'Händer',
             'position': 'Läge',
             'position_relation': 'Lägesrelation',
-            'right': 'Höger',
-            'left': 'Vänster',
+            'right': 'Höger hand',
+            'left': 'Vänster hand',
+            'actions': 'Aktioner',
         })
 
         attribs = [
             Attribute(name='hands',
+                      group='hands/position',
                       defaultstate='hands_any',
                       tagprefix='hands_',
                       stateprefix=''),
             Attribute(name='position',
+                      group='hands/position',
                       defaultstate='position_any',
                       tagprefix='position_',
                       stateprefix=''),
             Attribute(name='position_relation',
+                      group='hands/position',
                       defaultstate='relation_any',
                       tagprefix='position-relation',
                       stateprefix='position-'),
             Attribute(name='right',
+                      group='right',
                       defaultstate='handshape_any',
                       tagprefix='right-handshape',
                       stateprefix='right-'),
             Attribute(name='right',
+                      group='right',
                       defaultstate='attitude_pointed_any',
                       tagprefix='right-attitude_pointed',
                       stateprefix='right-'),
             Attribute(name='right',
+                      group='right',
                       defaultstate='attitude_turned_any',
                       tagprefix='right-attitude_turned',
                       stateprefix='right-'),
             Attribute(name='left',
+                      group='left',
                       defaultstate='handshape_any',
                       tagprefix='left-handshape',
                       stateprefix='left-'),
             Attribute(name='left',
+                      group='left',
                       defaultstate='attitude_pointed_any',
                       tagprefix='left-attitude_pointed',
                       stateprefix='left-'),
             Attribute(name='left',
+                      group='left',
                       defaultstate='attitude_turned_any',
                       tagprefix='left-attitude_turned',
                       stateprefix='left-'),
@@ -265,6 +277,7 @@ class AttributeGen(object):
 
             action = parts[1]
             actionattribs.append(Attribute(name=action,
+                                           group='actions',
                                            tagprefix=t,
                                            stateprefix=action))
 
@@ -309,6 +322,7 @@ object Attributes {
     {% for attr in attribs %}
         Attribute(
             name = "{{ transmap[attr.name] }}",
+            group = "{{ transmap[attr.group] }}",
             {% if attr.defaultstate %}
             defaultStateName = "{{ transmap[attr.defaultstate] }}",
             {% endif %}
