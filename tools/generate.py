@@ -67,9 +67,11 @@ def main():
 
     attrgen = AttributeGen(chars)
     signs = attrgen.tag(signs)
+    attribs = attrgen.get_attribs()
+    attrgen.validate(attribs, signs)
 
     with open(args.attributes, 'w') as f:
-        f.write(attrgen.gen())
+        f.write(attrgen.gen(attribs))
 
     topicids = get_topic_ids(signs)
     with open(args.topics, 'w') as f:
