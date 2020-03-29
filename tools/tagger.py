@@ -65,12 +65,7 @@ class Position(object):
 
     @property
     def tags(self):
-        if self.position.startswith('position'):
-            p = self.position
-        else:
-            p = f'position_hand'
-
-        tags = [p]
+        tags = [self.position]
         if self.relation:
             tags.append(f'position-{self.relation}')
 

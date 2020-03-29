@@ -57,9 +57,8 @@ class AttributeGen(object):
             'hands_one': 'En',
             'hands_two': 'Två, båda aktiva',
             'hands_two_but_one_active': 'Två, en aktiv',
-            'position_hand': 'Vänstra handen',
-
-            'position_unspecified': 'Neutralt läge framför kroppen',
+            'position_hand': '(Vänstra handen)',
+            'position_unspecified': '(Neutrala läget framför kroppen)',
 
             'motion_type_moving': 'Förs',
             'motion_type_fingers': 'Fingrarna',
@@ -88,6 +87,9 @@ class AttributeGen(object):
     def massage_tag(self, t):
         if t.endswith('modifier_medial_contact'):
             return 'action-interaction_type_contact'
+
+        if t.startswith('handshape'):
+            return 'position_hand'
 
         # The states for these attributes are not complete.  See validate().
         if 'action-interaction_type_diverging-modifier' in t:
