@@ -45,6 +45,7 @@ class AttributeGen(object):
             # transcriptions
             'interaction_type_angling': 'Vinkelkontakt',
             'interaction_type_diverging': 'Förs från varandra',
+            'interaction_type_entering': 'Entré / Flätas',
             'interaction_type_converging': 'Förs mot varandra',
             'interaction_type_crossing': 'Korskontakt',
             'interaction_type_exchanging': 'Byter plats med varandra',
@@ -58,6 +59,8 @@ class AttributeGen(object):
             'hands_two': 'Två händer',
             'position_hand': '(På den andra handen)',
             'position_unspecified': '(Neutrala läget framför kroppen)',
+
+            'contact_unspecified': '(Ospecificerad kontakt)',
 
             'motion_type_moving': 'Förs',
             'motion_type_fingers': 'Fingrarna',
@@ -85,7 +88,9 @@ class AttributeGen(object):
 
     def massage_tag(self, t):
         if t.endswith('modifier_medial_contact'):
-            return 'action-interaction_type_contact'
+            return 'action-interaction_type_contact-modifier_medial_contact'
+        if t == 'action-interaction_type_contact':
+            return 'action-interaction_type_contact-contact_unspecified'
 
         if t.startswith('handshape'):
             return 'position_hand'
@@ -128,7 +133,14 @@ class AttributeGen(object):
                 ]:
                 parts[1] = 'motion_type_fingers-' + parts[1]
                 return '-'.join(parts)
-
+            elif parts[1] in [
+                'interaction_type_angling',
+                'interaction_type_crossing',
+                'interaction_type_entering',
+                'interaction_type_hooking'
+                ]:
+                parts[1] = 'interaction_type_contact-' + parts[1]
+                return '-'.join(parts)
 
         return t
 
@@ -185,6 +197,9 @@ class AttributeGen(object):
 
         if any(t for t in tags if 'fingers' in t):
             tags.append('action-motion_type_fingers')
+
+        if any(t for t in tags if 'contact' in t):
+            tags.append('action-interaction_type_contact')
 
         return sorted(list(set(tags)))
 
