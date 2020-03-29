@@ -59,7 +59,6 @@ class AttributeGen(object):
             'hands_two_but_one_active': 'Två, en aktiv',
             'position_hand': 'Vänstra handen',
 
-            'relation_unspecified': 'Ospecificerad',
             'position_unspecified': 'Neutralt läge framför kroppen',
 
             'motion_type_moving': 'Förs',
@@ -67,7 +66,6 @@ class AttributeGen(object):
 
             'hands_any': 'En eller två',
             'position_any': 'Alla lägen',
-            'relation_any': 'Alla lägesrelationer',
             'handshape_any': 'Alla former',
             'attitude_pointed_any': 'Alla riktningar',
             'attitude_turned_any': 'Alla vändningar',
@@ -82,7 +80,6 @@ class AttributeGen(object):
             'hands/position': 'Händer / Läge',
             'hands': 'Händer',
             'position': 'Läge',
-            'position_relation': 'Lägesrelation',
             'right': 'Höger hand',
             'left': 'Vänster hand',
             'actions': 'Aktioner',
@@ -92,9 +89,11 @@ class AttributeGen(object):
         if t.endswith('modifier_medial_contact'):
             return 'action-interaction_type_contact'
 
-        # diverging does not pass validate()
+        # The states for these attributes are not complete.  See validate().
         if 'action-interaction_type_diverging-modifier' in t:
             return 'action-interaction_type_diverging'
+        if 'position-relation' in t:
+            return None
 
         parts = t.split('-')
         if len(parts) > 1 and parts[0] == 'action':
@@ -134,6 +133,7 @@ class AttributeGen(object):
 
     def massage_tags(self, sign, tags):
         tags = [self.massage_tag(t) for t in tags]
+        tags = [t for t in tags if t]
 
         if sign.hands == 1:
             if sign.left:
@@ -178,9 +178,6 @@ class AttributeGen(object):
 
         if not any(t for t in tags if 'position_' in t):
             tags.append('position_unspecified')
-
-        if not any(t for t in tags if 'position-relation' in t):
-            tags.append('position-relation_unspecified')
 
         if any(t for t in tags if 'motion_type_moving' in t):
             tags.append('action-motion_type_moving')
@@ -234,11 +231,6 @@ class AttributeGen(object):
                       defaultstate='position_any',
                       tagprefix='position_',
                       stateprefix=''),
-            Attribute(name='position_relation',
-                      group='hands/position',
-                      defaultstate='relation_any',
-                      tagprefix='position-relation',
-                      stateprefix='position-'),
             Attribute(name='right',
                       group='right',
                       defaultstate='handshape_any',
