@@ -57,10 +57,12 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
 
         Attributes.attributes.forEach { at ->
-            val activeStates = at.states.filter { state -> tags.contains(state.tagId) }
-            Log.i("foo", activeStates.toString())
-            if (!at.dynamic || activeStates.isNotEmpty()) {
-                addChip(at, activeStates.map { state -> state.tagId }, update = false)
+            val headTag = if (tags.contains(at.tagId)) arrayListOf(at.tagId) else arrayListOf()
+            val activeTags = headTag + at.states.filter { state -> tags.contains(state.tagId) }.map { state -> state.tagId }
+            Log.i("foo", activeTags.toString())
+            if (!at.dynamic || activeTags.isNotEmpty()) {
+                Log.i("foo", at.name)
+                addChip(at, activeTags, update = false)
             }
         }
 

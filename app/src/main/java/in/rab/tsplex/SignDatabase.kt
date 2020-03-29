@@ -369,7 +369,7 @@ class SignDatabase(context: Context) {
                     tagIds.add(segTagIds.toTypedArray())
                 }
 
-                segTagIds = arrayListOf()
+                segTagIds = arrayListOf(tagId)
                 curSeg = seg
             }
         }
