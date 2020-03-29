@@ -9,6 +9,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,15 +17,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 
 
 class ReverseSearchActivity : AppCompatActivity() {
     private var mOrdboken: Ordboken? = null
     private lateinit var container: LinearLayout
-    private var holderMap = mutableMapOf<String, FlexboxLayout>()
+    private var holderMap = mutableMapOf<String, ViewGroup>()
     val tags: ArrayList<Int> = arrayListOf()
     val chips = ArrayList<Chip>()
 
@@ -253,8 +253,8 @@ class ReverseSearchActivity : AppCompatActivity() {
 
     private fun addChip(at: Attribute, initialTags: List<Int>, update: Boolean = true) {
         val flex = holderMap.getOrPut(at.group, {
-            val f = FlexboxLayout(this).apply {
-                flexWrap = FlexWrap.WRAP
+            val f = ChipGroup(this).apply {
+                chipSpacingHorizontal = 5
             }
 
             container.addView(TextView(this).apply {
@@ -271,6 +271,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         flex.addView(Chip(this).apply {
             setTag(R.id.defaultTagId, at.tagId)
+            // setEnsureMinTouchTargetSize(false)
             chips.add(this)
             refreshChip(this, at, initialTags, update)
 
@@ -298,7 +299,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             chip.chipStrokeColor =
                     ColorStateList.valueOf(ContextCompat.getColor(this, android.R.color.darker_gray))
         } else {
-            (chip.parent as FlexboxLayout).removeView(chip)
+            (chip.parent as ViewGroup).removeView(chip)
             chips.remove(chip)
         }
 
