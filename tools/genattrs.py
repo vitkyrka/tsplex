@@ -384,10 +384,21 @@ object Attributes {
         ){% if not loop.last %},{% endif %}
     {% endfor %}
     )
+    val redundantTagIds = arrayOf(
+    {% for tagid in redundant %}
+        {{ tagid }}{% if not loop.last %},{% endif %}
+    {% endfor %}
+    )
 }
 '''.lstrip())
 
-        return template.render(attribs=attribs, transmap=self.transmap)
+        redundant = ['-'.join(x) for x in itertools.product(('left', 'right'), \
+                    ['handshape_same',
+                     'attitude_pointed_same',
+                     'attitude_turned_same'])]
+
+        return template.render(attribs=attribs, transmap=self.transmap,
+                               redundant=[self.tagmap[t] for t in redundant])
 
 def main():
     parser = argparse.ArgumentParser()

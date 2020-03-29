@@ -44,7 +44,7 @@ class ReverseSearchActivity : AppCompatActivity() {
         container = findViewById(R.id.container)
 
         intent.getIntegerArrayListExtra("tagIds")?.let {
-            tags.addAll(it)
+            tags.addAll(it.filter { tagId -> !Attributes.redundantTagIds.contains(tagId) })
         }
 
         Log.i("tags", tags.toString())
@@ -57,8 +57,10 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
 
         Attributes.attributes.forEach { at ->
-            val headTag = if (tags.contains(at.tagId)) arrayListOf(at.tagId) else arrayListOf()
-            val activeTags = headTag + at.states.filter { state -> tags.contains(state.tagId) }.map { state -> state.tagId }
+            val activeHeadTag = if (tags.contains(at.tagId)) arrayListOf(at.tagId) else arrayListOf()
+            val activeStateTags = at.states.filter { state -> tags.contains(state.tagId) }.map { state -> state.tagId }
+            val activeTags = if (activeStateTags.isNotEmpty()) activeStateTags else activeHeadTag
+
             Log.i("foo", activeTags.toString())
             if (!at.dynamic || activeTags.isNotEmpty()) {
                 Log.i("foo", at.name)
