@@ -395,7 +395,10 @@ object Attributes {
         redundant = ['-'.join(x) for x in itertools.product(('left', 'right'), \
                     ['handshape_same',
                      'attitude_pointed_same',
-                     'attitude_turned_same'])]
+                     'attitude_turned_same',
+                     'attitude_pointed_symmetric',
+                     'attitude_turned_symmetric',
+                     ])]
 
         return template.render(attribs=attribs, transmap=self.transmap,
                                redundant=[self.tagmap[t] for t in redundant])
