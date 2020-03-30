@@ -163,7 +163,7 @@ class Motion(object):
 @attr.s
 class Segment(object):
     hands: int = attr.ib(default=1)
-    position = attr.ib(default=None)
+    positions = attr.ib(factory=list)
     left: Hand = attr.ib(default=None)
     right: Hand = attr.ib(default=None)
     actions = attr.ib(factory=list)
@@ -177,8 +177,14 @@ class Segment(object):
         if self.right:
             tags.extend(['right-' + t for t in self.right.tags])
 
-        if self.position:
-            tags.extend(self.position.tags)
+        if not self.positions:
+            tags.append('position_unspecified')
+        else:
+            for p in self.positions:
+                if p:
+                    tags.extend(p.tags)
+                else:
+                    tags.append('position_unspecified')
 
         if self.actions:
             for a in self.actions:
@@ -191,18 +197,23 @@ class Tagger(object):
     def __init__(self, charmap):
         self.charmap = charmap
 
-    def parse(self, ops):
+    def parseonesplithand(self, ops):
         s = Segment()
 
-        logging.debug(ops)
-        artend = next(i for i, op in enumerate(ops) if \
-                'position' not in op and
-                'handshape' not in op and
-                'relation' not in op and
-                'attitude' not in op)
+        logging.debug(f'onesplithand ops: {ops}')
+
+        try:
+            artend = next(i for i, op in enumerate(ops) if \
+                    'position' not in op and
+                    'handshape' not in op and
+                    'relation' not in op and
+                    'attitude' not in op)
+        except StopIteration:
+            artend = len(ops)
 
         artops = ops[:artend]
 
+        logging.debug(f'artend: {artend}')
         logging.debug(f'artops: {artops}')
         hands = sum('handshape' in op for op in artops)
         logging.debug(f'hands: {hands}')
@@ -213,7 +224,7 @@ class Tagger(object):
         s.right = Hand.parse(handops)
 
         if ops[0].startswith('position') or (hands > 1 and ops[0].startswith('handshape')):
-            s.position = Position.parse(peekable(iter(artops)))
+            s.positions = [Position.parse(peekable(iter(artops)))]
 
         if ops[0].startswith('handshape'):
             hands = 1
@@ -237,7 +248,7 @@ class Tagger(object):
             elif op in ['other_separator_groups']:
                 next(ops)
                 pass
-            elif op in ['other_separator_segments']:
+            elif op in ['other_separator_hands']:
                 break
             elif op.startswith('other_repetition'):
                 s.actions.append(Repetition.parse(ops))
@@ -259,6 +270,47 @@ class Tagger(object):
 
         return s
 
+    def parse(self, ops):
+        logging.debug(ops)
+
+        splithands = [list(group) for key, group in itertools.groupby(ops, lambda op:op == 'other_separator_hands') if not key]
+        assert len(splithands) <= 2
+        logging.debug(splithands)
+
+        firstsplithand = self.parseonesplithand(splithands[0])
+        if len(splithands) == 1:
+            s = firstsplithand
+            assert len(s.positions) <= 1
+            assert s.actions
+        else:
+            secondsplithand = self.parseonesplithand(splithands[1])
+
+            logging.debug(f'firstsplit: {firstsplithand}')
+            logging.debug(f'secondsplit: {secondsplithand}')
+
+            assert firstsplithand.hands == 1
+            assert secondsplithand.hands == 1
+
+            assert firstsplithand.left == None
+            assert secondsplithand.left == None
+
+            s = Segment(hands=2)
+
+            s.positions.append(firstsplithand.positions[0] if firstsplithand.positions else None)
+            s.positions.append(secondsplithand.positions[0] if secondsplithand.positions else None)
+
+            s.left = firstsplithand.right
+            s.right = secondsplithand.right
+
+            s.actions.extend(firstsplithand.actions)
+            s.actions.extend(secondsplithand.actions)
+
+            logging.debug(f'joined: {s}')
+
+        logging.debug(f'tags: {s.tags}')
+
+        return s
+
     def tag(self, s):
         idn = int(s['id-nummer'])
         logging.debug(idn)
@@ -277,13 +329,6 @@ class Tagger(object):
             return None
 
         ops = [c.name for c in chars]
-
-        try:
-            idx = ops.index('other_separator_hands')
-            return None
-        except ValueError:
-            pass
-
         if not ops:
             return None
 

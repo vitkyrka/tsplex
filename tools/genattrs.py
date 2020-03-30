@@ -189,9 +189,6 @@ class AttributeGen(object):
                 tags.extend(['left-attitude_turned_symmetric',
                              'right-attitude_turned_symmetric'])
 
-        if not any(t for t in tags if 'position_' in t):
-            tags.append('position_unspecified')
-
         if any(t for t in tags if 'motion_type_moving' in t):
             tags.append('action-motion_type_moving')
 
