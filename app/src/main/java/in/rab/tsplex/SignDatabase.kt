@@ -256,7 +256,7 @@ class SignDatabase(context: Context) {
         return getSignsByDescription(fixedQuery, columns, builder, limit)
     }
 
-    fun getNewTagsSignCounts(baseTagIds: Array<Array<Int>>, newTagIds: Array<Int>): HashMap<Int, Int> {
+    private fun getNewTagsSignCountsFastPath(baseTagIds: List<List<Int>>, newTagIds: Array<Int>): HashMap<Int, Int> {
         val builder = SQLiteQueryBuilder()
         val selectionArgs = null
         val groupBy = "tagid"
@@ -289,31 +289,73 @@ class SignDatabase(context: Context) {
         return counts
     }
 
-    private fun getSignsByTags(tagIds: Array<Array<Int>>, columns: Array<String>, limit: String? = RESULTS_LIMIT): Cursor {
-        val builder = SQLiteQueryBuilder()
-        val selectionArgs = null
-        val groupBy = null
-        val sortOrder = "occurence DESC, length(comment), num_examples DESC, signs.id"
-
-        val selections = tagIds.map {
-            val or = it.joinToString(",")
-            "signs_segs.segid IN (SELECT segs_tags.segid FROM segs_tags WHERE segs_tags.tagid IN ($or))"
+    fun getNewTagsSignCounts(baseTagIds: List<List<List<Int>>>, newTagIds: Array<Int>, segmentIndex: Int): HashMap<Int, Int> {
+        if (baseTagIds.isEmpty()) {
+            return hashMapOf()
+        }
+        if (baseTagIds.size == 1) {
+            return getNewTagsSignCountsFastPath(baseTagIds[0], newTagIds)
         }
 
-        val selection = selections.joinToString(" AND ")
+        val counts = hashMapOf<Int, Int>()
+
+        val tmpBaseTags = baseTagIds.toMutableList()
+        val baseSegmentTags = baseTagIds[segmentIndex]
+
+        newTagIds.forEach {
+            tmpBaseTags[segmentIndex] = baseSegmentTags + arrayListOf(arrayListOf(it))
+
+            counts[it] = getSignsCountByTags(tmpBaseTags)
+        }
+
+        return counts
+    }
+
+    private fun getSignsByTagsQuery(tagIds: List<List<List<Int>>>, columns: Array<String>, limit: String? = RESULTS_LIMIT): String {
+        val builder = SQLiteQueryBuilder()
+        val selectionArgs = null
+        val groupBy = "signs.id"
+        val sortOrder = "occurence DESC, length(comment), num_examples DESC, signs.id"
+
+        val selection = tagIds.joinToString(" OR ") { attr ->
+            if (attr.isEmpty()) {
+                "1=1"
+            } else {
+                attr.filter { it.isNotEmpty() }.joinToString(" AND ") { ids ->
+                    val or = ids.joinToString(",")
+                    "signs_segs.segid IN (SELECT segs_tags.segid FROM segs_tags WHERE segs_tags.tagid IN ($or))"
+                }
+            }
+        }
+
+        val havings = tagIds.filter { it.isNotEmpty() }.map { attr ->
+            "SUM(CASE WHEN " + if (attr.isEmpty()) {
+                "1=1"
+            } else {
+                attr.filter { it.isNotEmpty() }.joinToString(" AND ") { ids ->
+                    val or = ids.joinToString(",")
+                    "signs_segs.segid IN (SELECT segs_tags.segid FROM segs_tags WHERE segs_tags.tagid IN ($or))"
+                }
+            } + " THEN 1 ELSE 0 END) > 0"
+        } + arrayOf("COUNT(segid) >= " + tagIds.size.toString())
+
+        val having = havings.joinToString(" AND ")
 
         builder.tables = "signs JOIN signs_segs ON signs.id == signs_segs.signid"
 
-        val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
-                groupBy, null, sortOrder, limit)
-
-        Log.i("foo", builder.buildQuery(columns, selection, selectionArgs,
-                groupBy, null, sortOrder, limit))
-
-        return cursor
+        return builder.buildQuery(columns, selection, groupBy, having, sortOrder, limit)
     }
 
-    fun getSignsByTags(tagIds: Array<Array<Int>>, limit: String? = RESULTS_LIMIT): ArrayList<Sign> {
+    private fun getSignsByTags(tagIds: List<List<List<Int>>>, columns: Array<String>, limit: String? = RESULTS_LIMIT): Cursor {
+        val query = getSignsByTagsQuery(tagIds, columns, limit)
+
+        Log.i("foo", query);
+
+        return getDatabase()!!.rawQuery(query, null)
+    }
+
+
+    fun getSignsByTags(tagIds: List<List<List<Int>>>, limit: String? = RESULTS_LIMIT): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = getSignsByTags(tagIds, mSignColumns, limit)
 
@@ -325,9 +367,14 @@ class SignDatabase(context: Context) {
         return signs
     }
 
-    fun getSignsCountByTags(tagIds: Array<Array<Int>>): Int {
+    fun getSignsCountByTags(tagIds: List<List<List<Int>>>): Int {
         var signs = 0
-        val cursor = getSignsByTags(tagIds, arrayOf("COUNT(DISTINCT signs.id)"), limit = null)
+        val subQuery = getSignsByTagsQuery(tagIds, arrayOf("signs.id"), limit=null)
+        val query = "SELECT COUNT(*) FROM (${subQuery})"
+
+        Log.i("foo", "getSignsCountByTags: $query");
+
+        val cursor = getDatabase()!!.rawQuery(query, null)
 
         while (cursor.moveToNext()) {
             signs = cursor.getInt(0)
@@ -337,7 +384,7 @@ class SignDatabase(context: Context) {
         return signs
     }
 
-    fun getTags(id: Int): Array<Array<Int>> {
+    fun getTags(id: Int): List<List<Int>> {
         val builder = SQLiteQueryBuilder()
         val selectionArgs = arrayOf(id.toString())
         val groupBy = null
@@ -356,7 +403,7 @@ class SignDatabase(context: Context) {
 
         var curSeg = -1
         var segTagIds = arrayListOf<Int>()
-        val tagIds = arrayListOf<Array<Int>>()
+        val tagIds = arrayListOf<ArrayList<Int>>()
 
         while (cursor.moveToNext()) {
             val seg = cursor.getInt(0)
@@ -366,7 +413,7 @@ class SignDatabase(context: Context) {
                 segTagIds.add(tagId)
             } else {
                 if (segTagIds.isNotEmpty()) {
-                    tagIds.add(segTagIds.toTypedArray())
+                    tagIds.add(segTagIds)
                 }
 
                 segTagIds = arrayListOf(tagId)
@@ -375,10 +422,10 @@ class SignDatabase(context: Context) {
         }
 
         if (segTagIds.isNotEmpty()) {
-            tagIds.add(segTagIds.toTypedArray())
+            tagIds.add(segTagIds)
         }
 
-        return tagIds.toTypedArray()
+        return tagIds
     }
 
     fun search(query: String, columns: Array<String>): Cursor {

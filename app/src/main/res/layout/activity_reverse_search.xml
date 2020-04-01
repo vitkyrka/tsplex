@@ -47,24 +47,26 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/container"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/segmentContainer"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                </LinearLayout>
 
                 <Button
-                    android:id="@+id/more"
+                    android:id="@+id/addSegment"
+                    style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
-                    android:text="+ Aktion" />
-
+                    android:text="+ Segment" />
 
             </LinearLayout>
 

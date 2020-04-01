@@ -39,38 +39,60 @@ class ReverseSearchActivity : AppCompatActivity() {
         mOrdboken = Ordboken.getInstance(this)
 
 
-        val tags = arrayListOf<Int>()
+        var tags = arrayListOf<ArrayList<Int>>()
 
-        intent.getIntegerArrayListExtra("tagIds")?.let {
-            tags.addAll(it.filter { tagId -> !Attributes.redundantTagIds.contains(tagId) })
+        intent.getStringExtra("tagIds")?.let { extra ->
+            tags = ArrayList(extra.split("/").map { segTags ->
+                ArrayList(segTags.split(";").map { it.toInt() })
+            })
         }
 
         Log.i("tags", tags.toString())
 
-        val segment = Segment(findViewById(R.id.container), tags)
-
-        segment.create()
-        segments.add(segment)
-
+        if (tags.isEmpty()) {
+            addSegment()
+        } else {
+            tags.forEach { addSegment(it) }
+        }
 
         updateSearchCount()
+
+        findViewById<Button>(R.id.addSegment).setOnClickListener {
+            addSegment()
+            updateSearchCount()
+        }
 
         findViewById<Button>(R.id.search).setOnClickListener {
             search()
         }
     }
 
-    private inner class Segment constructor(
-            val container: LinearLayout,
+    fun addSegment(tags: ArrayList<Int> = arrayListOf()) {
+        val segmentContainer = findViewById<ViewGroup>(R.id.segmentContainer)
+        val view = layoutInflater.inflate(R.layout.segment, null)
+
+        segmentContainer.addView(view)
+
+        val segment = Segment(view as LinearLayout, tags)
+        segment.create()
+        segments.add(segment)
+    }
+
+    inner class Segment constructor(
+            val view: LinearLayout,
             val tags: ArrayList<Int> = arrayListOf()
     ) {
+        lateinit var container: LinearLayout
         var holderMap = mutableMapOf<String, ViewGroup>()
         val chips = ArrayList<Chip>()
 
         fun create() {
-            findViewById<Button>(R.id.more).let {
+            Log.i("view", view.toString())
+
+            container = view.findViewById(R.id.container)
+            view.findViewById<Button>(R.id.more).let {
                 it.setOnClickListener {
-                    ChooseDynamicAttributeTask().execute(ChooseDynamicAttributeArgs(this, getTagIds(),
+                    ChooseDynamicAttributeTask().execute(ChooseDynamicAttributeArgs(this, getAllTagIds(),
                             Attributes.attributes.filter { at -> at.dynamic }.map { it.tagId }.toTypedArray()))
                 }
             }
@@ -117,7 +139,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
                 if (at.states.isNotEmpty()) {
                     setOnClickListener {
-                        ChooseChipStatesTask().execute(ChooseChipStateArgs(this@Segment, this, at, getTagIds(exclude = this)))
+                        ChooseChipStatesTask().execute(ChooseChipStateArgs(this@Segment, this, at, getAllTagIds(exclude = this)))
                     }
                 }
 
@@ -187,7 +209,7 @@ class ReverseSearchActivity : AppCompatActivity() {
                 return
             }
 
-            ChooseNewDynamicAttributeStatesTask().execute(ChooseNewDynamicAttributeStatesArgs(this, at, getTagIds()))
+            ChooseNewDynamicAttributeStatesTask().execute(ChooseNewDynamicAttributeStatesArgs(this, at, getAllTagIds()))
         }
 
         fun chooseDynamicAttribute(counts: HashMap<Int, Int>) {
@@ -318,13 +340,11 @@ class ReverseSearchActivity : AppCompatActivity() {
             }
             dialog.show()
         }
-    }
 
-    private fun getTagIds(exclude: Chip? = null): Array<Array<Int>> {
-        val tagIds = arrayListOf<Array<Int>>()
+        fun getTagIds(exclude: Chip? = null): List<List<Int>> {
+            val tagIds = arrayListOf<List<Int>>()
 
-        segments.forEach { segment ->
-            segment.chips.forEach chipForEach@{
+            chips.forEach chipForEach@{
                 if (it == exclude) {
                     return@chipForEach
                 }
@@ -334,14 +354,23 @@ class ReverseSearchActivity : AppCompatActivity() {
                 if (subTags.isEmpty()) {
                     val defTag = it.getTag(R.id.defaultTagId) as Int
                     if (defTag != -1) {
-                        tagIds.add(arrayOf(defTag))
+                        tagIds.add(arrayListOf(defTag))
                     }
                 } else {
-                    tagIds.add(subTags.toTypedArray())
+                    tagIds.add(subTags)
                 }
             }
+
+            return tagIds
         }
-        return tagIds.toTypedArray()
+    }
+
+    fun getSegmentIndex(segment: Segment): Int {
+        return segments.indexOf(segment)
+    }
+
+    private fun getAllTagIds(exclude: Chip? = null): List<List<List<Int>>> {
+        return segments.map { it.getTagIds(exclude) }
     }
 
     private fun resetFilters() {
@@ -357,8 +386,8 @@ class ReverseSearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
-        val tagIds = getTagIds()
-        val query = "tags:" + tagIds.joinToString(";") { it.joinToString(",") { tagId -> tagId.toString() } }
+        val tagIds = getAllTagIds()
+        val query = "tags:" + tagIds.joinToString("/") { attrs -> attrs.joinToString(";") { ids -> ids.joinToString(",") { it.toString() } } }
         Log.i("foo", query)
 
         val intent = Intent(this, SearchListActivity::class.java)
@@ -369,8 +398,8 @@ class ReverseSearchActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private inner class SearchCountTask : AsyncTask<Array<Array<Int>>, Void, Pair<Int, java.util.ArrayList<Sign>>>() {
-        override fun doInBackground(vararg params: Array<Array<Int>>?): Pair<Int, java.util.ArrayList<Sign>> {
+    private inner class SearchCountTask : AsyncTask<List<List<List<Int>>>, Void, Pair<Int, java.util.ArrayList<Sign>>>() {
+        override fun doInBackground(vararg params: List<List<List<Int>>>?): Pair<Int, java.util.ArrayList<Sign>> {
             val tagIds = params[0]!!
             val db = SignDatabase.getInstance(this@ReverseSearchActivity)
             val count = db.getSignsCountByTags(tagIds)
@@ -396,10 +425,13 @@ class ReverseSearchActivity : AppCompatActivity() {
     }
 
     private fun updateSearchCount() {
-        SearchCountTask().execute(getTagIds())
+        SearchCountTask().execute(getAllTagIds())
     }
 
-    private class ChooseChipStateArgs constructor(val segment: Segment, val chip: Chip, val at: Attribute, val tagIds: Array<Array<Int>>)
+    private inner class ChooseChipStateArgs constructor(val segment: Segment, val chip: Chip, val at: Attribute, val tagIds: List<List<List<Int>>>) {
+        val segmentIndex = getSegmentIndex(segment)
+    }
+
     private class ChooseChipStateResult constructor(val args: ChooseChipStateArgs, val stateCounts: HashMap<Int, Int>)
 
     private inner class ChooseChipStatesTask : AsyncTask<ChooseChipStateArgs, Void, ChooseChipStateResult>() {
@@ -411,7 +443,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             val headTagId = if (at.tagId == -1) arrayOf() else arrayOf(at.tagId)
             val stateTagIds = at.states.map { it.tagId }.toTypedArray()
 
-            return ChooseChipStateResult(params[0], db.getNewTagsSignCounts(tagIds, headTagId + stateTagIds))
+            return ChooseChipStateResult(params[0], db.getNewTagsSignCounts(tagIds, headTagId + stateTagIds, params[0].segmentIndex))
         }
 
         override fun onPostExecute(res: ChooseChipStateResult) {
@@ -419,7 +451,10 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
     }
 
-    private class ChooseDynamicAttributeArgs constructor(val segment: Segment, val tagIds: Array<Array<Int>>, val newTagIds: Array<Int>)
+    private inner class ChooseDynamicAttributeArgs constructor(val segment: Segment, val tagIds: List<List<List<Int>>>, val newTagIds: Array<Int>) {
+        val segmentIndex = getSegmentIndex(segment)
+    }
+
     private class ChooseDynamicAttributeResult constructor(val segment: Segment, val signCounts: HashMap<Int, Int>)
 
     private inner class ChooseDynamicAttributeTask : AsyncTask<ChooseDynamicAttributeArgs, Void, ChooseDynamicAttributeResult>() {
@@ -428,7 +463,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             val newTagIds = params[0].newTagIds
             val db = SignDatabase.getInstance(this@ReverseSearchActivity)
 
-            return ChooseDynamicAttributeResult(params[0].segment, db.getNewTagsSignCounts(tagIds, newTagIds))
+            return ChooseDynamicAttributeResult(params[0].segment, db.getNewTagsSignCounts(tagIds, newTagIds, params[0].segmentIndex))
         }
 
         override fun onPostExecute(res: ChooseDynamicAttributeResult) {
@@ -436,7 +471,10 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
     }
 
-    private class ChooseNewDynamicAttributeStatesArgs constructor(val segment: Segment, val at: Attribute, val tagIds: Array<Array<Int>>)
+    private inner class ChooseNewDynamicAttributeStatesArgs constructor(val segment: Segment, val at: Attribute, val tagIds: List<List<List<Int>>>) {
+        val segmentIndex = getSegmentIndex(segment)
+    }
+
     private class ChooseNewDynamicAttributeStatesResult constructor(val args: ChooseNewDynamicAttributeStatesArgs, val tagCounts: HashMap<Int, Int>)
 
     private inner class ChooseNewDynamicAttributeStatesTask : AsyncTask<ChooseNewDynamicAttributeStatesArgs, Void, ChooseNewDynamicAttributeStatesResult>() {
@@ -447,7 +485,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             val headTagId = if (at.tagId == -1) arrayOf() else arrayOf(at.tagId)
             val stateTagIds = at.states.map { it.tagId }.toTypedArray()
 
-            return ChooseNewDynamicAttributeStatesResult(params[0], db.getNewTagsSignCounts(tagIds, headTagId + stateTagIds))
+            return ChooseNewDynamicAttributeStatesResult(params[0], db.getNewTagsSignCounts(tagIds, headTagId + stateTagIds, params[0].segmentIndex))
         }
 
         override fun onPostExecute(res: ChooseNewDynamicAttributeStatesResult) {

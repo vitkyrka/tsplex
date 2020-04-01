@@ -69,11 +69,16 @@ class SearchFragment : ItemListFragment() {
 
             return ArrayList(db.getExampleSigns(ex))
         } else if (query.startsWith("tags:")) {
-            val tagIds = try {
-                query.substring(5).split(";").map { it.split(",").map { tagId -> Integer.valueOf(tagId) }.toTypedArray() }.toTypedArray()
-            } catch (e: NumberFormatException) {
-                arrayOf<Array<Int>>()
-            }
+            val tagIds = query.substring(5).split("/").map { attrs ->
+                if (attrs.isEmpty()) {
+                     arrayListOf()
+                } else {
+                    attrs.split(";").map { ids ->
+                        ids.split(",").map {
+                            Integer.valueOf(it)
+                        }
+                    }
+                }}
 
             return ArrayList(db.getSignsByTags(tagIds))
         } else {
