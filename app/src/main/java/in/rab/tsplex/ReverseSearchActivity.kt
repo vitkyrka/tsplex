@@ -43,7 +43,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         intent.getStringExtra("tagIds")?.let { extra ->
             tags = ArrayList(extra.split("/").map { segTags ->
-                ArrayList(segTags.split(";").map { it.toInt() })
+                ArrayList(segTags.split(";").map { it.toInt() }.filter { !Attributes.redundantTagIds.contains(it) })
             })
         }
 
