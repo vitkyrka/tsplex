@@ -78,6 +78,14 @@ class ReverseSearchActivity : AppCompatActivity() {
         segments.add(segment)
     }
 
+    fun removeSegment(segment: Segment) {
+        val segmentContainer = findViewById<ViewGroup>(R.id.segmentContainer)
+
+        segmentContainer.removeView(segment.view)
+        segments.remove(segment)
+        updateSearchCount()
+    }
+
     inner class Segment constructor(
             val view: LinearLayout,
             val tags: ArrayList<Int> = arrayListOf()
@@ -90,6 +98,11 @@ class ReverseSearchActivity : AppCompatActivity() {
             Log.i("view", view.toString())
 
             container = view.findViewById(R.id.container)
+
+            view.findViewById<Button>(R.id.removeSegment).setOnClickListener {
+                removeSegment(this)
+            }
+
             view.findViewById<Button>(R.id.more).let {
                 it.setOnClickListener {
                     ChooseDynamicAttributeTask().execute(ChooseDynamicAttributeArgs(this, getAllTagIds(),
