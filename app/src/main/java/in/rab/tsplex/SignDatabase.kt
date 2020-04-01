@@ -389,11 +389,11 @@ class SignDatabase(context: Context) {
         val selectionArgs = arrayOf(id.toString())
         val groupBy = null
         val limit = null
-        val sortOrder = "segs_tags.segid"
+        val sortOrder = "signs_segs.rowid"
         val columns = arrayOf("segs_tags.segid, segs_tags.tagid")
-        val selection = "signs.id = ?"
+        val selection = "signs_segs.signid = ?"
 
-        builder.tables = "signs JOIN signs_segs ON signs.id == signs_segs.signid JOIN segs_tags ON signs_segs.segid == segs_tags.segid"
+        builder.tables = "signs_segs JOIN segs_tags ON signs_segs.segid == segs_tags.segid"
 
         val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 groupBy, null, sortOrder, limit)
