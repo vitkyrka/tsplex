@@ -218,10 +218,20 @@ class Tagger(object):
         hands = sum('handshape' in op for op in artops)
         logging.debug(f'hands: {hands}')
 
-        handops = peekable(op for op in artops if 'relation' not in op and 'position' not in op)
-        if hands > 1:
-            s.left = Hand.parse(handops)
-        s.right = Hand.parse(handops)
+        if artops[0] == 'position_arm_lower':
+            # This is the only position which includes attitude information.
+            # It also has an optional relation like the other positions.
+            assert len(artops) == 6 or len(artops) == 7
+            assert hands == 1
+
+            # Skip the forearm's attitude when parsing the right hand.
+            handops = peekable(artops[len(artops) - 3:])
+            s.right = Hand.parse(handops)
+        else:
+            handops = peekable(op for op in artops if 'relation' not in op and 'position' not in op)
+            if hands > 1:
+                s.left = Hand.parse(handops)
+            s.right = Hand.parse(handops)
 
         if ops[0].startswith('position') or (hands > 1 and ops[0].startswith('handshape')):
             s.positions = [Position.parse(peekable(iter(artops)))]
