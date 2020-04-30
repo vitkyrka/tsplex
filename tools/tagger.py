@@ -227,6 +227,10 @@ class Tagger(object):
             # Skip the forearm's attitude when parsing the right hand.
             handops = peekable(artops[len(artops) - 3:])
             s.right = Hand.parse(handops)
+
+            # We want to make the (left) forearm's attitude available somehow
+            # so we add a fake left hand.
+            s.left = Hand.parse(peekable(['handshape_none'] + [op for op in artops if 'relation' not in op and 'position' not in op]))
         else:
             handops = peekable(op for op in artops if 'relation' not in op and 'position' not in op)
             if hands > 1:

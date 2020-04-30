@@ -96,6 +96,9 @@ class AttributeGen(object):
         if t.startswith('handshape'):
             return 'position_hand'
 
+        if t == 'left-handshape_none':
+            return None
+
         # The states for these attributes are not complete.  See validate().
         if 'action-interaction_type_diverging-modifier' in t:
             return 'action-interaction_type_diverging'
@@ -150,7 +153,9 @@ class AttributeGen(object):
         tags = [t for t in tags if t]
 
         if sign.hands == 1:
-            if sign.left:
+            # handshape_none is the fake left hand which the tagger adds for
+            # the attitude of position_arm_lower.
+            if sign.left and sign.left.shape != 'handshape_none':
                 tags.append('hands_two_but_one_active')
             else:
                 tags.append('hands_one')
