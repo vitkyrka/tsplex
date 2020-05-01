@@ -101,7 +101,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
 
     fun showVideoError() {
         loadingProgress.hide()
-        exoPlayerView.visibility = GONE
+        playerParent.visibility = GONE
 
         val msg: String = if (isOnline()) {
             getString(R.string.fail_video_play)
@@ -161,7 +161,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
 
                     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                         if (playbackState == Player.STATE_READY) {
-                            exoPlayerView?.visibility = View.VISIBLE
+                            playerParent?.visibility = View.VISIBLE
 
                             mListener?.onVideoFetchEnd()
 
@@ -382,7 +382,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         exoPlayerClose.setOnClickListener {
             mPreviewPosition = -1
             mSimpleExoPlayer?.playWhenReady = false
-            exoPlayerView?.visibility = GONE
+            playerParent?.visibility = GONE
 
             (recylerView?.adapter as? ItemRecyclerViewAdapter)?.setSelected(-1)
         }

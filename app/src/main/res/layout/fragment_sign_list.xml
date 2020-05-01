@@ -14,6 +14,7 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:visibility="gone"
             android:id="@+id/playerParent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +27,6 @@
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone"
                 app:auto_show="true"
                 app:use_controller="true"
                 app:hide_on_touch="false"
