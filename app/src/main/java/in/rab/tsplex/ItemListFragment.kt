@@ -28,6 +28,8 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.exoplayer_preview_control.*
 import kotlinx.android.synthetic.main.fragment_sign_list.*
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 
 abstract class ItemListFragment(protected var mCache: Boolean = true, private val mEmptyText: Int = 0) : FragmentVisibilityNotifier, androidx.fragment.app.Fragment(), androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener,
@@ -45,6 +47,8 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
     private var mSpeed: Float = 0.75f
     private var mScreenWidthDp = 320f
     private var mZoom = 1.5f
+    private var mPlayerBaseHeight = 0
+    private var mVideoZoom = 1f
     private var mPreviousVisible = INVISIBLE
     private var mNextVisible = INVISIBLE
     protected var mCloseVisible = VISIBLE
@@ -390,7 +394,30 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
             (recylerView?.adapter as? ItemRecyclerViewAdapter)?.setSelected(-1)
         }
 
+        val videoScaleDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector?): Boolean {
+                if (detector == null || mPlayerBaseHeight == 0) {
+                    return true
+                }
+
+                mVideoZoom *= detector.scaleFactor
+                mVideoZoom = mVideoZoom.coerceIn(0.75f, 1.5f)
+
+                val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                        (mPlayerBaseHeight * mVideoZoom).toInt())
+                playerParent?.layoutParams = params
+
+                activity?.getSharedPreferences(PREFS_NAME, 0)?.edit()?.apply {
+                    putFloat(VIDEO_ZOOM_PREF, mVideoZoom)
+                    apply()
+                }
+
+                return true
+            }
+        })
+
         exoPlayerView.setOnTouchListener { _, event ->
+            videoScaleDetector.onTouchEvent(event)
             if (event.action == MotionEvent.ACTION_DOWN) {
                 val visible = exoPlayerExtraControls.visibility
 
@@ -456,10 +483,12 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
 
                 if (height > mHeight) {
                     mHeight = height
-                    player.maxHeight = height * 2 / 3
+
+                    player.maxHeight = height * 3 / 4
+                    mPlayerBaseHeight = height / 2
 
                     val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                            height / 2)
+                            (mPlayerBaseHeight * mVideoZoom).toInt())
                     player.layoutParams = params
                 }
             }
@@ -591,6 +620,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
 
         getSharedPreferences()?.let {
             mZoom = it.getFloat(ZOOM_PREF, mZoom)
+            mVideoZoom = it.getFloat(VIDEO_ZOOM_PREF, mVideoZoom)
             mRepeatMode = it.getInt("signRepeatMode", mRepeatMode)
             mSpeed = it.getFloat("signPlaybackSpeed", mSpeed)
 
@@ -647,5 +677,6 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         private const val MAX_ZOOM = 5f
         private const val SIGN_WIDTH_DP = 100f + 5
         private const val ZOOM_PREF = "imageZoom2"
+        private const val VIDEO_ZOOM_PREF = "videoZoom"
     }
 }
