@@ -12,6 +12,7 @@ import android.speech.tts.TextToSpeech
 import android.view.*
 import android.view.View.*
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
@@ -21,6 +22,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.exoplayer_preview_control.*
@@ -125,6 +127,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         if (exoPlayer == null) {
             val trackSelector = DefaultTrackSelector(AdaptiveTrackSelection.Factory(DefaultBandwidthMeter()))
             exoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)?.apply {
+                exoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
                 exoPlayerView?.player = this
 
                 addListener(object : Player.EventListener {
@@ -454,6 +457,10 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
                 if (height > mHeight) {
                     mHeight = height
                     player.maxHeight = height * 2 / 3
+
+                    val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            height / 2)
+                    player.layoutParams = params
                 }
             }
         })
