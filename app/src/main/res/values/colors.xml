@@ -3,4 +3,5 @@
     <color name="primary">#3F51B5</color>
     <color name="primary_dark">#303F9F</color>
     <color name="selected">#66FFCA28</color>
+    <color name="title">#ffffff</color>
 </resources>

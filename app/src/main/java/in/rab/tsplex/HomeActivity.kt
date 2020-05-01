@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_home.*
@@ -27,13 +28,18 @@ class HomeActivity : RoutingAppCompactActivity(), BottomNavigationView.OnNavigat
         setContentView(R.layout.activity_home)
         setSupportActionBar(toolbar)
 
+        supportActionBar?.title = null
+
         navigation.setOnNavigationItemSelectedListener(this)
 
-        homeSearchView.setOnClickListener {
+        val openSearch = View.OnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
+
+        findViewById<View>(R.id.toolbarIcon).setOnClickListener(openSearch)
+        findViewById<View>(R.id.toolbarTitle).setOnClickListener(openSearch)
 
         if (savedInstanceState != null) {
             mTitle = savedInstanceState.getString("title")

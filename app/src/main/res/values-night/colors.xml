@@ -3,4 +3,5 @@
     <color name="primary">#212121</color>
     <color name="primary_dark">#000000</color>
     <color name="selected">#212121</color>
+    <color name="title">#eeeeee</color>
 </resources>
