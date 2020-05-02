@@ -141,13 +141,15 @@ class ReverseSearchActivity : AppCompatActivity() {
                 }
 
                 if (at.group.isNotEmpty()) {
-                    container.addView(TextView(f.context).apply {
+                    val titleView = TextView(f.context).apply {
                         text = at.group
                         val tv = TypedValue()
                         if (context.theme.resolveAttribute(R.attr.colorOnSurface, tv, true)) {
                             setTextColor(tv.data)
                         }
-                    })
+                    }
+                    container.addView(titleView)
+                    f.setTag(R.id.titleView, titleView)
                 }
 
                 container.addView(f)
@@ -186,9 +188,19 @@ class ReverseSearchActivity : AppCompatActivity() {
                 chip.chipStrokeColor =
                         ColorStateList.valueOf(ContextCompat.getColor(chip.context, android.R.color.darker_gray))
             } else {
-                (chip.parent as ViewGroup).removeView(chip)
+                val parent = chip.parent as ChipGroup
+                parent.removeView(chip)
+
                 if (removeFromSegment) {
                     this.chips.remove(chip)
+
+                    if (at.group.isNotEmpty() && this.chips.none { (it.getTag(R.id.attribute) as Attribute).group == at.group }) {
+                        val titleView = parent.getTag(R.id.titleView) as View
+
+                        container.removeView(titleView)
+                        container.removeView(parent)
+                        holderMap.remove(at.group)
+                    }
                 }
             }
 

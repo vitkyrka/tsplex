@@ -3,4 +3,5 @@
     <item type="id" name="defaultTagId" />
     <item type="id" name="tagIds" />
     <item type="id" name="attribute" />
+    <item type="id" name="titleView" />
 </resources>
