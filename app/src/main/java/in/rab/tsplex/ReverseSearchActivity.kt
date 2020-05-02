@@ -9,13 +9,16 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -84,7 +87,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         segmentContainer.addView(view)
 
-        val segment = Segment(view as LinearLayout, tags)
+        val segment = Segment(view as ViewGroup, tags)
         segment.create()
         segments.add(segment)
     }
@@ -98,7 +101,7 @@ class ReverseSearchActivity : AppCompatActivity() {
     }
 
     inner class Segment constructor(
-            val view: LinearLayout,
+            val view: ViewGroup,
             val tags: ArrayList<Int> = arrayListOf()
     ) {
         lateinit var container: LinearLayout
@@ -110,11 +113,11 @@ class ReverseSearchActivity : AppCompatActivity() {
 
             container = view.findViewById(R.id.container)
 
-            view.findViewById<Button>(R.id.removeSegment).setOnClickListener {
+            view.findViewById<View>(R.id.removeSegment).setOnClickListener {
                 removeSegment(this)
             }
 
-            view.findViewById<Button>(R.id.more).let {
+            view.findViewById<View>(R.id.more).let {
                 it.setOnClickListener {
                     ChooseDynamicAttributeTask().execute(ChooseDynamicAttributeArgs(this, getAllTagIds(),
                             Attributes.attributes.filter { at -> at.dynamic }.map { it.tagId }.toTypedArray()))
@@ -256,7 +259,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             }
 
             val builder = AlertDialog.Builder(this@ReverseSearchActivity)
-            builder.setTitle("More")
+            builder.setTitle(R.string.action)
                     .setItems(available.map { "${it.name} (${counts[it.tagId]})" }.toTypedArray()) { _, which ->
                         addDynamicAttribute(available[which])
                     }
@@ -433,7 +436,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         val intent = Intent(this, SearchListActivity::class.java)
         intent.action = Intent.ACTION_SEARCH
-        intent.putExtra(Intent.EXTRA_TITLE, "foo")
+        intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.matching_signs))
         intent.putExtra(SearchManager.QUERY, query)
 
         startActivity(intent)

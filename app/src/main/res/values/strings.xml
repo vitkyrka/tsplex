@@ -41,6 +41,14 @@
     <string name="accessibility">Tillgänglighet</string>
     <string name="tts">Läs upp översättningar</string>
 
+    <string name="show_matching_signs">Visa matchande tecken</string>
+    <string name="matching_signs">Matchande tecken</string>
+
+    <string name="action">Aktion</string>
+    <string name="add_action">Lägg till aktion</string>
+    <string name="add_segment">Lägg till segment</string>
+    <string name="remove_segment">Ta bort segment</string>
+
     <string name="unorganized_bookmarks">Osorterade bokmärken</string>
     <string name="add_folder">Skapa mapp</string>
     <string name="delete_folder">Ta bort mapp</string>
