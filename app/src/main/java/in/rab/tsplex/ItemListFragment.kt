@@ -131,7 +131,6 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         if (exoPlayer == null) {
             val trackSelector = DefaultTrackSelector(AdaptiveTrackSelection.Factory(DefaultBandwidthMeter()))
             exoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)?.apply {
-                exoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
                 exoPlayerView?.player = this
 
                 addListener(object : Player.EventListener {

@@ -29,6 +29,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
 
+                app:resize_mode="fixed_height"
                 app:auto_show="true"
                 app:use_controller="true"
                 app:hide_on_touch="false"
