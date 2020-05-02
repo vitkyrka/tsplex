@@ -162,7 +162,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             })
         }
 
-        fun removeChip(chip: Chip, update: Boolean = true) {
+        fun removeChip(chip: Chip, update: Boolean = true, removeFromSegment: Boolean = true) {
             val at = chip.getTag(R.id.attribute) as Attribute
             chip.setTag(R.id.tagIds, ArrayList<Int>())
 
@@ -176,7 +176,9 @@ class ReverseSearchActivity : AppCompatActivity() {
                         ColorStateList.valueOf(ContextCompat.getColor(chip.context, android.R.color.darker_gray))
             } else {
                 (chip.parent as ViewGroup).removeView(chip)
-                this.chips.remove(chip)
+                if (removeFromSegment) {
+                    this.chips.remove(chip)
+                }
             }
 
             if (update) {
@@ -391,8 +393,10 @@ class ReverseSearchActivity : AppCompatActivity() {
             segment.tags.clear()
 
             segment.chips.forEach {
-                segment.removeChip(it, update = false)
+                segment.removeChip(it, update = false, removeFromSegment = false)
             }
+
+            segment.chips.clear()
         }
 
         updateSearchCount()
