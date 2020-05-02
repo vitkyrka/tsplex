@@ -25,7 +25,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:text="Visa resultat"
-        app:icon="@drawable/ic_image_search" />
+        app:icon="@drawable/ic_reverse_search" />
 
     <LinearLayout
         android:layout_width="match_parent"
