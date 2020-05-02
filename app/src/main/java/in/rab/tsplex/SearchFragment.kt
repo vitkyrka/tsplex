@@ -1,8 +1,6 @@
 package `in`.rab.tsplex
 
 import android.os.Bundle
-import android.util.Log
-import java.lang.NumberFormatException
 
 class SearchFragment : ItemListFragment() {
     private var mQuery: String? = null
@@ -69,16 +67,7 @@ class SearchFragment : ItemListFragment() {
 
             return ArrayList(db.getExampleSigns(ex))
         } else if (query.startsWith("tags:")) {
-            val tagIds = query.substring(5).split("/").map { attrs ->
-                if (attrs.isEmpty()) {
-                     arrayListOf()
-                } else {
-                    attrs.split(";").map { ids ->
-                        ids.split(",").map {
-                            Integer.valueOf(it)
-                        }
-                    }
-                }}
+            val tagIds = TagGroupConvert.stringToTagGroups(query.substring(5))
 
             return ArrayList(db.getSignsByTags(tagIds))
         } else {

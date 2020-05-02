@@ -38,24 +38,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         mOrdboken = Ordboken.getInstance(this)
 
-
-        var tags = arrayListOf<ArrayList<Int>>()
-
-        intent.getStringExtra("tagIds")?.let { extra ->
-            tags = ArrayList(extra.split("/").map { segTags ->
-                ArrayList(segTags.split(";").map { it.toInt() }.filter { !Attributes.redundantTagIds.contains(it) })
-            })
-        }
-
-        Log.i("tags", tags.toString())
-
-        if (tags.isEmpty()) {
-            addSegment()
-        } else {
-            tags.forEach { addSegment(it) }
-        }
-
-        updateSearchCount()
+        loadTagsFromString(intent.getStringExtra("tagIds"))
 
         findViewById<Button>(R.id.addSegment).setOnClickListener {
             addSegment()
@@ -65,6 +48,33 @@ class ReverseSearchActivity : AppCompatActivity() {
         findViewById<Button>(R.id.search).setOnClickListener {
             search()
         }
+    }
+
+    private fun loadTagsFromString(tagIds: String?) {
+        var tags: List<TagGroup> = arrayListOf()
+
+        if (tagIds != null && tagIds.isNotEmpty()) {
+            tags = TagGroupConvert.stringToTagGroups(tagIds)
+        }
+
+        Log.i("tags", tags.toString())
+
+        if (tags.isEmpty()) {
+            addSegment()
+        } else {
+            tags.forEach { group ->
+                val flatTags = arrayListOf<Int>()
+
+                group.forEach { list ->
+                    flatTags.addAll(list.filter { !Attributes.redundantTagIds.contains(it) })
+                }
+
+                addSegment(flatTags)
+
+            }
+        }
+
+        updateSearchCount()
     }
 
     fun addSegment(tags: ArrayList<Int> = arrayListOf()) {
@@ -356,8 +366,8 @@ class ReverseSearchActivity : AppCompatActivity() {
             dialog.show()
         }
 
-        fun getTagIds(exclude: Chip? = null): List<List<Int>> {
-            val tagIds = arrayListOf<List<Int>>()
+        fun getTagIds(exclude: Chip? = null): TagGroup {
+            val group = arrayListOf<TagList>()
 
             chips.forEach chipForEach@{
                 if (it == exclude) {
@@ -369,14 +379,14 @@ class ReverseSearchActivity : AppCompatActivity() {
                 if (subTags.isEmpty()) {
                     val defTag = it.getTag(R.id.defaultTagId) as Int
                     if (defTag != -1) {
-                        tagIds.add(arrayListOf(defTag))
+                        group.add(arrayListOf(defTag))
                     }
                 } else {
-                    tagIds.add(subTags)
+                    group.add(subTags)
                 }
             }
 
-            return tagIds
+            return group
         }
     }
 
@@ -384,7 +394,7 @@ class ReverseSearchActivity : AppCompatActivity() {
         return segments.indexOf(segment)
     }
 
-    private fun getAllTagIds(exclude: Chip? = null): List<List<List<Int>>> {
+    private fun getAllTagIds(exclude: Chip? = null): List<TagGroup> {
         return segments.map { it.getTagIds(exclude) }
     }
 
@@ -403,8 +413,7 @@ class ReverseSearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
-        val tagIds = getAllTagIds()
-        val query = "tags:" + tagIds.joinToString("/") { attrs -> attrs.joinToString(";") { ids -> ids.joinToString(",") { it.toString() } } }
+        val query = "tags:${TagGroupConvert.tagGroupsToString((getAllTagIds()))}"
         Log.i("foo", query)
 
         val intent = Intent(this, SearchListActivity::class.java)

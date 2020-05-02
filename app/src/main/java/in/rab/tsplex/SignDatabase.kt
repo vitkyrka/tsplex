@@ -311,7 +311,7 @@ class SignDatabase(context: Context) {
         return counts
     }
 
-    private fun getSignsByTagsQuery(tagIds: List<List<List<Int>>>, columns: Array<String>, limit: String? = RESULTS_LIMIT): String {
+    private fun getSignsByTagsQuery(tagIds: List<TagGroup>, columns: Array<String>, limit: String? = RESULTS_LIMIT): String {
         val builder = SQLiteQueryBuilder()
         val selectionArgs = null
         val groupBy = "signs.id"
@@ -346,7 +346,7 @@ class SignDatabase(context: Context) {
         return builder.buildQuery(columns, selection, groupBy, having, sortOrder, limit)
     }
 
-    private fun getSignsByTags(tagIds: List<List<List<Int>>>, columns: Array<String>, limit: String? = RESULTS_LIMIT): Cursor {
+    private fun getSignsByTags(tagIds: List<TagGroup>, columns: Array<String>, limit: String? = RESULTS_LIMIT): Cursor {
         val query = getSignsByTagsQuery(tagIds, columns, limit)
 
         Log.i("foo", query);
@@ -355,7 +355,7 @@ class SignDatabase(context: Context) {
     }
 
 
-    fun getSignsByTags(tagIds: List<List<List<Int>>>, limit: String? = RESULTS_LIMIT): ArrayList<Sign> {
+    fun getSignsByTags(tagIds: List<TagGroup>, limit: String? = RESULTS_LIMIT): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = getSignsByTags(tagIds, mSignColumns, limit)
 
@@ -367,7 +367,7 @@ class SignDatabase(context: Context) {
         return signs
     }
 
-    fun getSignsCountByTags(tagIds: List<List<List<Int>>>): Int {
+    fun getSignsCountByTags(tagIds: List<TagGroup>): Int {
         var signs = 0
         val subQuery = getSignsByTagsQuery(tagIds, arrayOf("signs.id"), limit=null)
         val query = "SELECT COUNT(*) FROM (${subQuery})"
@@ -384,7 +384,7 @@ class SignDatabase(context: Context) {
         return signs
     }
 
-    fun getTags(id: Int): List<List<Int>> {
+    fun getTags(id: Int): List<TagGroup> {
         val builder = SQLiteQueryBuilder()
         val selectionArgs = arrayOf(id.toString())
         val groupBy = null
@@ -402,21 +402,21 @@ class SignDatabase(context: Context) {
                 groupBy, null, sortOrder, limit))
 
         var curSeg = -1
-        var segTagIds = arrayListOf<Int>()
-        val tagIds = arrayListOf<ArrayList<Int>>()
+        var segTagIds = arrayListOf<TagList>()
+        val tagIds = arrayListOf<TagGroup>()
 
         while (cursor.moveToNext()) {
             val seg = cursor.getInt(0)
             val tagId = cursor.getInt(1)
 
             if (seg == curSeg) {
-                segTagIds.add(tagId)
+                segTagIds.add(arrayListOf(tagId))
             } else {
                 if (segTagIds.isNotEmpty()) {
                     tagIds.add(segTagIds)
                 }
 
-                segTagIds = arrayListOf(tagId)
+                segTagIds = arrayListOf(arrayListOf(tagId))
                 curSeg = seg
             }
         }

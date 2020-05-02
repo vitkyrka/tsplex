@@ -211,8 +211,8 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
         }
     }
 
-    private inner class FindSimilarTask : AsyncTask<Void, Void, List<List<Int>>>() {
-        override fun doInBackground(vararg params: Void): List<List<Int>>? {
+    private inner class FindSimilarTask : AsyncTask<Void, Void, List<TagGroup>>() {
+        override fun doInBackground(vararg params: Void): List<TagGroup>? {
             mSign?.let {
                 val db = SignDatabase.getInstance(this@SignActivity)
                 return db.getTags(it.id)
@@ -221,9 +221,9 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
             return arrayListOf()
         }
 
-        override fun onPostExecute(tagIds: List<List<Int>>) {
+        override fun onPostExecute(tagIds: List<TagGroup>) {
             startActivity(Intent(this@SignActivity, ReverseSearchActivity::class.java).apply {
-                putExtra("tagIds", tagIds.joinToString("/") { segTags -> segTags.joinToString(";") { it.toString() } })
+                putExtra("tagIds", TagGroupConvert.tagGroupsToString(tagIds))
             })
         }
     }
