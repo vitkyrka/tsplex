@@ -38,7 +38,9 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         mOrdboken = Ordboken.getInstance(this)
 
-        loadTagsFromString(intent.getStringExtra("tagIds"))
+        intent.getStringExtra("tagIds")?.let {
+            loadTagsFromString(it)
+        }
 
         findViewById<Button>(R.id.addSegment).setOnClickListener {
             addSegment()
@@ -50,10 +52,10 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadTagsFromString(tagIds: String?) {
+    private fun loadTagsFromString(tagIds: String, filterRedundant: Boolean = true) {
         var tags: List<TagGroup> = arrayListOf()
 
-        if (tagIds != null && tagIds.isNotEmpty()) {
+        if (tagIds.isNotEmpty()) {
             tags = TagGroupConvert.stringToTagGroups(tagIds)
         }
 
@@ -66,11 +68,10 @@ class ReverseSearchActivity : AppCompatActivity() {
                 val flatTags = arrayListOf<Int>()
 
                 group.forEach { list ->
-                    flatTags.addAll(list.filter { !Attributes.redundantTagIds.contains(it) })
+                    flatTags.addAll(list.filter { !Attributes.redundantTagIds.contains(it) || !filterRedundant })
                 }
 
                 addSegment(flatTags)
-
             }
         }
 
@@ -412,8 +413,10 @@ class ReverseSearchActivity : AppCompatActivity() {
         updateSearchCount()
     }
 
+    private fun getTagIdsString() : String = TagGroupConvert.tagGroupsToString((getAllTagIds()))
+
     private fun search() {
-        val query = "tags:${TagGroupConvert.tagGroupsToString((getAllTagIds()))}"
+        val query = "tags:${getTagIdsString()}"
         Log.i("foo", query)
 
         val intent = Intent(this, SearchListActivity::class.java)
@@ -422,6 +425,25 @@ class ReverseSearchActivity : AppCompatActivity() {
         intent.putExtra(SearchManager.QUERY, query)
 
         startActivity(intent)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        getSharedPreferences("in.rab.tsplex", 0)?.edit()?.apply {
+            putString("reverseSearchTagIds", getTagIdsString())
+            apply()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (segments.isEmpty()) {
+            getSharedPreferences("in.rab.tsplex", 0)?.apply {
+                loadTagsFromString(getString("reverseSearchTagIds", ""), filterRedundant = false)
+            }
+        }
     }
 
     private inner class SearchCountTask : AsyncTask<List<List<List<Int>>>, Void, Pair<Int, java.util.ArrayList<Sign>>>() {
