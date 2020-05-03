@@ -12,20 +12,22 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 
 class ReverseSearchActivity : AppCompatActivity() {
     private var mOrdboken: Ordboken? = null
     private var segments: ArrayList<Segment> = arrayListOf()
+    private val numImages: Int = 6
+    private var imageViews: ArrayList<ImageView> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,19 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         mOrdboken = Ordboken.getInstance(this)
 
+        val imagesContainer = findViewById<LinearLayout>(R.id.images)
+        val dpToPixels = resources.displayMetrics.density
+        val width = (120 * dpToPixels).toInt()
+        val height = (90 * dpToPixels).toInt()
+
+        for (i in 0..numImages) {
+            val imageView = ImageView(this)
+
+            val params = LinearLayout.LayoutParams(width, height)
+            imagesContainer.addView(imageView, params)
+            imageViews.add(imageView)
+        }
+
         intent.getStringExtra("tagIds")?.let {
             loadTagsFromString(it)
         }
@@ -52,6 +67,10 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.search).setOnClickListener {
             search()
+        }
+
+        findViewById<View>(R.id.resetFilters).setOnClickListener {
+            resetFilters()
         }
     }
 
@@ -92,12 +111,15 @@ class ReverseSearchActivity : AppCompatActivity() {
         segments.add(segment)
     }
 
-    fun removeSegment(segment: Segment) {
+    fun removeSegment(segment: Segment, partial: Boolean = false) {
         val segmentContainer = findViewById<ViewGroup>(R.id.segmentContainer)
 
         segmentContainer.removeView(segment.view)
-        segments.remove(segment)
-        updateSearchCount()
+
+        if (!partial) {
+            segments.remove(segment)
+            updateSearchCount()
+        }
     }
 
     inner class Segment constructor(
@@ -416,19 +438,15 @@ class ReverseSearchActivity : AppCompatActivity() {
 
     private fun resetFilters() {
         segments.forEach { segment ->
-            segment.tags.clear()
-
-            segment.chips.forEach {
-                segment.removeChip(it, update = false, removeFromSegment = false)
-            }
-
-            segment.chips.clear()
+            removeSegment(segment, partial = true)
         }
 
+        segments.clear()
+        addSegment()
         updateSearchCount()
     }
 
-    private fun getTagIdsString() : String = TagGroupConvert.tagGroupsToString((getAllTagIds()))
+    private fun getTagIdsString(): String = TagGroupConvert.tagGroupsToString((getAllTagIds()))
 
     private fun search() {
         val query = "tags:${getTagIdsString()}"
@@ -468,7 +486,7 @@ class ReverseSearchActivity : AppCompatActivity() {
             val count = db.getSignsCountByTags(tagIds)
 
             val signs = if (count > 0) {
-                db.getSignsByTags(tagIds, limit = "5")
+                db.getSignsByTags(tagIds, limit = numImages.toString())
             } else {
                 arrayListOf()
             }
@@ -477,10 +495,27 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(res: Pair<Int, java.util.ArrayList<Sign>>) {
-            var text = "${res.first} tecken matchar"
+            val count = res.first
+            var text = "$count tecken matchar"
 
-            if (res.first > 0) {
-                text += " (" + res.second.map { it.word.toUpperCase() }.joinToString("; ") + "...)"
+            if (count > 0) {
+                val signs = res.second
+                val glide = Glide.with(this@ReverseSearchActivity)
+
+                imageViews.forEachIndexed { index, imageView ->
+                    if (index >= signs.size) {
+                        glide.clear(imageView)
+                        return@forEachIndexed
+                    }
+
+                    glide.load(signs[index].getImageUrls()[0]).into(imageView)
+                }
+
+                text += " (" + res.second.joinToString("; ") { it.word.toUpperCase() }
+                if (count > 5) {
+                    text += "..."
+                }
+                text += ")"
             }
 
             findViewById<TextView>(R.id.info).text = text
@@ -557,16 +592,11 @@ class ReverseSearchActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.reverse_search, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.reverseSearch) {
-            resetFilters()
-            return true
-        }
-
         if (mOrdboken!!.onOptionsItemSelected(this, item)) {
             return true
         }
