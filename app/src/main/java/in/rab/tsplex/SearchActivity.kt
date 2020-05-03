@@ -313,7 +313,7 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
             return true
         }
 
-        if (item?.itemId == R.id.clearSearchBox) {
+        if (item?.itemId == R.id.resetSearch) {
             searchView.text.clear()
             RecentTask().execute()
             return true

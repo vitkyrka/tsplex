@@ -4,4 +4,5 @@
     <color name="primary_dark">#303F9F</color>
     <color name="selected">#66FFCA28</color>
     <color name="title">#ffffff</color>
+    <color name="hint">#555555</color>
 </resources>

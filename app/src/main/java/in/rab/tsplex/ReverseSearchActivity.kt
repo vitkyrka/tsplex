@@ -68,10 +68,6 @@ class ReverseSearchActivity : AppCompatActivity() {
         findViewById<Button>(R.id.search).setOnClickListener {
             search()
         }
-
-        findViewById<View>(R.id.resetFilters).setOnClickListener {
-            resetFilters()
-        }
     }
 
     private fun loadTagsFromString(tagIds: String, filterRedundant: Boolean = true) {
@@ -598,6 +594,11 @@ class ReverseSearchActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (mOrdboken!!.onOptionsItemSelected(this, item)) {
+            return true
+        }
+
+        if (item?.itemId == R.id.resetSearch) {
+            resetFilters()
             return true
         }
 

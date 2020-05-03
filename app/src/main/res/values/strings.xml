@@ -41,6 +41,8 @@
     <string name="accessibility">Tillgänglighet</string>
     <string name="tts">Läs upp översättningar</string>
 
+    <string name="reverse_search">Teckenväljare</string>
+
     <string name="show_matching_signs">Visa matchande tecken</string>
     <string name="matching_signs">Matchande tecken</string>
 

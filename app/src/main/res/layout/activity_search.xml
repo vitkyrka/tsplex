@@ -14,7 +14,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:elevation="4dp"
-            android:background="?colorSurface">
+            app:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light">
 
 
             <EditText
@@ -23,9 +24,10 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:textColor="?colorOnSurface"
+                android:textColorHint="@color/hint"
                 android:inputType="text"
                 android:imeOptions="actionSearch"
-                android:background="@null"
+                android:background="?colorSurface"
                 android:hint="@string/search_hint">
 
             </EditText>
