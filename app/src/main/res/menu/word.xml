@@ -9,6 +9,16 @@
         app:showAsAction="ifRoom"
         android:title="@string/add_bookmark" />
 
+    <item android:id="@+id/search"
+        android:title="@string/search_hint"
+        android:icon="@drawable/ic_search_white_24dp"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/reverseSearch"
+        android:title="@string/reverse_search"
+        android:icon="@drawable/ic_reverse_search"
+        app:showAsAction="ifRoom" />
+
     <item android:id="@+id/findSimilar"
         android:icon="@drawable/ic_reverse_search"
         android:title="@string/find_simliar"

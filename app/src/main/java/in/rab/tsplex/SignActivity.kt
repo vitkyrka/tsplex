@@ -275,7 +275,6 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        mOrdboken!!.initSearchView(this, menu, null, false)
         menuInflater.inflate(R.menu.word, menu)
         return true
     }
