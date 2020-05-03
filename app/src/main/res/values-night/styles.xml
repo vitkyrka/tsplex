@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="android:colorBackground">#303030</item>
         <item name="colorSurface">#212121</item>
+        <item name="colorOnPrimary">#eeeeee</item>
     </style>
 
     <style name="AppTheme.Launcher">

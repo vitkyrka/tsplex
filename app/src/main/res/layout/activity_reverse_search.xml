@@ -107,8 +107,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:textColor="?colorOnBackground"
-            app:iconTint="?colorOnBackground"
+            android:textColor="?colorOnPrimary"
+            app:iconTint="?colorOnPrimary"
 
             android:id="@+id/search"
             android:text="@string/show_matching_signs"
