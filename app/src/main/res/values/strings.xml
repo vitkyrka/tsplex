@@ -46,8 +46,8 @@
     <string name="show_matching_signs">Visa matchande tecken</string>
     <string name="matching_signs">Matchande tecken</string>
 
-    <string name="action">Aktion</string>
-    <string name="add_action">Lägg till aktion</string>
+    <string name="action">Rörelse</string>
+    <string name="add_action">Lägg till rörelse</string>
     <string name="add_segment">Lägg till segment</string>
     <string name="reset">Nollställ</string>
 
