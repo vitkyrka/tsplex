@@ -49,7 +49,6 @@
     <string name="action">Aktion</string>
     <string name="add_action">Lägg till aktion</string>
     <string name="add_segment">Lägg till segment</string>
-    <string name="remove_segment">Ta bort segment</string>
     <string name="reset">Nollställ</string>
 
     <string name="unorganized_bookmarks">Osorterade bokmärken</string>
