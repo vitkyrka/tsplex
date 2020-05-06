@@ -82,28 +82,20 @@ class ReverseSearchActivity : AppCompatActivity() {
         if (tags.isEmpty()) {
             addSegment()
         } else {
-            tags.forEach { group ->
-                val flatTags = arrayListOf<Int>()
-
-                group.forEach { list ->
-                    flatTags.addAll(list.filter { !Attributes.redundantTagIds.contains(it) || !filterRedundant })
-                }
-
-                addSegment(flatTags)
-            }
+            tags.forEach { addSegment(it, filterRedundant) }
         }
 
         updateSearchCount()
     }
 
-    fun addSegment(tags: ArrayList<Int> = arrayListOf()) {
+    fun addSegment(group: TagGroup = arrayListOf(), filterRedundant: Boolean = false) {
         val segmentContainer = findViewById<ViewGroup>(R.id.segmentContainer)
         val view = layoutInflater.inflate(R.layout.segment, null)
 
         segmentContainer.addView(view)
 
-        val segment = Segment(view as ViewGroup, tags)
-        segment.create()
+        val segment = Segment(view as ViewGroup)
+        segment.create(group, filterRedundant)
         segments.add(segment)
     }
 
@@ -119,14 +111,13 @@ class ReverseSearchActivity : AppCompatActivity() {
     }
 
     inner class Segment constructor(
-            val view: ViewGroup,
-            val tags: ArrayList<Int> = arrayListOf()
+            val view: ViewGroup
     ) {
         lateinit var container: LinearLayout
         var holderMap = mutableMapOf<String, ViewGroup>()
         val chips = ArrayList<Chip>()
 
-        fun create() {
+        fun create(tagGroup: TagGroup, filterRedundant: Boolean = false) {
             Log.i("view", view.toString())
 
             container = view.findViewById(R.id.container)
@@ -142,15 +133,35 @@ class ReverseSearchActivity : AppCompatActivity() {
                 }
             }
 
-            Attributes.attributes.forEach { at ->
-                val activeHeadTag = if (tags.contains(at.tagId)) arrayListOf(at.tagId) else arrayListOf()
-                val activeStateTags = at.states.filter { state -> tags.contains(state.tagId) }.map { state -> state.tagId }
+            val flatTags = arrayListOf<Int>()
+
+            tagGroup.forEach { list ->
+                flatTags.addAll(list.filter { !Attributes.redundantTagIds.contains(it) || !filterRedundant })
+            }
+
+            Attributes.attributes.filter { !it.dynamic }.forEach { at ->
+                val activeHeadTag = if (flatTags.contains(at.tagId)) arrayListOf(at.tagId) else arrayListOf()
+                val activeStateTags = at.states.filter { state -> flatTags.contains(state.tagId) }.map { state -> state.tagId }
                 val activeTags = if (activeStateTags.isNotEmpty()) activeStateTags else activeHeadTag
 
-                Log.i("foo", activeTags.toString())
-                if (!at.dynamic || activeTags.isNotEmpty()) {
-                    Log.i("foo", at.name)
-                    addChip(at, activeTags, update = false)
+                addChip(at, activeTags, update = false)
+            }
+
+            tagGroup.forEach { list ->
+                val tags = list.filter { !filterRedundant || !Attributes.redundantTagIds.contains(it) }
+
+                Attributes.attributes.filter { it.dynamic }.forEach attrLoop@{ at ->
+                    val activeHeadTag = if (tags.contains(at.tagId)) arrayListOf(at.tagId) else arrayListOf()
+                    val activeStateTags = at.states.filter { state -> tags.contains(state.tagId) }.map { state -> state.tagId }
+                    val activeTags = if (activeStateTags.isNotEmpty()) activeStateTags else activeHeadTag
+
+                    if (activeTags.isNotEmpty()) {
+                        if (filterRedundant && at.states.isNotEmpty() && activeStateTags.isEmpty()) {
+                            return@attrLoop
+                        }
+
+                        addChip(at, activeTags, update = false)
+                    }
                 }
             }
         }
