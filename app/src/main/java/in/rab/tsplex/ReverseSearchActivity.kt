@@ -504,20 +504,19 @@ class ReverseSearchActivity : AppCompatActivity() {
         override fun onPostExecute(res: Pair<Int, java.util.ArrayList<Sign>>) {
             val count = res.first
             var text = "$count tecken matchar"
+            val glide = Glide.with(this@ReverseSearchActivity)
+            val signs = res.second
 
-            if (count > 0) {
-                val signs = res.second
-                val glide = Glide.with(this@ReverseSearchActivity)
-
-                imageViews.forEachIndexed { index, imageView ->
-                    if (index >= signs.size) {
-                        glide.clear(imageView)
-                        return@forEachIndexed
-                    }
-
-                    glide.load(signs[index].getImageUrls()[0]).into(imageView)
+            imageViews.forEachIndexed { index, imageView ->
+                if (index >= signs.size) {
+                    glide.clear(imageView)
+                    return@forEachIndexed
                 }
 
+                glide.load(signs[index].getImageUrls()[0]).into(imageView)
+            }
+
+            if (count > 0) {
                 text += " (" + res.second.joinToString("; ") { it.word.toUpperCase() }
                 if (count > 5) {
                     text += "..."
