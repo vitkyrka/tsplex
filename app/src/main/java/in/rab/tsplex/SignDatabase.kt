@@ -12,7 +12,7 @@ import java.util.regex.Pattern
 
 class SignDatabase(context: Context) {
 
-    private val mSignColumns = arrayOf("DISTINCT signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "num_examples", "occurence")
+    private val mSignColumns = arrayOf("DISTINCT signs.id", "sv", "signs.video", "signs.desc", "transcription", "comment", "slug", "images", "topic1", "topic2", "topic1extra", "topic2extra", "num_examples", "occurence")
     private val mExampleColumns = arrayOf("examples.video", "examples.desc", "examples.signid", "signs.sv")
     private val mOpenHelper: SignDatabaseOpenHelper
 
@@ -31,8 +31,10 @@ class SignDatabase(context: Context) {
                 cursor.getInt(7),
                 cursor.getLong(8),
                 cursor.getLong(9),
-                cursor.getInt(10),
-                cursor.getInt(11))
+                cursor.getString(10),
+                cursor.getString(11),
+                cursor.getInt(12),
+                cursor.getInt(13))
     }
 
     private fun makeExample(cursor: Cursor): Example {
@@ -114,7 +116,7 @@ class SignDatabase(context: Context) {
     fun getSignsByIds(idTable: String, orderBy: String): ArrayList<Sign> {
         val signs = ArrayList<Sign>()
         val cursor = mOpenHelper.database!!.rawQuery(
-                "SELECT signs.id, sv, video, desc, transcription, comment, slug, images, topic1, topic2, num_examples, occurence FROM signs INNER JOIN " + idTable +
+                "SELECT signs.id, sv, video, desc, transcription, comment, slug, images, topic1, topic2, topic1extra, topic2extra, num_examples, occurence FROM signs INNER JOIN " + idTable +
                         " ON signs.id = " + idTable + ".id ORDER BY " + orderBy, null)
                 ?: return signs
 

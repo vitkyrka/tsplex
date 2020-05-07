@@ -201,7 +201,11 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
     }
 
     private fun bindTopic(holder: TopicViewHolder, topic: Topic) {
-        holder.mIdView.text = topic.toString()
+        holder.mIdView.text = topic.toString() + if (topic.extra.isNotEmpty()) {
+            " ${topic.extra}"
+        } else {
+            ""
+        }
 
         holder.mView.setOnClickListener {
             mListener?.onListFragmentInteraction(topic)

@@ -25,10 +25,10 @@ class SignFragment : ItemListFragment() {
             items.addAll(sign.examples)
 
             if (sign.topic1 != 0L && !Topics.names[sign.topic1]!!.startsWith("Okä")) {
-                items.add(Topic(sign.topic1))
+                items.add(Topic(sign.topic1, Topics.names[sign.topic1]!!, sign.topic1Extra))
 
                 if (sign.topic2 != 0L) {
-                    items.add(Topic(sign.topic2))
+                    items.add(Topic(sign.topic2, Topics.names[sign.topic2]!!, sign.topic2Extra))
                 }
             }
 

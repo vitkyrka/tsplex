@@ -77,7 +77,22 @@ def parse_one(f):
         if name == 'Ämne':
             e = next(d.itersiblings())
             # Skip [Även] and [Endast] for now
-            value = [t.strip() for t in e.itertext() if t.strip() and not t.startswith('[')]
+            value = []
+
+            topic = None
+            texts = [t.strip() for t in e.itertext() if t.strip()]
+            for t in texts:
+                if t.startswith('['):
+                    assert topic
+                    value.append((topic, t))
+                    topic = None
+                else:
+                    if topic:
+                        value.append((topic, ''))
+                    topic = t
+
+            if topic:
+                value.append((topic, ''))
         elif name == 'Förekomster':
             occurence = [l.strip().replace(' träffar', '').split(' ') for l in next(d.itersiblings()).text_content().strip().split('\n')]
             totalhits = 0
@@ -99,7 +114,7 @@ def parse_one(f):
         sign[name.lower()] = value
 
     if len(sign['ämne']) == 0:
-        sign['ämne'] = ['Okänt']
+        sign['ämne'] = [('Okänt', '')]
 
     sign['slug'] = re.search('movies/[^/]+/(.*?)-%s' % sign['id-nummer'], sign['video']).groups()[0]
     sign['samma-betydelse'] = parse_synonyms(sign, f)
@@ -123,14 +138,14 @@ def parse_one(f):
     return sign
 
 def fixup(sign):
-    if any(topic for topic in sign['ämne'] if 'Orter' in topic or 'Länder' in topic or 'Finland' in topic):
+    if any(topic for topic, extra in sign['ämne'] if 'Orter' in topic or 'Länder' in topic or 'Finland' in topic):
             sign['ord'][0] = sign['ord'][0].capitalize()
     else:
         sign['ord'] = [word if word.isupper() else word.lower() for word in sign['ord']]
 
     # Homonym information seems to be incorrect for Österberg 1916 signs.
     # All the Österberg signs are listed as homonyms of each other.
-    if sign['ämne'][0].startswith('Österberg'):
+    if sign['ämne'][0][0].startswith('Österberg'):
         sign['kan-aven-betyda'] = []
 
     # Pseudo-sign with wrong homonym information

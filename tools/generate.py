@@ -19,7 +19,7 @@ def get_topic_ids(signs):
     alltopics = {}
 
     for sign in signs:
-        for topic in sign['ämne']:
+        for topic, extra in sign['ämne']:
             base = alltopics
             parts = topic.split(' / ')
             for i, topic in enumerate(parts):
@@ -114,7 +114,7 @@ object DatabaseVersion {
     conn = sqlite3.connect(args.db)
 
     conn.execute("PRAGMA user_version = %d" % version)
-    conn.execute("CREATE TABLE signs (id INTEGER, sv TEXT, video TEXT, slug TEXT, transcription TEXT, images INT, desc TEXT, topic1 INT, topic2 INT, comment TEXT, num_examples INT, occurence INT, occurence_lexicon INT, occurence_corpus INT, occurence_surveys INT)")
+    conn.execute("CREATE TABLE signs (id INTEGER, sv TEXT, video TEXT, slug TEXT, transcription TEXT, images INT, desc TEXT, topic1 INT, topic2 INT, topic1extra TEXT, topic2extra TEXT, comment TEXT, num_examples INT, occurence INT, occurence_lexicon INT, occurence_corpus INT, occurence_surveys INT)")
     conn.execute("CREATE TABLE examples (video TEXT UNIQUE, desc TEXT, signid INTEGER)")
     conn.execute("CREATE TABLE synonyms (id INTEGER, otherid INTEGER)")
     conn.execute("CREATE TABLE homonyms (id INTEGER, otherid INTEGER)")
@@ -151,15 +151,17 @@ object DatabaseVersion {
     for sign in signs:
         thisid = int(sign['id-nummer'])
 
-        conn.execute("insert into signs values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        conn.execute("insert into signs values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                      (thisid, ', '.join(sign['ord']),
                       sign['video'],
                       sign['slug'],
                       sign['transkription'],
                       len(sign['images']),
                       sign['beskrivning'],
-                      topictoid[sign['ämne'][0].replace('/', '»')],
-                      topictoid[sign['ämne'][1].replace('/', '»')] if len(sign['ämne']) > 1 else 0,
+                      topictoid[sign['ämne'][0][0].replace('/', '»')],
+                      topictoid[sign['ämne'][1][0].replace('/', '»')] if len(sign['ämne']) > 1 else 0,
+                      sign['ämne'][0][1],
+                      sign['ämne'][1][1] if len(sign['ämne']) > 1 else '',
                       sign['kommentar'],
                       len(sign['examples']),
                       sign['förekomster'],

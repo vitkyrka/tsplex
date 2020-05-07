@@ -15,6 +15,8 @@ class Sign internal constructor(internal val id: Int,
                                 private val images: Int,
                                 internal val topic1: Long,
                                 internal val topic2: Long,
+                                internal val topic1Extra: String,
+                                internal val topic2Extra: String,
                                 internal val examplesCount: Int,
                                 internal val occurence: Int) : Parcelable, Item() {
     internal val examples: ArrayList<Example> = ArrayList()
@@ -31,6 +33,8 @@ class Sign internal constructor(internal val id: Int,
             parcel.readInt(),
             parcel.readLong(),
             parcel.readLong(),
+            parcel.readString()!!,
+            parcel.readString()!!,
             parcel.readInt(),
             parcel.readInt()) {
         parcel.readList(examples, Example::class.java.classLoader)
@@ -60,6 +64,8 @@ class Sign internal constructor(internal val id: Int,
         parcel.writeInt(images)
         parcel.writeLong(topic1)
         parcel.writeLong(topic2)
+        parcel.writeString(topic1Extra)
+        parcel.writeString(topic2Extra)
         parcel.writeInt(examplesCount)
         parcel.writeInt(occurence)
         parcel.writeList(examples)
