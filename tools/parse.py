@@ -92,7 +92,7 @@ def parse_one(f):
             value = totalhits
         else:
             try:
-                value = next(d.itersiblings()).text.strip()
+                value = next(d.itersiblings()).text_content().strip()
             except AttributeError:
                 continue
 
