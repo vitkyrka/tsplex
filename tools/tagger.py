@@ -349,7 +349,7 @@ class Tagger(object):
         # Broken transcriptions
         if idn in [6966, 17172, 1199, 18548, 13286, 15115,
                    16596, 16608, 17066, 18175, 18744,
-                   18797, 19100, 19133]:
+                   18797, 19100, 19133, 19370]:
             return None
 
         segs = [list(group) for key, group in itertools.groupby(ops, lambda op:op == 'other_separator_segments') if not key]
