@@ -321,5 +321,4 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
 
         return super.onOptionsItemSelected(item)
     }
-
 }

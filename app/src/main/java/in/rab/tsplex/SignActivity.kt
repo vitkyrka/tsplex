@@ -100,6 +100,10 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
 
     override fun onListFragmentInteraction(item: Folder) = Unit
 
+    override fun onFindSimilarClick(item: Sign) {
+        FindSimilarTask().execute()
+    }
+
     private inner class TabPagerAdapter(fm: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentPagerAdapter(fm) {
         override fun getPageTitle(position: Int): CharSequence {
             var adjpos = position
@@ -307,11 +311,6 @@ class SignActivity : RoutingAppCompactActivity(), ItemListFragment.OnListFragmen
             }
 
             StarToggleTask().execute(0)
-            return true
-        }
-
-        if (item.itemId == R.id.findSimilar) {
-            FindSimilarTask().execute()
             return true
         }
 

@@ -669,6 +669,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         fun onListFragmentInteraction(item: Folder)
         fun onItemLongClick(item: Folder) : Boolean
         fun onExampleSearchClick(example: Example)
+        fun onFindSimilarClick(item: Sign)
     }
 
     companion object {

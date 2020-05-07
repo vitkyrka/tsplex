@@ -68,4 +68,6 @@ abstract class RoutingAppCompactActivity : AppCompatActivity(),
 
     override fun onLoadList(items: List<Item>) {
     }
+
+    override fun onFindSimilarClick(item: Sign) = Unit
 }

@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -184,6 +183,10 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
                 mPlayHandler.onItemPlay(sign, position)
             }
 
+            mFindSimilar.setOnClickListener {
+                mListener?.onFindSimilarClick(sign)
+            }
+
             if (sign.comment.isNotEmpty()) {
                 mCommentText.text = "${sign.comment}."
                 mCommentText.visibility = VISIBLE
@@ -295,6 +298,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         val mTranscriptionText: TextView = mView.findViewById(R.id.transcriptionText)
         val mTextView: TextView = mView.findViewById(R.id.textView)
         val mCommentText: TextView = mView.findViewById(R.id.commentText)
+        val mFindSimilar: Button = mView.findViewById(R.id.findSimilar)
     }
 
     inner class HeaderViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
