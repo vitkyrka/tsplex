@@ -486,6 +486,12 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
     }
 
+    fun openSign(sign: Sign) {
+        val intent = Intent(this, SignActivity::class.java)
+        intent.putExtra("url", sign.id.toString())
+        startActivity(intent)
+    }
+
     private inner class SearchCountTask : AsyncTask<List<List<List<Int>>>, Void, Pair<Int, java.util.ArrayList<Sign>>>() {
         override fun doInBackground(vararg params: List<List<List<Int>>>?): Pair<Int, java.util.ArrayList<Sign>> {
             val tagIds = params[0]!!
@@ -509,11 +515,17 @@ class ReverseSearchActivity : AppCompatActivity() {
 
             imageViews.forEachIndexed { index, imageView ->
                 if (index >= signs.size) {
+                    imageView.visibility = View.GONE
                     glide.clear(imageView)
                     return@forEachIndexed
                 }
 
+                imageView.setOnClickListener {
+                    openSign(signs[index])
+                }
+
                 glide.load(signs[index].getImageUrls()[0]).into(imageView)
+                imageView.visibility = View.VISIBLE
             }
 
             if (count > 0) {
