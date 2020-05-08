@@ -183,6 +183,12 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
                 mPlayHandler.onItemPlay(sign, position)
             }
 
+            mFindSimilar.visibility = if (sign.transcription.isNotEmpty() && sign.transcription != "#") {
+                VISIBLE
+            } else {
+                GONE
+            }
+
             mFindSimilar.setOnClickListener {
                 mListener?.onFindSimilarClick(sign)
             }
