@@ -302,7 +302,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         val mTranscriptionText: TextView = mView.findViewById(R.id.transcriptionText)
         val mTextView: TextView = mView.findViewById(R.id.textView)
         val mCommentText: TextView = mView.findViewById(R.id.commentText)
-        val mFindSimilar: Button = mView.findViewById(R.id.findSimilar)
+        val mFindSimilar: ImageButton = mView.findViewById(R.id.findSimilar)
     }
 
     inner class HeaderViewHolder(val mView: View, val mViewType: Int) : androidx.recyclerview.widget.RecyclerView.ViewHolder(mView) {
