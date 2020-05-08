@@ -14,11 +14,6 @@
         android:icon="@drawable/ic_search_white_24dp"
         app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/reverseSearch"
-        android:title="@string/reverse_search"
-        android:icon="@drawable/ic_reverse_search"
-        app:showAsAction="ifRoom" />
-
     <item android:id="@+id/openInBrowser"
         android:title="@string/open_in_browser"
         app:showAsAction="never" />
