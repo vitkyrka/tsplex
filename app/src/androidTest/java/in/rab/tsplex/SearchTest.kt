@@ -96,11 +96,11 @@ class SearchTest {
     fun searchHistory() {
         onView(withId(R.id.searchView))
                 .perform(typeText("a"), pressImeActionButton())
-        onView(withId(R.id.clearSearchBox))
+        onView(withId(R.id.resetSearch))
                 .perform(click())
         onView(withId(R.id.searchView))
                 .perform(typeText("b"), pressImeActionButton())
-        onView(withId(R.id.clearSearchBox))
+        onView(withId(R.id.resetSearch))
                 .perform(click())
         onView(withId(R.id.searchView))
                 .perform(pressImeActionButton())
@@ -110,7 +110,7 @@ class SearchTest {
 
         onView(withContentDescription(R.string.abc_action_bar_up_description))
                 .perform(click())
-        onView(withId(R.id.homeSearchView))
+        onView(withId(R.id.toolbarIcon))
                 .perform(click())
         onView(withText("a")).check(matches(isDisplayed()))
         onView(withText("b")).check(matches(isDisplayed()))
@@ -128,7 +128,7 @@ class SearchTest {
         onView(withText(R.string.clear_search_history))
                 .perform((click()))
         Espresso.pressBack()
-        onView(withId(R.id.homeSearchView))
+        onView(withId(R.id.toolbarIcon))
                 .perform(click())
 
         onView(withText("a")).check(doesNotExist())

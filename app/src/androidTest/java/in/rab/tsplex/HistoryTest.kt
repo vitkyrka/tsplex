@@ -47,7 +47,7 @@ class HistoryTest {
     fun historyTest() {
         clearHistory()
 
-        onView(withId(R.id.homeSearchView))
+        onView(withId(R.id.toolbarIcon))
                 .perform(click())
 
         for (i in 1..3) {
@@ -69,7 +69,7 @@ class HistoryTest {
         onView(withText("dop, döpa")).check(matches(isDisplayed()))
         onView(withText("taxi")).check(matches(isDisplayed()))
 
-        onView(withId(R.id.homeSearchView))
+        onView(withId(R.id.toolbarIcon))
                 .perform(click())
         addToHistory(4)
 

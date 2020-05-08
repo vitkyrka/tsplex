@@ -61,7 +61,7 @@ class AutoSearchTest {
         onView(withId(R.id.list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         clickPreview()))
-        onView(withId(R.id.clearSearchBox))
+        onView(withId(R.id.resetSearch))
                 .perform(click())
         onView(withText("444")).check(matches(isDisplayed()))
     }
@@ -76,7 +76,7 @@ class AutoSearchTest {
 
         Espresso.pressBack()
 
-        onView(withId(R.id.clearSearchBox))
+        onView(withId(R.id.resetSearch))
                 .perform(click())
         onView(withText("445")).check(matches(isDisplayed()))
     }
@@ -88,7 +88,7 @@ class AutoSearchTest {
         onView(withId(R.id.list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         clickPreview()))
-        onView(withId(R.id.clearSearchBox))
+        onView(withId(R.id.resetSearch))
                 .perform(click())
         onView(withText("zlat")).check(matches(isDisplayed()))
     }
@@ -101,7 +101,7 @@ class AutoSearchTest {
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         click()))
         Espresso.pressBack()
-        onView(withId(R.id.clearSearchBox))
+        onView(withId(R.id.resetSearch))
                 .perform(click())
         onView(withText("zla")).check(matches(isDisplayed()))
     }
@@ -114,7 +114,7 @@ class AutoSearchTest {
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
                         clickExampleSearch()))
         Espresso.pressBack()
-        onView(withId(R.id.clearSearchBox))
+        onView(withId(R.id.resetSearch))
                 .perform(click())
         onView(withText("zlata")).check(matches(isDisplayed()))
     }

@@ -49,7 +49,7 @@ class BookmarksTest {
     fun bookmarksTest() {
         removeAllBookmarks()
 
-        onView(withId(R.id.homeSearchView))
+        onView(withId(R.id.toolbarIcon))
                 .perform(click())
 
         for (i in 1..2) {
@@ -114,7 +114,7 @@ class BookmarksTest {
 
         addFolder("foo")
 
-        onView(withId(R.id.homeSearchView))
+        onView(withId(R.id.toolbarIcon))
                 .perform(click())
         toggleSignBookmark(1)
         onView(withText("foo"))
@@ -143,7 +143,7 @@ class BookmarksTest {
                 .perform(click())
 
         addFolder("bar")
-        onView(withId(R.id.homeSearchView))
+        onView(withId(R.id.toolbarIcon))
                 .perform(click())
         toggleSignBookmark(3)
         onView(withText("bar"))
@@ -188,7 +188,7 @@ class BookmarksTest {
         onView(withText("foo"))
                 .check(doesNotExist())
 
-        onView(withId(R.id.homeSearchView))
+        onView(withId(R.id.toolbarIcon))
                 .perform(click())
         toggleSignBookmark(1)
         onView(withContentDescription(R.string.abc_action_bar_up_description))
