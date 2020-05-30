@@ -338,7 +338,7 @@ class Tagger(object):
         try:
             chars = [self.charmap[c] for c in trans if c != '#']
         except KeyError:
-            if idn not in [18321, 19304, 19305]:
+            if idn not in [18321, 19304, 19305, 19450]:
                 raise
             return None
 
