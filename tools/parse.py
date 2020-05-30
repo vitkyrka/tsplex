@@ -166,6 +166,20 @@ def fixup_relations(sign, signs):
         diff = set(homonyms) - set(sign['kan-aven-betyda'])
         sign['kan-aven-betyda'].extend(list(diff))
 
+    key = f'-{sign["id-nummer"]}-'
+    known = [(url, title) for url, title in sign['examples'] if key in url]
+
+    found = set()
+    for s in signs:
+        found.update([(url, title) for url, title in s['examples'] if key in url])
+
+    if len(found) > len(known):
+        founddict = dict(list(found))
+        foundurls = set([u for u, title in found])
+        knownurls = set([u for u, title in known])
+
+        sign['examples'].extend([(u, founddict[u]) for u in foundurls - knownurls])
+
     return sign
 
 def main():
