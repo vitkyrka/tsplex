@@ -47,8 +47,8 @@ def main():
         if args.offline:
             resp = s.get(url)
         else:
-            with s.cache_disabled():
-                resp = s.get(url)
+            s.cache.delete_url(url)
+            resp = s.get(url)
 
         page = lxml.html.fromstring(resp.text)
         lastlink = sorted(page.xpath('//a[contains(@href, "/ord/")]/@href'))[-1]
