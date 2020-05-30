@@ -9,11 +9,12 @@ teckenspråkslexikon](http://teckensprakslexikon.su.se/)).
 
 The code is licensed under the [Apache license, version 2.0](LICENSE).
 
-[The sign data](app/data/signs.json) was obtained by screen-scraping
-http://teckensprakslexikon.su.se/.  Svenskt teckenspråkslexikon is licensed by
-its authors, [Avdelningen för teckenspråk, Institutionen för lingvistik,
-Stockholms universitet](http://www.ling.su.se/teckenspr%C3%A5k) under a
-[Creative Commons Erkännande-IckeKommersiell-DelaLika 2.5 Sverige
+[The sign data](app/data/signs.json) was obtained by scraping
+http://teckensprakslexikon.su.se/ (using the scripts in [tools/](tools/)).
+Svenskt teckenspråkslexikon is licensed by its authors, [Avdelningen för
+teckenspråk, Institutionen för lingvistik, Stockholms
+universitet](http://www.ling.su.se/teckenspr%C3%A5k) under a [Creative Commons
+Erkännande-IckeKommersiell-DelaLika 2.5 Sverige
 license](http://creativecommons.org/licenses/by-nc-sa/2.5/se/).
 
 [The launcher icon](app/graphics/lexikon.svg) is based on an image resource in
