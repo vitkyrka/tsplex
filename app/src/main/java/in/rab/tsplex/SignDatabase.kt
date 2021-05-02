@@ -278,9 +278,6 @@ class SignDatabase(context: Context) {
         val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 groupBy, null, sortOrder, limit)
 
-        Log.i("foo", builder.buildQuery(columns, selection, selectionArgs,
-                groupBy, null, sortOrder, limit))
-
         val counts = hashMapOf<Int, Int>()
 
         while (cursor.moveToNext()) {
@@ -315,7 +312,6 @@ class SignDatabase(context: Context) {
 
     private fun getSignsByTagsQuery(tagIds: List<TagGroup>, columns: Array<String>, limit: String? = RESULTS_LIMIT): String {
         val builder = SQLiteQueryBuilder()
-        val selectionArgs = null
         val groupBy = "signs.id"
         val sortOrder = "occurence DESC, length(comment), num_examples DESC, signs.id"
 
@@ -399,9 +395,6 @@ class SignDatabase(context: Context) {
 
         val cursor = builder.query(mOpenHelper.database, columns, selection, selectionArgs,
                 groupBy, null, sortOrder, limit)
-
-        Log.i("foo", builder.buildQuery(columns, selection, selectionArgs,
-                groupBy, null, sortOrder, limit))
 
         var curSeg = -1
         var segTagIds = arrayListOf<TagList>()
