@@ -104,6 +104,7 @@ class SearchTest {
                 .perform(click())
         onView(withId(R.id.searchView))
                 .perform(pressImeActionButton())
+        Espresso.closeSoftKeyboard()
 
         onView(withText("a")).check(matches(isDisplayed()))
         onView(withText("b")).check(matches(isDisplayed()))
@@ -139,11 +140,13 @@ class SearchTest {
     fun searchFail() {
         onView(withId(R.id.searchView))
                 .perform(typeText("x1"), pressImeActionButton())
+        Espresso.closeSoftKeyboard()
         onView(withId(R.id.noResults))
                 .check(matches(isDisplayed()))
 
         onView(withId(R.id.searchView))
                 .perform(pressImeActionButton())
+        Espresso.closeSoftKeyboard()
         onView(withId(R.id.noResults))
                 .check(matches(isDisplayed()))
         onView(withId(R.id.noResults))
@@ -165,11 +168,11 @@ class SearchTest {
         }
     }
 
-
     @Test
     fun searchResults() {
         onView(withId(R.id.searchView))
                 .perform(typeText("restaurang"), pressImeActionButton())
+        Espresso.closeSoftKeyboard()
         onView(withText("􌥔􌥘􌤭􌤹􌤭􌥓􌥘􌦎􌥼􌥹􌦉􌥯􌥿"))
                 .check(matches(isDisplayed()))
         onView(withText("􌤴􌥗􌥌􌤹􌥌􌤴􌤶􌦎􌥼􌦄􌥹􌦉􌥼􌥻"))
@@ -188,6 +191,7 @@ class SearchTest {
         val exampleString = "nyss åkt till"
         onView(withId(R.id.searchView))
                 .perform(typeText("Kanarie"), pressImeActionButton())
+        Espresso.closeSoftKeyboard()
         onView(withId(R.id.list))
                 .perform(RecyclerViewActions.scrollToHolder(
                         withExample(containsString(exampleString))))
