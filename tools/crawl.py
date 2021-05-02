@@ -26,6 +26,20 @@ def make_throttle_hook():
     return hook
 
 
+def cache_has_url(s, url):
+    # s.cache.has_url() doesn't actual work for what we want to do.  For
+    # error responses such as 404 the url is in the urls table but there is
+    # no response
+    key = s.cache._url_to_key(url)
+
+    try:
+        respkey = s.cache.keys_map[key]
+        s.cache.responses[respkey]
+        return True
+    except KeyError:
+        return False
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--write', action='store_true')
@@ -38,7 +52,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     requests_cache.install_cache('cache')
 
-    s = requests_cache.CachedSession()
+    s = requests_cache.CachedSession(allowable_codes=(200,404))
     s.hooks = {'response': make_throttle_hook()}
 
     last = args.last
@@ -68,10 +82,10 @@ def main():
         signid = f'{i:05d}'
         signurl = f'{base}/ord/{signid}'
 
-        if args.tail and s.cache.has_url(signurl):
+        if args.tail and cache_has_url(s, signurl):
             break
 
-        if args.offline and not s.cache.has_url(signurl):
+        if args.offline and not cache_has_url(s, signurl):
             continue
 
         resp = s.get(signurl)
