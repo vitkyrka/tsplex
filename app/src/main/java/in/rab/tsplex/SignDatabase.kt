@@ -436,8 +436,8 @@ class SignDatabase(context: Context) {
 
         val columns = mExampleColumns
         val cursor = builder.query(mOpenHelper.database, columns, null, null,
-                "examples.rowid", "COUNT(*) > 1",
-                "RANDOM() LIMIT 1") ?: return examples
+                "examples.rowid", "COUNT(*) > 1 AND LENGTH(examples.desc) < 80",
+                "RANDOM() LIMIT 2") ?: return examples
 
         while (cursor.moveToNext()) {
             examples.add(makeExample(cursor))

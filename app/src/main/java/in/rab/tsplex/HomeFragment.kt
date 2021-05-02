@@ -30,18 +30,16 @@ class HomeFragment : ItemListFragment(mCache = false) {
 
         if (old) {
             val examples = db.getRandomExamples()
+            val randomSigns = ArrayList<Sign>()
 
-            if (examples.size < 1) {
-                return signs
-            }
-
-            val favorites = db.getExampleSigns(examples[0].video)
-            if (favorites.size < 2) {
-                return signs
+            for (example in examples) {
+                db.getSign(example.signId)?.let {
+                    randomSigns.add(it)
+                }
             }
 
             mRandomExamples = examples
-            mRandomFavorites = favorites.subList(0, 2)
+            mRandomFavorites = randomSigns
             mRandomTime = now
         }
 
