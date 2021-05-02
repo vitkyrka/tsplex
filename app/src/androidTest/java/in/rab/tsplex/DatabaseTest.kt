@@ -122,8 +122,8 @@ class DatabaseTest {
                 hasSize(0))
         assertThat(db.getParentTopic(0x00000101),
                 contains(withTopicId(0x00000001)))
-        assertThat(db.getParentTopic(0x0502090e),
-                contains(withTopicId(0x0002090e)))
+        assertThat(db.getParentTopic(0x0b02012c),
+                contains(withTopicId(0x0002012c)))
     }
 
     @Test
