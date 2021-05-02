@@ -18,8 +18,8 @@ Erkännande-IckeKommersiell-DelaLika 2.5 Sverige
 license](http://creativecommons.org/licenses/by-nc-sa/2.5/se/).
 
 [The launcher icon](app/graphics/lexikon.svg) is based on an image resource in
-the [Noto Emoji font](https://github.com/googlei18n/noto-emoji) [and is
-licensed under the Apache license, version
+the [Noto Emoji font](https://github.com/googlei18n/noto-emoji) and is licensed
+under the [Apache license, version
 2.0](https://github.com/googlei18n/noto-emoji#license).
 
 The [material design icons](https://github.com/google/material-design-icons)
