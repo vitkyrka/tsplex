@@ -198,7 +198,7 @@ class SearchTest {
 
         onView(withSubstring(exampleString))
                 .perform(click())
-        onView(withSubstring("Hen stannar i"))
+        onView(withSubstring("stanna där"))
                 .check(matches(isDisplayed()))
         onView(withId(R.id.wordText))
                 .check(matches(withText("fyra veckor")))
