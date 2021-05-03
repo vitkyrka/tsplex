@@ -1,5 +1,5 @@
 package `in`.rab.tsplex
 
-import android.os.Parcelable
+import java.io.Serializable
 
-abstract class Item : Parcelable
+abstract class Item : Serializable

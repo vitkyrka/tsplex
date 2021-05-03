@@ -14,7 +14,7 @@ class SignFragment : ItemListFragment() {
 
         val args = arguments
         if (args != null) {
-            val sign: Sign = args.getParcelable(SignFragment.ARG_SIGN)!!
+            val sign: Sign = args.getSerializable(SignFragment.ARG_SIGN)!! as Sign
             mSign = sign
             mSelectedExample = args.getInt(SignFragment.ARG_SELECTED_EXAMPLE)
             mPosition = mSelectedExample + 1
@@ -63,7 +63,7 @@ class SignFragment : ItemListFragment() {
             val fragment = SignFragment()
             val args = Bundle()
 
-            args.putParcelable(ARG_SIGN, sign)
+            args.putSerializable(ARG_SIGN, sign)
 
             if (exampleUrl == null) {
                 args.putInt(ARG_SELECTED_EXAMPLE, -1)

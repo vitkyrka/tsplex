@@ -10,7 +10,7 @@ class ArrayListFragment : ItemListFragment() {
 
         val args = arguments
         if (args != null) {
-            items = args.getParcelableArrayList(ARG_ITEMS)!!
+            items = args.getSerializable(ARG_ITEMS)!! as ArrayList<Item>
         }
     }
 
@@ -24,7 +24,7 @@ class ArrayListFragment : ItemListFragment() {
         fun newInstance(items: ArrayList<Item>): ArrayListFragment {
             val fragment = ArrayListFragment()
             val args = Bundle()
-            args.putParcelableArrayList(ARG_ITEMS, items)
+            args.putSerializable(ARG_ITEMS, items)
             fragment.arguments = args
             return fragment
         }
