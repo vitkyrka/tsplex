@@ -2,7 +2,6 @@ package `in`.rab.tsplex
 
 import android.view.View
 import android.widget.ImageButton
-import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers

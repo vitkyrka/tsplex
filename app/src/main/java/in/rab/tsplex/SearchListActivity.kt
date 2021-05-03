@@ -3,11 +3,9 @@ package `in`.rab.tsplex
 import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 
 class SearchListActivity : RoutingAppCompactActivity() {
     private var mOrdboken: Ordboken? = null

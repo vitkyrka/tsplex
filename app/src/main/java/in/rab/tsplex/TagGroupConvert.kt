@@ -1,7 +1,5 @@
 package `in`.rab.tsplex
 
-import java.lang.NumberFormatException
-
 typealias TagList = List<Int>
 typealias TagGroup = List<TagList>
 
@@ -14,7 +12,7 @@ object TagGroupConvert {
         }
     }
 
-    fun stringToTagGroups(string: String) : List<TagGroup> {
+    fun stringToTagGroups(string: String): List<TagGroup> {
         return try {
             string.split("/").map { group ->
                 if (group.isEmpty()) {

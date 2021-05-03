@@ -367,7 +367,7 @@ class SignDatabase(context: Context) {
 
     fun getSignsCountByTags(tagIds: List<TagGroup>): Int {
         var signs = 0
-        val subQuery = getSignsByTagsQuery(tagIds, arrayOf("signs.id"), limit=null)
+        val subQuery = getSignsByTagsQuery(tagIds, arrayOf("signs.id"), limit = null)
         val query = "SELECT COUNT(*) FROM (${subQuery})"
 
         Log.i("foo", "getSignsCountByTags: $query");

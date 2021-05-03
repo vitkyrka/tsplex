@@ -1,10 +1,6 @@
 package `in`.rab.tsplex
 
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
-import android.text.Spanned
-import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_about.*
@@ -19,6 +15,7 @@ class AboutActivity : AppCompatActivity() {
 
         aboutPage.loadData(getString(R.string.about_html), "text/html", "utf-8")
     }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return super.onOptionsItemSelected(item)
     }

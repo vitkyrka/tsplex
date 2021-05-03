@@ -22,14 +22,11 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import kotlinx.android.synthetic.main.exoplayer_preview_control.*
 import kotlinx.android.synthetic.main.fragment_sign_list.*
 import java.util.*
-import kotlin.math.max
-import kotlin.math.min
 
 
 abstract class ItemListFragment(protected var mCache: Boolean = true, private val mEmptyText: Int = 0) : FragmentVisibilityNotifier, androidx.fragment.app.Fragment(), androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener,
@@ -667,7 +664,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         fun onListFragmentInteraction(item: Example)
         fun onListFragmentInteraction(item: Topic)
         fun onListFragmentInteraction(item: Folder)
-        fun onItemLongClick(item: Folder) : Boolean
+        fun onItemLongClick(item: Folder): Boolean
         fun onExampleSearchClick(example: Example)
         fun onFindSimilarClick(item: Sign)
     }

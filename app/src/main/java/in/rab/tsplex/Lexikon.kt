@@ -44,7 +44,8 @@ class Lexikon(context: Context) {
     }
 
     companion object {
-        @Volatile private var INSTANCE: Lexikon? = null
+        @Volatile
+        private var INSTANCE: Lexikon? = null
 
         fun getInstance(context: Context): Lexikon =
                 INSTANCE ?: synchronized(this) {

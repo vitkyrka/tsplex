@@ -1,37 +1,27 @@
 package `in`.rab.tsplex
 
-import android.app.Activity
 import android.app.SearchManager
-import android.app.TaskStackBuilder
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
 import android.os.*
 import android.provider.SearchRecentSuggestions
-import androidx.appcompat.widget.Toolbar
-import android.text.Editable
-import android.text.Html
-import android.text.Spanned
-import android.text.TextWatcher
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import androidx.core.app.NavUtils
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.test.espresso.idling.CountingIdlingResource
 import kotlinx.android.synthetic.main.activity_search.*
 import java.util.*
-import android.text.method.LinkMovementMethod
-import android.text.style.URLSpan
-import android.text.SpannableStringBuilder
-import android.widget.TextView
-import android.text.style.ClickableSpan
-import android.util.Log
-import android.view.View
-import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.idling.CountingIdlingResource
 
 
 class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
@@ -239,7 +229,7 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         super.onListFragmentInteraction(item)
     }
 
-    override fun onExampleSearchClick(example   : Example) {
+    override fun onExampleSearchClick(example: Example) {
         mQuery?.let { saveRecent(it) }
 
         super.onExampleSearchClick(example)

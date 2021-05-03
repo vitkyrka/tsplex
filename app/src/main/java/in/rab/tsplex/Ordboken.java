@@ -6,10 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import androidx.core.app.NavUtils;
-import androidx.appcompat.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.core.app.NavUtils;
 
 public class Ordboken {
     private static Ordboken sInstance = null;
@@ -19,17 +19,27 @@ public class Ordboken {
         mConnMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
-    public boolean isOnline() {
-        NetworkInfo networkInfo = mConnMgr.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
     public static Ordboken getInstance(Context context) {
         if (sInstance == null) {
             sInstance = new Ordboken(context);
         }
 
         return sInstance;
+    }
+
+    static void startWordActivity(Activity activity, String word, String url) {
+        Intent intent = new Intent(activity, SignActivity.class);
+
+        intent.putExtra("title", word);
+        intent.putExtra("url", url);
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        activity.startActivity(intent);
+    }
+
+    public boolean isOnline() {
+        NetworkInfo networkInfo = mConnMgr.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     public void initSearchView(Activity activity, Menu menu, String query, Boolean focus) {
@@ -58,15 +68,5 @@ public class Ordboken {
         }
 
         return false;
-    }
-
-    static void startWordActivity(Activity activity, String word, String url) {
-        Intent intent = new Intent(activity, SignActivity.class);
-
-        intent.putExtra("title", word);
-        intent.putExtra("url", url);
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        activity.startActivity(intent);
     }
 }
