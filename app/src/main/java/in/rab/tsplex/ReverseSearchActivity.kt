@@ -481,7 +481,7 @@ class ReverseSearchActivity : AppCompatActivity() {
 
         if (segments.isEmpty()) {
             getSharedPreferences("in.rab.tsplex", 0)?.apply {
-                loadTagsFromString(getString("reverseSearchTagIds", ""), filterRedundant = false)
+                loadTagsFromString(getString("reverseSearchTagIds", "")!!, filterRedundant = false)
             }
         }
     }
