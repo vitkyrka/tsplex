@@ -347,7 +347,7 @@ class SignDatabase(context: Context) {
     private fun getSignsByTags(tagIds: List<TagGroup>, columns: Array<String>, limit: String? = RESULTS_LIMIT): Cursor {
         val query = getSignsByTagsQuery(tagIds, columns, limit)
 
-        Log.i("foo", query);
+        Log.i("foo", query)
 
         return getDatabase()!!.rawQuery(query, null)
     }
@@ -370,7 +370,7 @@ class SignDatabase(context: Context) {
         val subQuery = getSignsByTagsQuery(tagIds, arrayOf("signs.id"), limit = null)
         val query = "SELECT COUNT(*) FROM (${subQuery})"
 
-        Log.i("foo", "getSignsCountByTags: $query");
+        Log.i("foo", "getSignsCountByTags: $query")
 
         val cursor = getDatabase()!!.rawQuery(query, null)
 
@@ -425,7 +425,7 @@ class SignDatabase(context: Context) {
 
     fun search(query: String, columns: Array<String>): Cursor {
         val builder = SQLiteQueryBuilder()
-        builder.setProjectionMap(buildColumnMap())
+        builder.projectionMap = buildColumnMap()
         return getSigns(query, columns, builder, RESULTS_LIMIT)
     }
 
@@ -580,7 +580,7 @@ class SignDatabase(context: Context) {
     fun getAll(columns: Array<String>): Cursor {
         val builder = SQLiteQueryBuilder()
         builder.tables = "signs"
-        builder.setProjectionMap(buildColumnMap())
+        builder.projectionMap = buildColumnMap()
 
         return builder.query(mOpenHelper.database, columns, null, null,
                 null, null, "sv")
@@ -592,7 +592,7 @@ class SignDatabase(context: Context) {
 
     fun getDatabase() = mOpenHelper.database
 
-    private class SignDatabaseOpenHelper internal constructor(context: Context) : ShippedSQLiteOpenHelper(context, DATABASE_NAME, null, DatabaseVersion.version)
+    private class SignDatabaseOpenHelper(context: Context) : ShippedSQLiteOpenHelper(context, DATABASE_NAME, null, DatabaseVersion.version)
 
     companion object {
         private const val RESULTS_LIMIT = "100"

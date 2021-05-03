@@ -74,11 +74,11 @@ class SearchTest {
 
     @After
     fun unregisterIdlingResource() {
-        mSearchResource?.let {
+        mSearchResource.let {
             IdlingRegistry.getInstance().unregister(it)
         }
 
-        mVideoResource?.let {
+        mVideoResource.let {
             IdlingRegistry.getInstance().unregister(it)
         }
     }

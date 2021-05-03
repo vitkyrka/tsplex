@@ -138,7 +138,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
                         if (repeatMode != mRepeatMode) {
                             mRepeatMode = repeatMode
 
-                            getSharedPreferences()?.edit()?.apply() {
+                            getSharedPreferences()?.edit()?.apply {
                                 putInt("signRepeatMode", repeatMode)
                                 apply()
                             }
@@ -556,7 +556,7 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         }
 
         val recycler = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.list)
-        val context = recycler.getContext()
+        val context = recycler.context
 
         val layoutManager = GridAutofitLayoutManager(context, 1)
         // val decoration = androidx.recyclerview.widget.DividerItemDecoration(getContext(), layoutManager.orientation)

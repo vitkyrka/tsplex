@@ -508,7 +508,7 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(res: Pair<Int, java.util.ArrayList<Sign>>) {
-            if (isFinishing) return;
+            if (isFinishing) return
 
             val count = res.first
             var text = "$count tecken matchar"
@@ -565,7 +565,7 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(res: ChooseChipStateResult) {
-            if (isFinishing) return;
+            if (isFinishing) return
             res.args.segment.chooseChipStates(res.args.chip, res.args.at, res.stateCounts)
         }
     }
@@ -586,7 +586,7 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(res: ChooseDynamicAttributeResult) {
-            if (isFinishing) return;
+            if (isFinishing) return
             res.segment.chooseDynamicAttribute(res.signCounts)
         }
     }
@@ -609,7 +609,7 @@ class ReverseSearchActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(res: ChooseNewDynamicAttributeStatesResult) {
-            if (isFinishing) return;
+            if (isFinishing) return
             res.args.segment.chooseNewDynamicAttributeStates(res.args.at, res.tagCounts)
         }
     }
