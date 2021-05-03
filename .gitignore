@@ -12,6 +12,7 @@ build/
 .idea
 signs.jet
 app/release/
+tools/__pycache__/
 .settings
 .gradle
 app/src/main/java/in/rab/tsplex/Attributes.kt
