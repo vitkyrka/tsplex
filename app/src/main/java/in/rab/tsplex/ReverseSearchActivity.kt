@@ -382,7 +382,6 @@ class ReverseSearchActivity : AppCompatActivity() {
                             availableStates.map { "${it.name} (${stateCounts[it.tagId]})" }.toTypedArray(),
                             null
                     ) { _, which, checked ->
-                        Log.i("foo", "$which $checked")
                         if (checked) {
                             selectedItems.add(availableStates[which].tagId)
                         } else if (selectedItems.contains(availableStates[which].tagId)) {
@@ -457,7 +456,6 @@ class ReverseSearchActivity : AppCompatActivity() {
 
     private fun search() {
         val query = "tags:${getTagIdsString()}"
-        Log.i("foo", query)
 
         val intent = Intent(this, SearchListActivity::class.java)
         intent.action = Intent.ACTION_SEARCH

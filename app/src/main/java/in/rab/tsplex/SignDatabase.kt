@@ -347,8 +347,6 @@ class SignDatabase(context: Context) {
     private fun getSignsByTags(tagIds: List<TagGroup>, columns: Array<String>, limit: String? = RESULTS_LIMIT): Cursor {
         val query = getSignsByTagsQuery(tagIds, columns, limit)
 
-        Log.i("foo", query)
-
         return getDatabase()!!.rawQuery(query, null)
     }
 
@@ -369,8 +367,6 @@ class SignDatabase(context: Context) {
         var signs = 0
         val subQuery = getSignsByTagsQuery(tagIds, arrayOf("signs.id"), limit = null)
         val query = "SELECT COUNT(*) FROM (${subQuery})"
-
-        Log.i("foo", "getSignsCountByTags: $query")
 
         val cursor = getDatabase()!!.rawQuery(query, null)
 
