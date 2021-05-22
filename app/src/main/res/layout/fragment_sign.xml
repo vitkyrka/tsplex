@@ -91,6 +91,23 @@
         android:shadowDy="2"
         android:shadowRadius="5"/>
 
+    <TextView
+        android:id="@+id/idText"
+        android:paddingEnd="8dp"
+        android:paddingTop="1dp"
+        android:paddingStart="4dp"
+        android:gravity="top"
+        app:layout_constraintStart_toStartOf="@id/images"
+        app:layout_constraintTop_toTopOf="@id/images"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="#eee"
+        android:shadowColor="#000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="5"/>
+
     <ImageButton
         android:id="@+id/playButton"
         android:layout_width="wrap_content"

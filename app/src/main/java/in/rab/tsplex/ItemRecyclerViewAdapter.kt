@@ -57,6 +57,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
     @SuppressLint("SetTextI18n")
     private fun bindSign(holder: SignViewHolder, sign: Sign, position: Int) {
         holder.mIdView.text = sign.word
+        holder.mIdText.text = "%05d".format(sign.id)
 
         if (sign.examplesCount > 0) {
             holder.mExamplesCountText.text = sign.examplesCount.toString()
@@ -170,7 +171,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
 
         with(holder) {
             mWordText.text = sign.word
-            mTranscriptionText.text = sign.transcription
+            mTranscriptionText.text = "${sign.transcription} [%05d]".format(sign.id)
 
             val desc = sign.description.split("//").joinToString("//<br>")
             mTextView.text = Html.fromHtml(if (!desc.endsWith('.')) {
@@ -284,6 +285,7 @@ class ItemRecyclerViewAdapter(private val mPlayHandler: OnItemPlayHandler,
         val mImages: ViewFlipper = mView.findViewById(R.id.images)
         val mTranscriptionText: TextView = mView.findViewById(R.id.transcriptionText)
         val mExamplesCountText: TextView = mView.findViewById(R.id.examplesCountText)
+        val mIdText: TextView = mView.findViewById(R.id.idText)
         val mPlayButton: ImageButton = mView.findViewById(R.id.playButton)
         private val imageViewIds = intArrayOf(R.id.image1, R.id.image2, R.id.image3, R.id.image4)
         val imageViews: Array<ImageView> = Array(imageViewIds.size) { i ->
