@@ -3,6 +3,7 @@
 import pprint
 import logging
 import itertools
+import re
 
 import attr
 
@@ -335,10 +336,13 @@ class Tagger(object):
             logging.debug('no trans')
             return None
 
+        # Remove fingerspelling
+        trans = re.sub('#\([^)]+\)', '', trans)
+
         try:
             chars = [self.charmap[c] for c in trans if c != '#']
         except KeyError:
-            if idn not in [18321, 19304, 19305, 19450]:
+            if idn not in [12129, 18321, 19304, 19305, 19450, 19963, 20103]:
                 raise
             return None
 
