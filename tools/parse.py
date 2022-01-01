@@ -61,7 +61,7 @@ def parse_one(f):
     sign['examples'] = list(zip(examplevids, exampledescs))
 
     word = root.xpath('//div[@class="su-infohead"]/h2/text()')[0].strip()
-    sign['ord'] = [word.lower()]
+    sign['ord'] = [word]
 
     try:
         also = root.xpath('//div[@class="su-infohead"]/h2/span[@class="also_means"]/text()')[0].strip()
@@ -89,7 +89,7 @@ def parse_one(f):
                 else:
                     if topic:
                         value.append((topic, ''))
-                    topic = t
+                    topic = ' / '.join([p.capitalize() for p in t.split(' / ')])
 
             if topic:
                 value.append((topic, ''))
@@ -138,11 +138,6 @@ def parse_one(f):
     return sign
 
 def fixup(sign):
-    if any(topic for topic, extra in sign['ämne'] if 'Orter' in topic or 'Länder' in topic or 'Finland' in topic):
-            sign['ord'][0] = sign['ord'][0].capitalize()
-    else:
-        sign['ord'] = [word if word.isupper() else word.lower() for word in sign['ord']]
-
     # Homonym information seems to be incorrect for Österberg 1916 signs.
     # All the Österberg signs are listed as homonyms of each other.
     if sign['ämne'][0][0].startswith('Österberg'):
