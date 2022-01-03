@@ -16,7 +16,7 @@ class AboutActivity : AppCompatActivity() {
         aboutPage.loadData(getString(R.string.about_html), "text/html", "utf-8")
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
     }
 }

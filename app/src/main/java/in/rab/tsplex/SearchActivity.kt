@@ -183,13 +183,14 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
             return
         }
 
-        mRunnable = Runnable {
+        val runnable = Runnable {
             performSearch(query)
             mIdleResource.decrement()
         }
+        mRunnable = runnable
 
         mIdleResource.increment()
-        mHandler.postDelayed(mRunnable, if (query.isEmpty() || query.length > 1) {
+        mHandler.postDelayed(runnable, if (query.isEmpty() || query.length > 1) {
             300
         } else {
             1000
@@ -270,7 +271,7 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         super.onNewIntent(intent)
 
         if (Intent.ACTION_SEARCH == intent.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY)
+            val query = intent.getStringExtra(SearchManager.QUERY) ?: ""
 
             val title = intent.getStringExtra(Intent.EXTRA_TITLE) ?: query
             supportActionBar?.title = title
@@ -298,12 +299,12 @@ class SearchActivity : RoutingAppCompactActivity(), TextWatcher {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (mOrdboken!!.onOptionsItemSelected(this, item)) {
             return true
         }
 
-        if (item?.itemId == R.id.resetSearch) {
+        if (item.itemId == R.id.resetSearch) {
             searchView.text.clear()
             RecentTask().execute()
             return true

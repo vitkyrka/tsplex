@@ -617,12 +617,12 @@ class ReverseSearchActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (mOrdboken!!.onOptionsItemSelected(this, item)) {
             return true
         }
 
-        if (item?.itemId == R.id.resetSearch) {
+        if (item.itemId == R.id.resetSearch) {
             resetFilters()
             return true
         }

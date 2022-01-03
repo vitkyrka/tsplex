@@ -36,7 +36,7 @@ class SearchListActivity : RoutingAppCompactActivity() {
         super.onNewIntent(intent)
 
         if (Intent.ACTION_SEARCH == intent.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY)
+            val query = intent.getStringExtra(SearchManager.QUERY) ?: ""
 
             val title = intent.getStringExtra(Intent.EXTRA_TITLE) ?: query
             supportActionBar?.title = title
@@ -70,7 +70,7 @@ class SearchListActivity : RoutingAppCompactActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (mOrdboken!!.onOptionsItemSelected(this, item)) {
             return true
         }

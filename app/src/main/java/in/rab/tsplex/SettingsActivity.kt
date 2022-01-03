@@ -20,7 +20,7 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.title = getString(R.string.settings)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item?.itemId == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this)
             return true
