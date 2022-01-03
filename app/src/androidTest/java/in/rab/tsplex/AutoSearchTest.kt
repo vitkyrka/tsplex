@@ -111,7 +111,7 @@ class AutoSearchTest {
         onView(withId(R.id.searchView))
                 .perform(typeText("zlata"), closeSoftKeyboard())
         onView(withId(R.id.list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1,
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
                         clickExampleSearch()))
         Espresso.pressBack()
         onView(withId(R.id.resetSearch))

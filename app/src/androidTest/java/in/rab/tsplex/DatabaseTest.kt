@@ -43,8 +43,7 @@ class DatabaseTest {
                         withId(620),
                         withId(348)))
 
-        assertThat(db.getSynonyms(12345), contains(withId(20075),
-            withId(20076)))
+        assertThat(db.getSynonyms(12346), empty())
     }
 
     @Test
