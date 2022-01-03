@@ -43,7 +43,8 @@ class DatabaseTest {
                         withId(620),
                         withId(348)))
 
-        assertThat(db.getSynonyms(12345), empty())
+        assertThat(db.getSynonyms(12345), contains(withId(20075),
+            withId(20076)))
     }
 
     @Test
@@ -52,7 +53,7 @@ class DatabaseTest {
                 contains(withId(10610),
                         withId(13144)))
 
-        assertThat(db.getHomonyms(1), empty())
+        assertThat(db.getHomonyms(1), contains(withId(17884)))
     }
 
     @Test
@@ -103,17 +104,17 @@ class DatabaseTest {
                         withName("Vad är juridik")))
 
         assertThat(db.getTopics("harry po"),
-                contains(withName("Harry Potter")))
+                contains(withName("Harry potter")))
     }
 
     @Test
     fun getSubTopics() {
         assertThat(db.getSubTopics(0x00000001),
-                hasItem(withName("Film & Böcker")))
+                hasItem(withName("Film och böcker")))
         assertThat(db.getSubTopics(0x00000001),
                 not(hasItem(withTopicId(0x00000001))))
         assertThat(db.getSubTopics(0x00000001),
-                not(hasItem(withName(("Harry Potter")))))
+                not(hasItem(withName(("Harry")))))
     }
 
     @Test
