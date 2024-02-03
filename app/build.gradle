@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 android {
-    compileSdkVersion 30
+    compileSdk 30
 
     dependencies {
         implementation "com.android.support:support-v4:30.0.0"
