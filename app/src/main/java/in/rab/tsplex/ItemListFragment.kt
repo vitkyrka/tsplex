@@ -390,9 +390,9 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
             (recylerView?.adapter as? ItemRecyclerViewAdapter)?.setSelected(-1)
         }
 
-        val videoScaleDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                if (detector == null || mPlayerBaseHeight == 0) {
+        val videoScaleDetector = ScaleGestureDetector(context!!, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                if (mPlayerBaseHeight == 0) {
                     return true
                 }
 
@@ -565,8 +565,8 @@ abstract class ItemListFragment(protected var mCache: Boolean = true, private va
         recylerView = recycler
 
         val scaleGestureDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                if (mItems.isEmpty() || detector == null) {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                if (mItems.isEmpty()) {
                     return true
                 }
 
