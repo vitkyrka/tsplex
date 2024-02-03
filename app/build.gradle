@@ -35,7 +35,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
- }
+    namespace 'in.rab.tsplex'
+    testNamespace 'in.rab.tsplex.androidTest'
+}
 
 dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
